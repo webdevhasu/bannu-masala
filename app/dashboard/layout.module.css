@@ -1,0 +1,68 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f8fafc;
+}
+
+.sidebar {
+  width: 240px;
+  background: #fff;
+  border-right: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+}
+
+.brand {
+  padding: 24px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.brand h2 {
+  font-family: 'Playfair Display', serif;
+  color: var(--maroon);
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.nav {
+  flex: 1;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  color: #64748b;
+  font-weight: 500;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.navItem:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.active {
+  background: var(--maroon) !important;
+  color: #fff !important;
+}
+
+.bottomNav {
+  padding: 20px 16px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.main {
+  flex: 1;
+  padding: 32px;
+  overflow-y: auto;
+  max-width: 100%;
+}
