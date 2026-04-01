@@ -170,7 +170,8 @@
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   border: 1px solid #e2e8f0;
-  overflow: hidden;
+  overflow-x: auto; /* Fixes table overflow on mobile */
+  -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
 }
 
 .table {
@@ -408,3 +409,35 @@
   margin-bottom: 16px;
   opacity: 0.2;
 }
+
+/* Mobile Responsiveness for Form and Table */
+@media (max-width: 768px) {
+  .headerRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .formRow {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .priceGrid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .modalContent {
+    padding: 24px 20px;
+    margin: 20px;
+  }
+  
+  .table th, .table td {
+    padding: 12px 14px; /* Reduced padding for mobile */
+  }
+  
+  .btnEdit { margin-bottom: 6px; display: block; width: 100%; text-align: center; }
+  .btnDanger { display: block; width: 100%; text-align: center; }
+}
+

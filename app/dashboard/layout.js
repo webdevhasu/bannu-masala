@@ -18,21 +18,21 @@ export default function DashboardLayout({ children }) {
         <nav className={styles.nav}>
           <Link href="/dashboard" className={`${styles.navItem} ${pathname === '/dashboard' ? styles.active : ''}`}>
             <FontAwesomeIcon icon={faChartLine} style={{width:'20px'}} />
-            Overview
+            <span>Overview</span>
           </Link>
           <Link href="/dashboard/products" className={`${styles.navItem} ${pathname === '/dashboard/products' ? styles.active : ''}`}>
             <FontAwesomeIcon icon={faBox} style={{width:'20px'}} />
-            Products
+            <span>Products</span>
           </Link>
           <Link href="/dashboard/orders" className={`${styles.navItem} ${pathname === '/dashboard/orders' ? styles.active : ''}`}>
             <FontAwesomeIcon icon={faShoppingCart} style={{width:'20px'}} />
-            Orders
+            <span>Orders</span>
           </Link>
         </nav>
         <div className={styles.bottomNav}>
           <Link href="/" className={styles.navItem}>
             <FontAwesomeIcon icon={faSignOutAlt} style={{width:'20px'}} />
-            Back to Store
+            <span>Back to Store</span>
           </Link>
         </div>
       </aside>

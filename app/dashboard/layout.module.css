@@ -66,3 +66,65 @@
   overflow-y: auto;
   max-width: 100%;
 }
+
+@media (max-width: 768px) {
+  .layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+
+  .brand {
+    padding: 0;
+    border-bottom: none;
+  }
+
+  .brand h2 {
+    font-size: 1.1rem;
+  }
+
+  .nav {
+    flex-direction: row;
+    padding: 0;
+    gap: 4px;
+  }
+
+  .navItem {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    gap: 6px;
+  }
+
+  .navItem span {
+    display: none; /* Hide text, only show icons for space */
+  }
+
+  /* Specific fix for text visibility if you want labels on mobile, but icons are safer */
+  /* Or use media query specifically for nav items */
+
+  .bottomNav {
+    padding: 0;
+    border-top: none;
+  }
+
+  .main {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .navItem {
+    padding: 8px;
+  }
+}
