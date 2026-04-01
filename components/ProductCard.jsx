@@ -29,7 +29,7 @@ export default function ProductCard({ product }) {
       {/* Image */}
       <div className={styles.imageWrap}>
         {product.image ? (
-          <img src={product.image} alt={product.name} className={styles.image} />
+          <img src={product.image} alt={`Authentic ${product.name} - Bannu Masala Premium Spices`} className={styles.image} />
         ) : (
           <div className={styles.imagePlaceholder} style={{ background: '#7B1C1C' }}>
             <FontAwesomeIcon icon={faBox} size="3x" color="#fff" />

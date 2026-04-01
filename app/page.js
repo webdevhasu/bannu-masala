@@ -20,8 +20,51 @@ export default async function Home() {
     }
   }));
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Bannu Masala",
+    "url": "https://bannu-masala.vercel.app",
+    "logo": "https://bannu-masala.vercel.app/logo.png",
+    "description": "Premium handcrafted spice blends from Bannu, KPK. Authentic, pure, and preservative-free.",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Bannu",
+      "addressRegion": "KPK",
+      "addressCountry": "PK"
+    }
+  };
+
+  const productListJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Our Premium Spices",
+    "numberOfItems": products.length,
+    "itemListElement": products.map((p, index) => ({
+      "@type": "Product",
+      "position": index + 1,
+      "name": p.name,
+      "description": p.description,
+      "image": p.image,
+      "offers": {
+        "@type": "Offer",
+        "price": p.price_250g,
+        "priceCurrency": "PKR",
+        "availability": "https://schema.org/InStock"
+      }
+    }))
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productListJsonLd) }}
+      />
       <SplashScreen />
 
       {/* Hero Section */}
