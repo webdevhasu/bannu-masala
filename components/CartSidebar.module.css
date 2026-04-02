@@ -106,9 +106,25 @@
 .item {
   display: flex;
   gap: 14px;
-  padding: 14px 0;
+  padding: 14px 10px;
   border-bottom: 1px solid #f5e8d3;
   align-items: center;
+  transition: all 0.2s;
+}
+.itemUnselected {
+  opacity: 0.5;
+  background: #fafafa;
+}
+.checkboxWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--maroon);
+  cursor: pointer;
 }
 .itemImage {
   width: 64px;
@@ -219,8 +235,14 @@
   cursor: pointer;
   transition: all 0.3s;
 }
-.checkoutBtn:hover {
+.checkoutBtn:hover:not(:disabled) {
   background: #5A1313;
   transform: translateY(-2px);
   box-shadow: 0 4px 16px rgba(123,28,28,0.3);
+}
+.checkoutBtn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }

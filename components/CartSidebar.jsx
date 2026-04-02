@@ -6,7 +6,7 @@ import { faShoppingCart, faBox } from '@fortawesome/free-solid-svg-icons';
 import styles from './CartSidebar.module.css';
 
 export default function CartSidebar() {
-  const { items, removeFromCart, updateQty, subtotal, shipping, total, itemCount, sidebarOpen, setSidebarOpen } = useCart();
+  const { items, selectedKeys, toggleSelection, removeFromCart, updateQty, subtotal, shipping, total, itemCount, sidebarOpen, setSidebarOpen } = useCart();
 
   const freeShippingTarget = 3000;
   const progress = Math.min((subtotal / freeShippingTarget) * 100, 100);
@@ -48,7 +48,15 @@ export default function CartSidebar() {
             </div>
           ) : (
             items.map(item => (
-              <div key={item.key} className={styles.item}>
+              <div key={item.key} className={`${styles.item} ${!selectedKeys.includes(item.key) ? styles.itemUnselected : ''}`}>
+                <div className={styles.checkboxWrapper}>
+                  <input 
+                    type="checkbox" 
+                    checked={selectedKeys.includes(item.key)} 
+                    onChange={() => toggleSelection(item.key)} 
+                    className={styles.checkbox}
+                  />
+                </div>
                 <div className={styles.itemImage} style={{ background: '#7B1C1C' }}>
                   {item.image && <img src={item.image} alt={item.name} />}
                   {!item.image && <FontAwesomeIcon icon={faBox} size="2x" color="#fff" />}
@@ -90,8 +98,20 @@ export default function CartSidebar() {
                 <span>Rs {total.toLocaleString()}</span>
               </div>
             </div>
-            <Link href="/checkout" onClick={() => setSidebarOpen(false)}>
-              <button className={styles.checkoutBtn}>Proceed to Checkout →</button>
+            <Link 
+              href={selectedKeys.length === 0 ? '#' : '/checkout'} 
+              onClick={(e) => {
+                if (selectedKeys.length === 0) {
+                  e.preventDefault();
+                  alert('Please select at least one item to checkout.');
+                } else {
+                  setSidebarOpen(false);
+                }
+              }}
+            >
+              <button className={styles.checkoutBtn} disabled={selectedKeys.length === 0}>
+                {selectedKeys.length === 0 ? 'Select items to Checkout' : 'Proceed to Checkout →'}
+              </button>
             </Link>
           </div>
         )}

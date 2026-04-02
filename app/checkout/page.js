@@ -18,7 +18,7 @@ export default function CheckoutPage() {
 function CheckoutContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { items: cartItems, subtotal: cartSubtotal, shipping: cartShipping, total: cartTotal, clearCart } = useCart();
+  const { items: cartItems, selectedKeys, subtotal: cartSubtotal, shipping: cartShipping, total: cartTotal, clearSelectedCart } = useCart();
   
   const [buyNowItem, setBuyNowItem] = useState(null);
   const [isBuyNow, setIsBuyNow] = useState(false);
@@ -59,7 +59,7 @@ function CheckoutContent() {
     }
   }, [searchParams]);
 
-  const activeItems = isBuyNow ? (buyNowItem ? [buyNowItem] : []) : cartItems;
+  const activeItems = isBuyNow ? (buyNowItem ? [buyNowItem] : []) : cartItems.filter(i => selectedKeys?.includes(i.key));
   const subtotal = isBuyNow ? (buyNowItem ? buyNowItem.price * buyNowItem.qty : 0) : cartSubtotal;
   const shipping = subtotal >= 3000 ? 0 : (subtotal > 0 ? 200 : 0);
   const total = subtotal + shipping;
@@ -134,7 +134,7 @@ function CheckoutContent() {
       });
 
       // Show success state instead of WhatsApp redirect
-      clearCart();
+      if (!isBuyNow) clearSelectedCart();
       setSubmitting(false);
       setOrderPlaced(true);
 
