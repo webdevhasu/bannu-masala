@@ -1,6 +1,26 @@
 import { NextResponse } from 'next/server';
 import sql from '@/lib/db';
 
+export async function GET(request, props) {
+  try {
+    const params = await props.params;
+    const id = parseInt(params.id);
+    
+    const products = await sql`
+      SELECT * FROM products WHERE id = ${id} LIMIT 1
+    `;
+
+    if (products.length === 0) {
+      return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+    }
+
+    return NextResponse.json(products[0]);
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: 'Failed to fetch product' }, { status: 500 });
+  }
+}
+
 export async function PUT(request, props) {
   try {
     const params = await props.params;

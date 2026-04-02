@@ -20,8 +20,8 @@ export default function ProductCard({ product }) {
   };
 
   const handleBuyNow = () => {
-    addToCart(product, selectedVariant, false);
-    router.push('/checkout');
+    // Direct checkout without affecting the global cart
+    router.push(`/checkout?productId=${product.id}&variant=${selectedVariant}&qty=1`);
   };
 
   return (

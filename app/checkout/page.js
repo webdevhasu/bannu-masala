@@ -1,19 +1,67 @@
-'use client';
-import { useState } from 'react';
 import { useCart } from '@/components/CartContext';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import styles from './page.module.css';
 
 const WHATSAPP_NUMBER = '923001234567';
 
 export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<div>Loading checkout...</div>}>
+      <CheckoutContent />
+    </Suspense>
+  );
+}
+
+function CheckoutContent() {
   const router = useRouter();
-  const { items, subtotal, shipping, total, clearCart } = useCart();
+  const searchParams = useSearchParams();
+  const { items: cartItems, subtotal: cartSubtotal, shipping: cartShipping, total: cartTotal, clearCart } = useCart();
+  
+  const [buyNowItem, setBuyNowItem] = useState(null);
+  const [isBuyNow, setIsBuyNow] = useState(false);
+  const [loadingProduct, setLoadingProduct] = useState(false);
+
   const [form, setForm] = useState({ name: '', phone: '', address: '', city: '' });
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
+
+  useEffect(() => {
+    const productId = searchParams.get('productId');
+    const variant = searchParams.get('variant');
+    const qty = parseInt(searchParams.get('qty') || '1');
+
+    if (productId && variant) {
+      setIsBuyNow(true);
+      setLoadingProduct(true);
+      fetch(`/api/products/${productId}`)
+        .then(res => res.json())
+        .then(product => {
+          if (product && !product.error) {
+            // Map consistent with cart item structure
+            const price = product[`price_${variant}`] || 0;
+            setBuyNowItem({
+              id: product.id,
+              name: product.name,
+              variant,
+              qty,
+              price,
+              image: product.image,
+              key: `buy-now-${product.id}`
+            });
+          }
+        })
+        .catch(err => console.error(err))
+        .finally(() => setLoadingProduct(false));
+    }
+  }, [searchParams]);
+
+  const activeItems = isBuyNow ? (buyNowItem ? [buyNowItem] : []) : cartItems;
+  const subtotal = isBuyNow ? (buyNowItem ? buyNowItem.price * buyNowItem.qty : 0) : cartSubtotal;
+  const shipping = subtotal >= 3000 ? 0 : (subtotal > 0 ? 200 : 0);
+  const total = subtotal + shipping;
 
   const validate = () => {
     const e = {};
@@ -41,7 +89,7 @@ export default function CheckoutPage() {
       `Address: ${form.address}`,
       ``,
       `*Order Details:*`,
-      ...items.map(i => `• ${i.name} (${i.variant}) × ${i.qty} = Rs ${(i.price * i.qty).toLocaleString()}`),
+      ...activeItems.map(i => `• ${i.name} (${i.variant}) × ${i.qty} = Rs ${(i.price * i.qty).toLocaleString()}`),
       ``,
       `Subtotal: Rs ${subtotal.toLocaleString()}`,
       `Shipping: ${shipping === 0 ? 'FREE' : `Rs ${shipping}`}`,
@@ -53,7 +101,7 @@ export default function CheckoutPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-    if (items.length === 0) { alert('Your cart is empty!'); return; }
+    if (activeItems.length === 0) { alert('Your order is empty!'); return; }
 
     setSubmitting(true);
     
@@ -67,7 +115,9 @@ export default function CheckoutPage() {
         subtotal,
         shipping,
         total,
-        items: items.map(i => ({
+        shipping,
+        total,
+        items: activeItems.map(i => ({
           id: i.id,
           name: i.name,
           variant: i.variant,
@@ -93,6 +143,16 @@ export default function CheckoutPage() {
       setSubmitting(false);
     }
   };
+
+  if (isBuyNow && loadingProduct) {
+    return (
+      <div className={styles.wrapper}>
+        <div className="container" style={{padding: '100px 0', textAlign: 'center'}}>
+          <p>Loading your product details...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.wrapper}>
@@ -183,18 +243,18 @@ export default function CheckoutPage() {
 
           {/* Order Summary */}
           <div className={styles.summary}>
-            <h2 className={styles.sectionHead}>Order Summary</h2>
-            {items.length === 0 ? (
+            <h2 className={styles.sectionHead}>Order Summary {isBuyNow && <span style={{fontSize:'0.8rem', color: 'var(--maroon)'}}>(Direct Buy)</span>}</h2>
+            {activeItems.length === 0 ? (
               <div className={styles.emptyCart}>
-                <p>🛒 Your cart is empty</p>
-                <a href="/products" className={styles.shopLink}>← Browse Products</a>
+                <p>🛒 {isBuyNow ? 'Product could not be loaded' : 'Your cart is empty'}</p>
+                <Link href="/products" className={styles.shopLink}>← Browse Products</Link>
               </div>
             ) : (
               <>
                 <div className={styles.items}>
-                  {items.map(item => (
+                  {activeItems.map(item => (
                     <div key={item.key} className={styles.item}>
-                      <div className={styles.itemImg} style={{ background: item.gradient }}>
+                      <div className={styles.itemImg}>
                         {item.image ? <img src={item.image} alt={item.name} /> : '🌶️'}
                       </div>
                       <div className={styles.itemInfo}>

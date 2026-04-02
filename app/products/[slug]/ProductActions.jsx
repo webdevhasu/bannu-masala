@@ -1,10 +1,12 @@
 'use client';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useCart } from '@/components/CartContext';
 import styles from './page.module.css';
 
 export default function ProductActions({ product }) {
-  const { addItem, setSidebarOpen } = useCart();
+  const router = useRouter();
+  const { addToCart, setSidebarOpen } = useCart();
   const [qty, setQty] = useState(1);
   const [variant, setVariant] = useState('250g');
 
@@ -18,6 +20,11 @@ export default function ProductActions({ product }) {
 
   const handleAddToCart = () => {
     addToCart(product, variant, qty);
+  };
+
+  const handleBuyNow = () => {
+    // Direct checkout without affecting the global cart
+    router.push(`/checkout?productId=${product.id}&variant=${variant}&qty=${qty}`);
   };
 
   return (
@@ -51,9 +58,14 @@ export default function ProductActions({ product }) {
         </div>
       </div>
 
-      <button className={styles.addToCartBtn} onClick={handleAddToCart}>
-        Add to Cart — Rs {(currentVariant.price * qty).toLocaleString()}
-      </button>
+      <div className={styles.btnGroup}>
+        <button className={styles.addToCartBtn} onClick={handleAddToCart}>
+          Add to Cart
+        </button>
+        <button className={styles.buyNowBtn} onClick={handleBuyNow}>
+          Buy Now — Rs {(currentVariant.price * qty).toLocaleString()}
+        </button>
+      </div>
     </div>
   );
 }
