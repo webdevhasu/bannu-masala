@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
 import sql from '@/lib/db';
-import { cookies } from 'next/headers';
-import { verifyToken } from '@/lib/auth';
 
 // GET reviews for a productId
 export async function GET(request, props) {
@@ -9,12 +7,10 @@ export async function GET(request, props) {
     const params = await props.params;
     const productId = parseInt(params.productId);
     
-    // Join with users to get username
     const reviews = await sql`
-      SELECT r.id, r.rating, r.comment, r.created_at, u.name as user_name 
-      FROM reviews r
-      JOIN users u ON r.user_id = u.id
-      WHERE r.product_id = ${productId}
+      SELECT id, rating, comment, created_at, reviewer_name 
+      FROM reviews
+      WHERE product_id = ${productId}
       ORDER BY r.created_at DESC
     `;
     
@@ -25,23 +21,17 @@ export async function GET(request, props) {
   }
 }
 
-// POST a new review
+// POST a new review (Guest-friendly)
 export async function POST(request, props) {
   try {
     const params = await props.params;
     const productId = parseInt(params.productId);
 
-    // Verify Auth
-    const cookieStore = await cookies();
-    const token = cookieStore.get('auth_token')?.value;
-    if (!token) return NextResponse.json({ error: 'Unauthorized. Please login.' }, { status: 401 });
-    
-    const payload = await verifyToken(token);
-    if (!payload) return NextResponse.json({ error: 'Invalid token. Please login again.' }, { status: 401 });
+    const { rating, comment, name } = await request.json();
 
-    const userId = payload.userId;
-
-    const { rating, comment } = await request.json();
+    if (!name || name.trim() === '') {
+      return NextResponse.json({ error: 'Name is required' }, { status: 400 });
+    }
 
     if (!rating || rating < 1 || rating > 5) {
       return NextResponse.json({ error: 'Rating must be between 1 and 5' }, { status: 400 });
@@ -49,8 +39,8 @@ export async function POST(request, props) {
 
     // Insert Review
     await sql`
-      INSERT INTO reviews (product_id, user_id, rating, comment)
-      VALUES (${productId}, ${userId}, ${rating}, ${comment})
+      INSERT INTO reviews (product_id, reviewer_name, rating, comment)
+      VALUES (${productId}, ${name}, ${rating}, ${comment})
     `;
 
     return NextResponse.json({ success: true }, { status: 201 });

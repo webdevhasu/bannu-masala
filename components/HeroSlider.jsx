@@ -33,7 +33,7 @@ export default function HeroSlider({ products = [] }) {
     headline: p.name,
     subtext: p.description || "Premium quality handcrafted spices direct from Bannu.",
     cta: "Buy Now",
-    href: "/#products", // We can link to specific product later if needed
+    href: `/products/${p.slug}`,
     // Vary backgrounds based on index
     bg: index % 3 === 0 
       ? "linear-gradient(135deg, #3D0000 0%, #7B1C1C 50%, #C9932A 100%)"

@@ -1,16 +1,15 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { useAuth } from '@/components/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar, faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import styles from './page.module.css';
 
 export default function ReviewsSection({ productId }) {
-  const { user, popAuthModal } = useAuth();
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState('');
+  const [name, setName] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -33,8 +32,9 @@ export default function ReviewsSection({ productId }) {
 
   const handleSubmitReview = async (e) => {
     e.preventDefault();
-    if (!user) {
-      popAuthModal(); // Force login popup
+    
+    if (!name.trim()) {
+      alert("Please enter your name");
       return;
     }
 
@@ -43,12 +43,13 @@ export default function ReviewsSection({ productId }) {
       const res = await fetch(`/api/reviews/${productId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ rating, comment })
+        body: JSON.stringify({ rating, comment, name })
       });
       
       const result = await res.json();
       if (res.ok) {
         setComment('');
+        setName('');
         fetchReviews(); // Refresh list
       } else {
         alert(result.error);
@@ -67,39 +68,41 @@ export default function ReviewsSection({ productId }) {
       
       <div className={styles.reviewFormBox}>
         <h3>Write a Review</h3>
-        {user ? (
-          <form onSubmit={handleSubmitReview}>
-            <div className={styles.starSelect}>
-              {[1, 2, 3, 4, 5].map(star => (
-                <FontAwesomeIcon
-                  key={star}
-                  icon={faStar}
-                  color={star <= rating ? '#fbbf24' : '#cbd5e1'}
-                  className={styles.clickableStar}
-                  onClick={() => setRating(star)}
-                />
-              ))}
-            </div>
-            <textarea
+        <form onSubmit={handleSubmitReview}>
+          <div className={styles.formGroup} style={{marginBottom: '16px'}}>
+            <label style={{display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#334155', marginBottom: '8px'}}>Your Name</label>
+            <input 
+              type="text"
               className={styles.reviewInput}
-              rows={3}
-              placeholder="How was the product? Leave your thoughts here..."
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
+              placeholder="e.g. Hassan Ali"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               required
             />
-            <button className={styles.submitReviewBtn} disabled={submitting}>
-              {submitting ? 'Submitting...' : 'Submit Review'}
-            </button>
-          </form>
-        ) : (
-          <div className={styles.loginCard}>
-            <p>You must be logged in to leave a review.</p>
-            <button className={styles.loginToReviewBtn} onClick={popAuthModal}>
-              Login / Register
-            </button>
           </div>
-        )}
+          <div className={styles.starSelect}>
+            {[1, 2, 3, 4, 5].map(star => (
+              <FontAwesomeIcon
+                key={star}
+                icon={faStar}
+                color={star <= rating ? '#fbbf24' : '#cbd5e1'}
+                className={styles.clickableStar}
+                onClick={() => setRating(star)}
+              />
+            ))}
+          </div>
+          <textarea
+            className={styles.reviewInput}
+            rows={3}
+            placeholder="How was the product? Leave your thoughts here..."
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            required
+          />
+          <button className={styles.submitReviewBtn} disabled={submitting}>
+            {submitting ? 'Submitting...' : 'Submit Review'}
+          </button>
+        </form>
       </div>
 
       <div className={styles.reviewsList}>
@@ -113,7 +116,7 @@ export default function ReviewsSection({ productId }) {
               <div className={styles.reviewHeader}>
                 <div className={styles.reviewUser}>
                   <FontAwesomeIcon icon={faUserCircle} className={styles.userIcon} />
-                  <span>{review.user_name}</span>
+                  <span>{review.reviewer_name}</span>
                   <span className={styles.reviewDate}>
                     {new Date(review.created_at).toLocaleDateString()}
                   </span>

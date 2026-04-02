@@ -1,0 +1,223 @@
+.aboutPage {
+  background: var(--cream);
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Hero Section */
+.hero {
+  height: 450px;
+  background: linear-gradient(rgba(123, 28, 28, 0.7), rgba(123, 28, 28, 0.7)), 
+              url('https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&q=80&w=1600');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #fff;
+}
+
+.heroContent {
+  animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.title {
+  font-family: 'Playfair Display', serif;
+  font-size: 4rem;
+  margin-bottom: 12px;
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  opacity: 0.9;
+  font-weight: 300;
+}
+
+/* Founder Section */
+.founderSection {
+  padding: 100px 0;
+  background: #fff;
+}
+
+.founderGrid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.founderImageWrapper {
+  position: relative;
+}
+
+.imageFrame {
+  width: 100%;
+  aspect-ratio: 4/5;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 20px 20px 60px rgba(0,0,0,0.1);
+  border: 15px solid #fff;
+  z-index: 1;
+}
+
+.founderImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.founderImg:hover {
+  transform: scale(1.05);
+}
+
+.founderLabel {
+  background: var(--maroon);
+  color: #fff;
+  padding: 24px 32px;
+  border-radius: 16px;
+  position: absolute;
+  bottom: -30px;
+  right: -30px;
+  box-shadow: 0 15px 30px rgba(123, 28, 28, 0.3);
+  z-index: 2;
+}
+
+.founderLabel h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-family: 'Playfair Display', serif;
+}
+
+.founderLabel p {
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.sectionTitle {
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem;
+  color: var(--maroon);
+  margin-bottom: 24px;
+}
+
+.founderText p {
+  font-size: 1.15rem;
+  line-height: 1.8;
+  color: #475569;
+  margin-bottom: 24px;
+}
+
+.signature {
+  font-family: 'Dancing Script', cursive; /* Assuming it's in a Google Font link */
+  font-size: 2.5rem;
+  color: var(--maroon);
+  margin-top: 40px;
+  opacity: 0.8;
+}
+
+/* Values Section */
+.valuesSection {
+  padding: 80px 0;
+  background: var(--cream);
+  text-align: center;
+}
+
+.valuesTitle {
+  font-size: 2.5rem;
+  font-family: 'Playfair Display', serif;
+  color: var(--maroon-dark);
+  margin-bottom: 50px;
+}
+
+.valuesGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+}
+
+.valueCard {
+  background: #fff;
+  padding: 40px 24px;
+  border-radius: 20px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.03);
+  transition: all 0.3s ease;
+}
+
+.valueCard:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(123, 28, 28, 0.1);
+}
+
+.valueIcon {
+  font-size: 2.5rem;
+  color: var(--gold);
+  margin-bottom: 20px;
+}
+
+.valueCard h3 {
+  font-size: 1.25rem;
+  color: var(--text-dark);
+  margin-bottom: 12px;
+}
+
+.valueCard p {
+  font-size: 0.95rem;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+/* Mission Section */
+.missionSection {
+  padding: 100px 0;
+  background: var(--maroon);
+  color: #fff;
+  text-align: center;
+}
+
+.missionContent {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.missionSection h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem;
+  margin-bottom: 24px;
+}
+
+.missionContent p {
+  font-size: 1.4rem;
+  line-height: 1.7;
+  font-weight: 300;
+  opacity: 0.9;
+}
+
+@media (max-width: 1024px) {
+  .founderGrid { gap: 40px; }
+  .valuesGrid { grid-template-columns: repeat(2, 1fr); }
+  .title { font-size: 3.2rem; }
+}
+
+@media (max-width: 768px) {
+  .founderGrid { grid-template-columns: 1fr; }
+  .founderImageWrapper { padding-bottom: 40px; }
+  .founderLabel { right: 10px; bottom: 0; }
+  .sectionTitle { font-size: 2.5rem; }
+  .valuesGrid { grid-template-columns: 1fr; }
+  .hero { height: 350px; }
+  .title { font-size: 2.8rem; }
+  .subtitle { font-size: 1.2rem; }
+}

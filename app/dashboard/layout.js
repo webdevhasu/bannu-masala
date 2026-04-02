@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBox, faShoppingCart, faChartLine, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faBox, faShoppingCart, faChartLine, faSignOutAlt, faMessage } from '@fortawesome/free-solid-svg-icons';
 import styles from './layout.module.css';
 
 export default function DashboardLayout({ children }) {
@@ -27,6 +27,10 @@ export default function DashboardLayout({ children }) {
           <Link href="/dashboard/orders" className={`${styles.navItem} ${pathname === '/dashboard/orders' ? styles.active : ''}`}>
             <FontAwesomeIcon icon={faShoppingCart} style={{width:'20px'}} />
             <span>Orders</span>
+          </Link>
+          <Link href="/dashboard/reviews" className={`${styles.navItem} ${pathname === '/dashboard/reviews' ? styles.active : ''}`}>
+            <FontAwesomeIcon icon={faMessage} style={{width:'20px'}} />
+            <span>Reviews</span>
           </Link>
         </nav>
         <div className={styles.bottomNav}>

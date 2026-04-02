@@ -3,18 +3,15 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShoppingCart, faUser, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import { useCart } from './CartContext';
-import { useAuth } from './AuthContext';
 import styles from './Header.module.css';
 
 const WHATSAPP_NUMBER = '923001234567';
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const { itemCount, setSidebarOpen } = useCart();
-  const { user, loading, popAuthModal, logout } = useAuth();
 
   return (
     <header className={styles.header}>
@@ -37,33 +34,6 @@ export default function Header() {
 
         {/* Right Actions */}
         <div className={styles.actions}>
-          {/* Auth Button */}
-          {!loading && (
-            user ? (
-              <div 
-                className={styles.userDropdownContainer} 
-                onMouseEnter={() => setDropdownOpen(true)}
-                onMouseLeave={() => setDropdownOpen(false)}
-              >
-                <button className={styles.authBtn}>
-                  <div className={styles.avatar}>{user.name.charAt(0).toUpperCase()}</div>
-                  <span className={styles.userName}>{user.name.split(' ')[0]}</span>
-                </button>
-                {dropdownOpen && (
-                  <div className={styles.dropdownMenu}>
-                    <button onClick={logout} className={styles.dropdownItem}>
-                      <FontAwesomeIcon icon={faSignOutAlt} width="16" /> Logout
-                    </button>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <button className={styles.loginBtn} onClick={popAuthModal}>
-                <FontAwesomeIcon icon={faUser} /> Login
-              </button>
-            )
-          )}
-
           {/* Cart Button */}
           <button className={styles.cartBtn} onClick={() => setSidebarOpen(true)}>
             <FontAwesomeIcon icon={faShoppingCart} />
