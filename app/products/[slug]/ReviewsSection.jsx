@@ -11,6 +11,7 @@ export default function ReviewsSection({ productId }) {
   const [comment, setComment] = useState('');
   const [name, setName] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(10);
 
   useEffect(() => {
     fetchReviews();
@@ -72,30 +73,41 @@ export default function ReviewsSection({ productId }) {
         ) : reviews.length === 0 ? (
           <p className={styles.emptyReviews}>No reviews yet. Be the first to review this product!</p>
         ) : (
-          reviews.map(review => (
-            <div key={review.id} className={styles.reviewCard}>
-              <div className={styles.reviewHeader}>
-                <div className={styles.reviewUser}>
-                  <FontAwesomeIcon icon={faUserCircle} className={styles.userIcon} />
-                  <span>{review.reviewer_name}</span>
-                  <span className={styles.reviewDate}>
-                    {new Date(review.created_at).toLocaleDateString()}
-                  </span>
+          <>
+            {reviews.slice(0, visibleCount).map(review => (
+              <div key={review.id} className={styles.reviewCard}>
+                <div className={styles.reviewHeader}>
+                  <div className={styles.reviewUser}>
+                    <FontAwesomeIcon icon={faUserCircle} className={styles.userIcon} />
+                    <span>{review.reviewer_name}</span>
+                    <span className={styles.reviewDate}>
+                      {new Date(review.created_at).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <div className={styles.reviewStars}>
+                    {[1, 2, 3, 4, 5].map(star => (
+                      <FontAwesomeIcon 
+                        key={star} 
+                        icon={faStar} 
+                        color={star <= review.rating ? '#fbbf24' : '#cbd5e1'} 
+                        size="sm"
+                      />
+                    ))}
+                  </div>
                 </div>
-                <div className={styles.reviewStars}>
-                  {[1, 2, 3, 4, 5].map(star => (
-                    <FontAwesomeIcon 
-                      key={star} 
-                      icon={faStar} 
-                      color={star <= review.rating ? '#fbbf24' : '#cbd5e1'} 
-                      size="sm"
-                    />
-                  ))}
-                </div>
+                <p className={styles.reviewComment}>{review.comment}</p>
               </div>
-              <p className={styles.reviewComment}>{review.comment}</p>
-            </div>
-          ))
+            ))}
+            
+            {reviews.length > visibleCount && (
+              <button 
+                className={styles.seeMoreBtn} 
+                onClick={() => setVisibleCount(prev => prev + 10)}
+              >
+                See More Reviews ({reviews.length - visibleCount} left)
+              </button>
+            )}
+          </>
         )}
       </div>
 
