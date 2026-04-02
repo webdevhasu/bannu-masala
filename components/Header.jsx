@@ -5,16 +5,33 @@ import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import { useCart } from './CartContext';
+import { useEffect, useState } from 'react';
 import styles from './Header.module.css';
 
 const WHATSAPP_NUMBER = '923001234567';
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [animateBadge, setAnimateBadge] = useState(false);
   const { itemCount, setSidebarOpen } = useCart();
 
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    if (itemCount > 0) {
+      setAnimateBadge(true);
+      const timer = setTimeout(() => setAnimateBadge(false), 300);
+      return () => clearTimeout(timer);
+    }
+  }, [itemCount]);
+
   return (
-    <header className={styles.header}>
+    <header className={`${styles.header} ${scrolled ? styles.scrolled : ''}`}>
       <div className={styles.inner}>
         {/* Logo */}
         <Link href="/#home" className={styles.logo}>
@@ -37,7 +54,7 @@ export default function Header() {
           {/* Cart Button */}
           <button className={styles.cartBtn} onClick={() => setSidebarOpen(true)}>
             <FontAwesomeIcon icon={faShoppingCart} />
-            {itemCount > 0 && <span className={styles.badge}>{itemCount}</span>}
+            {itemCount > 0 && <span className={`${styles.badge} ${animateBadge ? styles.pop : ''}`}>{itemCount}</span>}
           </button>
 
           {/* Mobile Hamburger */}

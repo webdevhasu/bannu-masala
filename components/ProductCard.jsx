@@ -26,6 +26,7 @@ export default function ProductCard({ product }) {
 
   return (
     <div className={styles.card}>
+      {product.id % 4 === 0 && <div className={styles.ribbon}>Chef's Choice</div>}
       {/* Image */}
       <Link href={`/products/${product.slug}`} className={styles.imageWrap}>
         {product.image ? (
