@@ -1,3 +1,4 @@
+'use client';
 import { useCart } from '@/components/CartContext';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, Suspense } from 'react';
