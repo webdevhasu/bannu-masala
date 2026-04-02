@@ -5,7 +5,7 @@ import { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import styles from './page.module.css';
 
-const WHATSAPP_NUMBER = '923001234567';
+const WHATSAPP_NUMBER = '923099907713';
 
 export default function CheckoutPage() {
   return (

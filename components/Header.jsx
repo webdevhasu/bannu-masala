@@ -7,7 +7,7 @@ import { faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import { useCart } from './CartContext';
 import styles from './Header.module.css';
 
-const WHATSAPP_NUMBER = '923001234567';
+const WHATSAPP_NUMBER = '923099907713';
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);

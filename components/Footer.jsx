@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import styles from './Footer.module.css';
 
-const WHATSAPP_NUMBER = '923001234567';
+const WHATSAPP_NUMBER = '923099907713';
 
 export default function Footer() {
   return (
@@ -16,7 +16,16 @@ export default function Footer() {
             rel="noopener noreferrer"
             className={styles.waLink}
           >
-            📱 +92 300 1234567
+            📱 +92 309 9907713
+          </a>
+          <a
+            href="https://www.facebook.com/bannumasala"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.waLink}
+            style={{ marginTop: '10px', background: '#1877F2', color: '#fff' }}
+          >
+            📘 Facebook Page
           </a>
         </div>
         <div className={styles.links}>

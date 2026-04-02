@@ -1,6 +1,6 @@
 import styles from './WhatsAppFloat.module.css';
 
-const WHATSAPP_NUMBER = '923001234567';
+const WHATSAPP_NUMBER = '923099907713';
 
 export default function WhatsAppFloat() {
   return (
