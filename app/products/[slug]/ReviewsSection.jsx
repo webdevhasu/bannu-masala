@@ -66,6 +66,39 @@ export default function ReviewsSection({ productId }) {
     <div className={styles.reviewsContainer}>
       <h2 className={styles.reviewsTitle}>Customer Reviews</h2>
       
+      <div className={styles.reviewsList}>
+        {loading ? (
+          <p>Loading reviews...</p>
+        ) : reviews.length === 0 ? (
+          <p className={styles.emptyReviews}>No reviews yet. Be the first to review this product!</p>
+        ) : (
+          reviews.map(review => (
+            <div key={review.id} className={styles.reviewCard}>
+              <div className={styles.reviewHeader}>
+                <div className={styles.reviewUser}>
+                  <FontAwesomeIcon icon={faUserCircle} className={styles.userIcon} />
+                  <span>{review.reviewer_name}</span>
+                  <span className={styles.reviewDate}>
+                    {new Date(review.created_at).toLocaleDateString()}
+                  </span>
+                </div>
+                <div className={styles.reviewStars}>
+                  {[1, 2, 3, 4, 5].map(star => (
+                    <FontAwesomeIcon 
+                      key={star} 
+                      icon={faStar} 
+                      color={star <= review.rating ? '#fbbf24' : '#cbd5e1'} 
+                      size="sm"
+                    />
+                  ))}
+                </div>
+              </div>
+              <p className={styles.reviewComment}>{review.comment}</p>
+            </div>
+          ))
+        )}
+      </div>
+
       <div className={styles.reviewFormBox}>
         <h3>Write a Review</h3>
         <form onSubmit={handleSubmitReview}>
@@ -103,39 +136,6 @@ export default function ReviewsSection({ productId }) {
             {submitting ? 'Submitting...' : 'Submit Review'}
           </button>
         </form>
-      </div>
-
-      <div className={styles.reviewsList}>
-        {loading ? (
-          <p>Loading reviews...</p>
-        ) : reviews.length === 0 ? (
-          <p className={styles.emptyReviews}>No reviews yet. Be the first to review this product!</p>
-        ) : (
-          reviews.map(review => (
-            <div key={review.id} className={styles.reviewCard}>
-              <div className={styles.reviewHeader}>
-                <div className={styles.reviewUser}>
-                  <FontAwesomeIcon icon={faUserCircle} className={styles.userIcon} />
-                  <span>{review.reviewer_name}</span>
-                  <span className={styles.reviewDate}>
-                    {new Date(review.created_at).toLocaleDateString()}
-                  </span>
-                </div>
-                <div className={styles.reviewStars}>
-                  {[1, 2, 3, 4, 5].map(star => (
-                    <FontAwesomeIcon 
-                      key={star} 
-                      icon={faStar} 
-                      color={star <= review.rating ? '#fbbf24' : '#cbd5e1'} 
-                      size="sm"
-                    />
-                  ))}
-                </div>
-              </div>
-              <p className={styles.reviewComment}>{review.comment}</p>
-            </div>
-          ))
-        )}
       </div>
     </div>
   );

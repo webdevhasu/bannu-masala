@@ -11,7 +11,7 @@ export async function GET(request, props) {
       SELECT id, rating, comment, created_at, reviewer_name 
       FROM reviews
       WHERE product_id = ${productId}
-      ORDER BY r.created_at DESC
+      ORDER BY created_at DESC
     `;
     
     return NextResponse.json(reviews);
