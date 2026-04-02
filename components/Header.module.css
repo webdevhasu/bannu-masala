@@ -89,6 +89,103 @@
 .waBtn:hover { background: #128C7E; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(37,211,102,0.4); }
 .waIcon { display: flex; }
 
+.loginBtn {
+  background: transparent;
+  color: var(--maroon);
+  border: 1px solid var(--maroon);
+  padding: 8px 16px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+.loginBtn:hover {
+  background: var(--maroon);
+  color: #fff;
+}
+
+.userDropdownContainer {
+  position: relative;
+  display: inline-block;
+}
+
+.authBtn {
+  background: transparent;
+  border: 1px solid rgba(123, 28, 28, 0.2);
+  padding: 4px 12px 4px 4px;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.authBtn:hover {
+  background: rgba(123, 28, 28, 0.05);
+}
+
+.avatar {
+  width: 28px;
+  height: 28px;
+  background: var(--maroon);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.userName {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+  min-width: 150px;
+  padding: 8px 0;
+  z-index: 1000;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 20px;
+  background: transparent;
+  border: none;
+  text-align: left;
+  font-size: 0.9rem;
+  color: #ef4444;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-family: inherit;
+}
+.dropdownItem:hover {
+  background: #fef2f2;
+}
+
 .cartBtn {
   position: relative;
   background: var(--cream-dark);

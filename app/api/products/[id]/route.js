@@ -6,11 +6,13 @@ export async function PUT(request, props) {
     const params = await props.params;
     const id = parseInt(params.id);
     const body = await request.json();
-    const { name, slug, description, image, price_250g, price_500g, price_1kg } = body;
+    const { name, slug, description, image, price_250g, price_500g, price_1kg, gallery } = body;
+    const galleryJson = JSON.stringify(gallery || []);
 
     const result = await sql`
       UPDATE products
       SET name = ${name}, slug = ${slug}, description = ${description}, image = ${image},
+          gallery = ${galleryJson},
           price_250g = ${price_250g}, price_500g = ${price_500g}, price_1kg = ${price_1kg}
       WHERE id = ${id}
       RETURNING id

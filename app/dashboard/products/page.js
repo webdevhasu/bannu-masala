@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBox, faPlus, faEdit, faTrash, faImage } from '@fortawesome/free-solid-svg-icons';
+import { faBox, faPlus, faEdit, faTrash, faImage, faTimes, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 import styles from '../orders/page.module.css';
 
 export default function ProductsPage() {
@@ -13,17 +13,16 @@ export default function ProductsPage() {
   const [saving, setSaving] = useState(false);
   
   const [formData, setFormData] = useState({
-    name: '', slug: '', description: '', image: '',
+    name: '', slug: '', description: '', image: '', gallery: [],
     price_250g: '', price_500g: '', price_1kg: ''
   });
   
-  const [fileToUpload, setFileToUpload] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
+  const [filesToUpload, setFilesToUpload] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
 
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      // Bust Next.js aggressive cache to force new data
       const res = await fetch('/api/products?t=' + Date.now());
       const data = await res.json();
       setProducts(data);
@@ -39,8 +38,8 @@ export default function ProductsPage() {
   }, []);
 
   const handleOpenModal = (product = null) => {
-    setFileToUpload(null);
-    setImagePreview(null);
+    setFilesToUpload([]);
+    setImagePreviews([]);
     
     if (product) {
       setEditingId(product.id);
@@ -49,15 +48,20 @@ export default function ProductsPage() {
         slug: product.slug,
         description: product.description,
         image: product.image || '',
+        gallery: Array.isArray(product.gallery) ? product.gallery : [],
         price_250g: product.price_250g,
         price_500g: product.price_500g,
         price_1kg: product.price_1kg,
       });
-      if (product.image) setImagePreview(product.image);
+      // Build previews from existing db urls
+      const existing = [];
+      if (product.image) existing.push(product.image);
+      if (product.gallery && Array.isArray(product.gallery)) existing.push(...product.gallery);
+      setImagePreviews(existing);
     } else {
       setEditingId(null);
       setFormData({
-        name: '', slug: '', description: '', image: '',
+        name: '', slug: '', description: '', image: '', gallery: [],
         price_250g: '', price_500g: '', price_1kg: ''
       });
     }
@@ -69,48 +73,63 @@ export default function ProductsPage() {
   };
 
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFileToUpload(file);
-      // Create a local blob URL for preview
-      setImagePreview(URL.createObjectURL(file));
+    const files = Array.from(e.target.files);
+    
+    // We only want up to 5 files total (including existing previews)
+    // For simplicity of editing, selecting new files replaces all old images in this demo
+    if (files.length > 5) {
+      alert("You can only upload a maximum of 5 images.");
+      return;
     }
+    
+    setFilesToUpload(files);
+
+    const previews = files.map(file => URL.createObjectURL(file));
+    setImagePreviews(previews);
   };
 
   const handleSave = async (e) => {
     e.preventDefault();
-    if (!editingId && !fileToUpload && !formData.image) {
-      alert("Please upload a product image.");
+    if (!editingId && filesToUpload.length === 0 && !formData.image) {
+      alert("Please upload at least one product image.");
       return;
     }
 
     setSaving(true);
     try {
-      let finalImageUrl = formData.image;
+      let mainImageUrl = formData.image;
+      let galleryUrls = [...formData.gallery];
 
-      // Upload file if selected
-      if (fileToUpload) {
-        const uploadData = new FormData();
-        uploadData.append('file', fileToUpload);
-        
-        const uploadRes = await fetch('/api/upload', {
-          method: 'POST',
-          body: uploadData
-        });
-        
-        const uploadResult = await uploadRes.json();
-        if (uploadResult.status === 201) {
-          finalImageUrl = uploadResult.url;
-        } else {
-          alert('Image upload failed.');
-          setSaving(false);
-          return;
+      // Upload files if new files were selected
+      if (filesToUpload.length > 0) {
+        galleryUrls = []; // Clear existing if we are uploading new ones in this simple flow
+        const uploadedUrls = [];
+
+        for (const file of filesToUpload) {
+          const uploadData = new FormData();
+          uploadData.append('file', file);
+          const uploadRes = await fetch('/api/upload', {
+            method: 'POST',
+            body: uploadData
+          });
+          const uploadResult = await uploadRes.json();
+          if (uploadResult.status === 201) {
+            uploadedUrls.push(uploadResult.url);
+          } else {
+            console.error('Upload failed for a file');
+          }
+        }
+
+        if (uploadedUrls.length > 0) {
+          mainImageUrl = uploadedUrls[0];
+          galleryUrls = uploadedUrls.slice(1);
         }
       }
 
       const payload = {
         ...formData,
-        image: finalImageUrl,
+        image: mainImageUrl,
+        gallery: galleryUrls,
         price_250g: parseInt(formData.price_250g),
         price_500g: parseInt(formData.price_500g),
         price_1kg: parseInt(formData.price_1kg),
@@ -148,28 +167,22 @@ export default function ProductsPage() {
   const confirmDelete = async () => {
     const id = deleteConfirmId;
     setDeleteConfirmId(null);
-    
-    // Optimistic UI
     setProducts(prev => prev.filter(p => p.id !== id));
     
     try {
       const res = await fetch(`/api/products/${id}`, { method: 'DELETE' });
-      const result = await res.json();
-      
-      if (!res.ok) {
-        alert('Backend failed: ' + (result.error || 'Unknown error'));
-        fetchProducts(); // Rollback
-      } else {
+      if (res.ok) {
         setShowSuccessToast(true);
         setTimeout(() => setShowSuccessToast(false), 3000);
+      } else {
+        fetchProducts(); 
       }
     } catch (err) {
-      alert('Network error');
-      fetchProducts(); // Rollback
+      fetchProducts(); 
     }
   };
 
-  if (loading) return <div>Loading products...</div>;
+  if (loading) return <div style={{padding:'40px'}}>Loading products...</div>;
 
   return (
     <div>
@@ -190,6 +203,7 @@ export default function ProductsPage() {
               <th>Image</th>
               <th>Name & Slug</th>
               <th>Prices (250g / 500g / 1kg)</th>
+              <th>Images</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -210,6 +224,11 @@ export default function ProductsPage() {
                   <div className={styles.subtext}>{p.slug}</div>
                 </td>
                 <td>Rs {p.price_250g} / Rs {p.price_500g} / Rs {p.price_1kg}</td>
+                <td>
+                  <span style={{fontSize:'0.85rem', color:'#64748b', background:'#f1f5f9', padding:'4px 8px', borderRadius:'12px'}}>
+                    {1 + (Array.isArray(p.gallery) ? p.gallery.length : 0)} photos
+                  </span>
+                </td>
                 <td className={styles.actionsCell}>
                   <button className={styles.btnEdit} onClick={() => handleOpenModal(p)}>
                     <FontAwesomeIcon icon={faEdit} style={{display:'inline', marginRight:'4px'}}/> Edit
@@ -224,7 +243,6 @@ export default function ProductsPage() {
         </table>
       </div>
 
-      {/* Delete Confirmation Modal */}
       {deleteConfirmId && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent} style={{maxWidth: '400px', textAlign: 'center'}}>
@@ -239,7 +257,6 @@ export default function ProductsPage() {
         </div>
       )}
 
-      {/* Success Toast */}
       {showSuccessToast && (
         <div style={{
           position: 'fixed', bottom: '24px', right: '24px', background: '#10b981', color: 'white',
@@ -289,34 +306,34 @@ export default function ProductsPage() {
                 </div>
               </div>
 
-              {/* Product Image Upload feature */}
               <div className={styles.formGroup}>
-                <label className={styles.label}>Product Image</label>
+                <label className={styles.label}>Product Images (Max 5)</label>
                 <div style={{
-                  display:'flex', gap:'20px', alignItems:'center', marginTop:'12px',
+                  display:'flex', flexDirection: 'column', gap:'12px', marginTop:'12px',
                   padding: '16px', border: '2px dashed #e2e8f0', borderRadius: '12px',
                   background: '#f8fafc'
                 }}>
-                  {imagePreview ? (
-                    <div style={{width:'100px', height:'100px', borderRadius:'10px', overflow:'hidden', background:'#fff', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', flexShrink:0}}>
-                      <img src={imagePreview} alt="Preview" style={{width:'100%', height:'100%', objectFit:'contain'}} />
-                    </div>
-                  ) : (
-                    <div style={{width:'100px', height:'100px', borderRadius:'10px', border:'2px dashed #cbd5e1', display:'flex', alignItems:'center', justifyContent:'center', background:'#fff', color: '#94a3b8'}}>
-                      <FontAwesomeIcon icon={faImage} size="2x" />
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    multiple
+                    onChange={handleFileChange}
+                    required={!editingId && !formData.image} 
+                    className={styles.input}
+                    style={{padding: '8px', background: '#fff'}}
+                  />
+                  <p style={{fontSize: '0.8rem', color: '#64748b'}}>Selecting new files will replace existing images. First image becomes the main cover.</p>
+                  
+                  {imagePreviews.length > 0 && (
+                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '8px' }}>
+                      {imagePreviews.map((src, idx) => (
+                        <div key={idx} style={{width:'60px', height:'60px', borderRadius:'8px', overflow:'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', border: idx === 0 ? '2px solid var(--maroon)' : '1px solid #cbd5e1', position: 'relative'}}>
+                          <img src={src} alt="Preview" style={{width:'100%', height:'100%', objectFit:'cover'}} />
+                          {idx === 0 && <span style={{position:'absolute', bottom:0, left:0, right:0, background:'var(--maroon)', color:'#fff', fontSize:'0.6rem', textAlign:'center', fontWeight:600}}>MAIN</span>}
+                        </div>
+                      ))}
                     </div>
                   )}
-                  <div style={{flexGrow: 1}}>
-                    <p style={{fontSize: '0.85rem', color: '#64748b', marginBottom: '8px'}}>Upload a high-quality product image (PNG/JPG)</p>
-                    <input 
-                      type="file" 
-                      accept="image/*" 
-                      onChange={handleFileChange}
-                      required={!editingId && !formData.image} 
-                      className={styles.input}
-                      style={{padding: '8px'}}
-                    />
-                  </div>
                 </div>
               </div>
 

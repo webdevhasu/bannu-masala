@@ -5,10 +5,20 @@ export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const products = await sql`SELECT * FROM products ORDER BY id ASC`;
+    const products = await sql`
+      SELECT p.*, 
+             COALESCE(AVG(r.rating), 0) AS average_rating, 
+             COUNT(r.id) AS review_count
+      FROM products p
+      LEFT JOIN reviews r ON p.id = r.product_id
+      GROUP BY p.id
+      ORDER BY p.id ASC
+    `;
 
     const formatted = products.map(p => ({
       ...p,
+      average_rating: parseFloat(p.average_rating).toFixed(1),
+      review_count: parseInt(p.review_count),
       variants: {
         "250g": p.price_250g,
         "500g": p.price_500g,
@@ -26,11 +36,12 @@ export async function GET() {
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { name, slug, description, image, price_250g, price_500g, price_1kg } = body;
+    const { name, slug, description, image, price_250g, price_500g, price_1kg, gallery } = body;
+    const galleryJson = JSON.stringify(gallery || []);
 
     const result = await sql`
-      INSERT INTO products (name, slug, description, image, price_250g, price_500g, price_1kg)
-      VALUES (${name}, ${slug}, ${description}, ${image}, ${price_250g}, ${price_500g}, ${price_1kg})
+      INSERT INTO products (name, slug, description, image, price_250g, price_500g, price_1kg, gallery)
+      VALUES (${name}, ${slug}, ${description}, ${image}, ${price_250g}, ${price_500g}, ${price_1kg}, ${galleryJson})
       RETURNING id
     `;
 

@@ -4,6 +4,8 @@ import Header from '@/components/Header';
 import CartSidebar from '@/components/CartSidebar';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 import Footer from '@/components/Footer';
+import { AuthProvider } from '@/components/AuthContext';
+import AuthModal from '@/components/AuthModal';
 
 export const metadata = {
   title: 'Bannu Masala | Premium Authentic Spices & Handcrafted Blends',
@@ -53,13 +55,16 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <CartProvider>
-          <Header />
-          <main>{children}</main>
-          <CartSidebar />
-          <WhatsAppFloat />
-          <Footer />
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            <Header />
+            <main>{children}</main>
+            <CartSidebar />
+            <WhatsAppFloat />
+            <Footer />
+            <AuthModal />
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );

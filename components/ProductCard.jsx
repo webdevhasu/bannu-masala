@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBox } from '@fortawesome/free-solid-svg-icons';
+import { faBox, faStar } from '@fortawesome/free-solid-svg-icons';
 import { useCart } from './CartContext';
 import styles from './ProductCard.module.css';
 
@@ -27,7 +27,7 @@ export default function ProductCard({ product }) {
   return (
     <div className={styles.card}>
       {/* Image */}
-      <div className={styles.imageWrap}>
+      <Link href={`/products/${product.slug}`} className={styles.imageWrap}>
         {product.image ? (
           <img src={product.image} alt={`Authentic ${product.name} - Bannu Masala Premium Spices`} className={styles.image} />
         ) : (
@@ -35,11 +35,21 @@ export default function ProductCard({ product }) {
             <FontAwesomeIcon icon={faBox} size="3x" color="#fff" />
           </div>
         )}
-      </div>
+      </Link>
 
       {/* Info */}
       <div className={styles.body}>
-        <h3 className={styles.name}>{product.name}</h3>
+        <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start'}}>
+          <Link href={`/products/${product.slug}`} style={{textDecoration:'none'}}>
+            <h3 className={styles.name} style={{cursor:'pointer'}}>{product.name}</h3>
+          </Link>
+          
+          <div style={{display:'flex', gap:'2px', alignItems:'center'}}>
+            <FontAwesomeIcon icon={faStar} color="#fbbf24" style={{fontSize:'0.85rem'}}/>
+            <span style={{fontSize:'0.85rem', fontWeight:600, color:'#475569', marginLeft:'2px'}}>{product.average_rating || 0}</span>
+          </div>
+        </div>
+        
         <p className={styles.desc}>{product.description}</p>
 
         {/* Variant Selector */}
