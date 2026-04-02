@@ -21,9 +21,11 @@ export default function DashboardOverview() {
         
         const revenue = orders.reduce((sum, o) => sum + o.total, 0);
         
+        const newOrdersCount = orders.filter(o => (o.status || 'pending') === 'pending').length;
+        
         setStats({
           products: products.length || 0,
-          orders: orders.length || 0,
+          orders: newOrdersCount,
           revenue
         });
       } catch (err) {
@@ -47,7 +49,7 @@ export default function DashboardOverview() {
             <FontAwesomeIcon icon={faShoppingCart} size="lg" />
           </div>
           <div>
-            <p className={styles.statLabel}>Total Orders</p>
+            <p className={styles.statLabel}>New Orders</p>
             <h3 className={styles.statValue}>{stats.orders}</h3>
           </div>
         </div>

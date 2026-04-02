@@ -18,12 +18,12 @@ export function CartProvider({ children }) {
     localStorage.setItem('bm-cart', JSON.stringify(items));
   }, [items]);
 
-  const addToCart = (product, variant, openSidebar = true) => {
+  const addToCart = (product, variant, quantity = 1, openSidebar = true) => {
     setItems(prev => {
       const key = `${product.id}-${variant}`;
       const existing = prev.find(i => i.key === key);
       if (existing) {
-        return prev.map(i => i.key === key ? { ...i, qty: i.qty + 1 } : i);
+        return prev.map(i => i.key === key ? { ...i, qty: i.qty + (quantity || 1) } : i);
       }
       return [...prev, {
         key,
@@ -32,7 +32,7 @@ export function CartProvider({ children }) {
         variant,
         price: product.variants[variant],
         image: product.image,
-        qty: 1,
+        qty: quantity || 1,
       }];
     });
     if (openSidebar) setSidebarOpen(true);

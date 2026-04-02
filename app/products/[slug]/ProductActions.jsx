@@ -17,15 +17,7 @@ export default function ProductActions({ product }) {
   const currentVariant = variants.find(v => v.label === variant);
 
   const handleAddToCart = () => {
-    addItem({
-      id: product.id,
-      name: product.name,
-      price: currentVariant.price,
-      variant: variant,
-      image: product.image,
-      qty: qty
-    });
-    setSidebarOpen(true);
+    addToCart(product, variant, qty);
   };
 
   return (

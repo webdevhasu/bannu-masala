@@ -30,7 +30,15 @@ export default async function ProductDetailsPage({ params }) {
   if (products.length === 0) {
     notFound();
   }
-  const product = products[0];
+  const productData = products[0];
+  const product = {
+    ...productData,
+    variants: {
+      "250g": productData.price_250g,
+      "500g": productData.price_500g,
+      "1kg": productData.price_1kg,
+    }
+  };
 
   // Fetch Reviews Average
   const reviewStats = await sql`
