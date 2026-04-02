@@ -9,10 +9,20 @@ import styles from './page.module.css';
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  const rows = await sql`SELECT * FROM products ORDER BY id ASC`;
+  const rows = await sql`
+    SELECT p.*, 
+           COALESCE(AVG(r.rating), 0) AS average_rating, 
+           COUNT(r.id) AS review_count
+    FROM products p
+    LEFT JOIN reviews r ON p.id = r.product_id
+    GROUP BY p.id
+    ORDER BY p.id ASC
+  `;
 
   const products = rows.map(p => ({
     ...p,
+    average_rating: parseFloat(p.average_rating).toFixed(1),
+    review_count: parseInt(p.review_count),
     variants: {
       "250g": p.price_250g,
       "500g": p.price_500g,
