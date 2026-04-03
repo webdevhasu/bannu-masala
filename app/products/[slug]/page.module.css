@@ -32,6 +32,7 @@
   padding: 40px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.03);
   margin-bottom: 60px;
+  min-width: 0; /* Prevents container from being stretched by children */
 }
 
 /* Gallery Column */
@@ -39,6 +40,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  min-width: 0; /* Prevents overflow expanding parent grid */
 }
 
 .mainImageWrapper {
@@ -72,6 +74,15 @@
   gap: 12px;
   overflow-x: auto;
   padding-bottom: 8px;
+  scrollbar-width: thin; /* For Firefox */
+  -webkit-overflow-scrolling: touch; /* Smooth scroll on mobile */
+}
+.thumbnails::-webkit-scrollbar {
+  height: 6px;
+}
+.thumbnails::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
 }
 
 .thumbBtn {
@@ -350,9 +361,33 @@
 }
 
 @media (max-width: 992px) {
-  .mainGrid { grid-template-columns: 1fr; gap: 40px; padding: 24px; }
+  .mainGrid { 
+    grid-template-columns: 1fr; 
+    gap: 40px; 
+    padding: 24px; 
+  }
 }
+
 @media (max-width: 640px) {
-  .productName { font-size: 2.2rem; }
-  .reviewsWrapper { padding: 24px; }
+  .pageWrapper { padding: 20px 0 60px; }
+  .container { padding: 0 16px; }
+  .mainGrid { 
+    padding: 20px 16px; 
+    gap: 24px; 
+    border-radius: 0; /* Full width mobile feel */
+    margin-bottom: 30px;
+  }
+  .productName { font-size: 2rem; }
+  .description { font-size: 0.95rem; margin-bottom: 24px; }
+  .reviewsWrapper { padding: 24px 16px; }
+  
+  .thumbBtn { width: 64px; height: 64px; border-radius: 10px; }
+  .thumbnails { gap: 10px; padding-bottom: 15px; }
+  
+  .btnGroup { grid-template-columns: 1fr; gap: 12px; }
+  .priceValue { font-size: 1.8rem; }
+  .actionsBox { padding: 16px; }
+  
+  .perks { margin-top: 20px; }
+  .perk { font-size: 0.85rem; }
 }

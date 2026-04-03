@@ -8,17 +8,23 @@ export default function ProductGallery({ images, altText }) {
   const [bgPosition, setBgPosition] = useState('50% 50%');
 
   const handleMouseMove = (e) => {
+    if (window.matchMedia('(pointer: coarse)').matches) return; // Skip for touch
     const { left, top, width, height } = e.target.getBoundingClientRect();
     const x = ((e.clientX - left) / width) * 100;
     const y = ((e.clientY - top) / height) * 100;
     setBgPosition(`${x}% ${y}%`);
   };
 
+  const handleMouseEnter = () => {
+    if (window.matchMedia('(pointer: coarse)').matches) return; // Skip for touch
+    setIsZoomed(true);
+  };
+
   return (
     <div className={styles.gallery}>
       <div 
         className={`${styles.mainImageWrapper} ${isZoomed ? styles.zoomed : ''}`}
-        onMouseEnter={() => setIsZoomed(true)}
+        onMouseEnter={handleMouseEnter}
         onMouseLeave={() => { setIsZoomed(false); setBgPosition('50% 50%'); }}
         onMouseMove={handleMouseMove}
       >
