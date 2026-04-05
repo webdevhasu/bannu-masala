@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBox, faStar } from '@fortawesome/free-solid-svg-icons';
+import { faBox, faStar, faCartPlus, faBolt } from '@fortawesome/free-solid-svg-icons';
 import { useCart } from './CartContext';
 import styles from './ProductCard.module.css';
 
@@ -20,34 +20,39 @@ export default function ProductCard({ product }) {
   };
 
   const handleBuyNow = () => {
-    // Direct checkout without affecting the global cart
     router.push(`/checkout?productId=${product.id}&variant=${selectedVariant}&qty=1`);
   };
 
+  const isSpecial = product.id % 4 === 0;
+
   return (
     <div className={styles.card}>
-      {product.id % 4 === 0 && <div className={styles.ribbon}>Chef's Choice</div>}
-      {/* Image */}
+      {isSpecial && <div className={styles.ribbon}>Chef's Choice</div>}
+      
+      {/* Image Container with Framing */}
       <Link href={`/products/${product.slug}`} className={styles.imageWrap}>
         {product.image ? (
-          <img src={product.image} alt={`Authentic ${product.name} - Bannu Masala Premium Spices`} className={styles.image} />
+          <img 
+            src={product.image} 
+            alt={`Authentic ${product.name} - Bannu Masala Premium Spices`} 
+            className={styles.image} 
+          />
         ) : (
-          <div className={styles.imagePlaceholder} style={{ background: '#7B1C1C' }}>
-            <FontAwesomeIcon icon={faBox} size="3x" color="#fff" />
+          <div className={styles.imagePlaceholder}>
+            <FontAwesomeIcon icon={faBox} />
           </div>
         )}
       </Link>
 
-      {/* Info */}
+      {/* Info Body */}
       <div className={styles.body}>
-        <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start'}}>
-          <Link href={`/products/${product.slug}`} style={{textDecoration:'none'}}>
-            <h3 className={styles.name} style={{cursor:'pointer'}}>{product.name}</h3>
+        <div className={styles.headerRow}>
+          <Link href={`/products/${product.slug}`}>
+            <h3 className={styles.name}>{product.name}</h3>
           </Link>
-          
-          <div style={{display:'flex', gap:'2px', alignItems:'center'}}>
-            <FontAwesomeIcon icon={faStar} color="#fbbf24" style={{fontSize:'0.85rem'}}/>
-            <span style={{fontSize:'0.85rem', fontWeight:600, color:'#475569', marginLeft:'2px'}}>{product.average_rating || 0}</span>
+          <div className={styles.rating}>
+            <FontAwesomeIcon icon={faStar} />
+            <span>{product.average_rating || 0}</span>
           </div>
         </div>
         
@@ -66,18 +71,23 @@ export default function ProductCard({ product }) {
           ))}
         </div>
 
-        {/* Price */}
-        <div className={styles.priceRow}>
-          <span className={styles.price}>Rs {price.toLocaleString()}</span>
-          <span className={styles.perUnit}>/ {selectedVariant}</span>
+        {/* Price Section */}
+        <div className={styles.priceSection}>
+          <span className={styles.priceLabel}>Best Value</span>
+          <div className={styles.priceRow}>
+            <span className={styles.price}>Rs {price.toLocaleString()}</span>
+            <span className={styles.perUnit}>/ {selectedVariant}</span>
+          </div>
         </div>
 
-        {/* Actions */}
+        {/* Action Buttons */}
         <div className={styles.actions}>
-          <button className={styles.cartBtn} onClick={handleAddToCart}>
-            + Add to Cart
+          <button className={styles.cartBtn} onClick={handleAddToCart} title="Add to Cart">
+             <FontAwesomeIcon icon={faCartPlus} style={{marginRight: '8px'}} />
+             Add
           </button>
           <button className={styles.buyBtn} onClick={handleBuyNow}>
+            <FontAwesomeIcon icon={faBolt} style={{marginRight: '8px'}} />
             Buy Now
           </button>
         </div>
