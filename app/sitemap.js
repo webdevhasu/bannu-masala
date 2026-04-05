@@ -1,7 +1,7 @@
 import sql from '@/lib/db';
 
 export default async function sitemap() {
-  const baseUrl = 'https://bannu-masala.vercel.app';
+  const baseUrl = 'https://bannumasala.vercel.app';
 
   // Fetch all products to include in sitemap
   const products = await sql`SELECT slug FROM products`;

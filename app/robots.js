@@ -5,6 +5,6 @@ export default function robots() {
       allow: '/',
       disallow: ['/api/', '/checkout/success'], // Don't index checkout success or APIs
     },
-    sitemap: 'https://bannu-masala.vercel.app/sitemap.xml',
+    sitemap: 'https://bannumasala.vercel.app/sitemap.xml',
   };
 }

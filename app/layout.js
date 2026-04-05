@@ -10,14 +10,14 @@ export const metadata = {
   description: 'Authentic handcrafted spice blends from Bannu, KPK. Pure, natural, and preservative-free spices delivered across Pakistan. Free delivery on orders above Rs. 3,000.',
   keywords: 'Bannu Masala, authentic spices, pure masalas, KPK spices, handcrafted spice blends, biryani masala, Pulao masala, organic spices Pakistan, wholesale spices Bannu',
   authors: [{ name: 'Bannu Masala Team' }],
-  metadataBase: new URL('https://bannu-masala.vercel.app'), // Note: Update with custom domain later if needed
+  metadataBase: new URL('https://bannumasala.vercel.app'), // Note: Update with custom domain later if needed
   alternates: {
     canonical: '/',
   },
   openGraph: {
     title: 'Bannu Masala | Pure & Authentic Handcrafted Spices',
     description: 'The soul of Bannu on your dining table. Order 100% natural spices online.',
-    url: 'https://bannu-masala.vercel.app',
+    url: 'https://bannumasala.vercel.app',
     siteName: 'Bannu Masala',
     images: [
       {
@@ -53,8 +53,8 @@ export default function RootLayout({ children }) {
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "Bannu Masala",
-    "url": "https://bannu-masala.vercel.app",
-    "logo": "https://bannu-masala.vercel.app/logo.png",
+    "url": "https://bannumasala.vercel.app",
+    "logo": "https://bannumasala.vercel.app/logo.png",
     "description": "Premium handcrafted spice blends from Bannu, KPK. Authentic, pure, and preservative-free.",
     "sameAs": [
       "https://www.facebook.com/bannumasala",

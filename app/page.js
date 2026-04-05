@@ -34,8 +34,8 @@ export default async function Home() {
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "Bannu Masala",
-    "url": "https://bannu-masala.vercel.app",
-    "logo": "https://bannu-masala.vercel.app/logo.png",
+    "url": "https://bannumasala.vercel.app",
+    "logo": "https://bannumasala.vercel.app/logo.png",
     "description": "Premium handcrafted spice blends from Bannu, KPK. Authentic, pure, and preservative-free.",
     "address": {
       "@type": "PostalAddress",
