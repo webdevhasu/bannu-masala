@@ -61,6 +61,22 @@
   background: rgba(24, 119, 242, 0.1);
   box-shadow: 0 4px 12px rgba(24, 119, 242, 0.15);
 }
+.ig {
+  color: #E4405F;
+  border: 1px solid rgba(228, 64, 95, 0.2);
+}
+.ig:hover {
+  background: rgba(228, 64, 95, 0.1);
+  box-shadow: 0 4px 12px rgba(228, 64, 95, 0.15);
+}
+.tt {
+  color: #000;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+.tt:hover {
+  background: rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
 
 .linkTitle {
   font-family: 'Playfair Display', serif;
