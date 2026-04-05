@@ -1,8 +1,7 @@
 import Image from 'next/image';
 import styles from './page.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLeaf, faUsers, faAward, faCheckCircle, faWhatsapp } from '@fortawesome/free-solid-svg-icons';
-import { faWhatsapp as faWhatsappBrand } from '@fortawesome/free-brands-svg-icons';
+import { faLeaf, faUsers, faAward, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 
 export const metadata = {
   title: 'About Us | The Story of Bannu Masala',
