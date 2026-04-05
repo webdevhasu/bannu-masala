@@ -27,17 +27,63 @@
   margin-bottom: 16px;
 }
 
-.waLink {
-  color: #25D366;
+.socialSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.socialLink {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #25D366; /* WhatsApp Green */
   font-weight: 600;
   font-size: 0.95rem;
   text-decoration: none;
-  transition: color 0.2s;
+  transition: all 0.2s;
+  width: fit-content;
+  padding: 8px 16px;
+  border: 1px solid rgba(37, 211, 102, 0.2);
+  border-radius: 50px;
+  background: rgba(37, 211, 102, 0.05);
 }
 
-.waLink:hover {
-  color: #7BF0A0;
+.socialLink:hover {
+  background: rgba(37, 211, 102, 0.1);
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.15);
+  transform: translateY(-2px);
 }
+
+.socialIcons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding-left: 4px;
+}
+
+.iconLink {
+  color: rgba(255, 255, 255, 0.6);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.iconLink:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.iconLink[aria-label="Facebook"]:hover { color: #1877F2; border-color: rgba(24, 119, 242, 0.4); }
+.iconLink[aria-label="Instagram"]:hover { color: #E4405F; border-color: rgba(228, 64, 95, 0.4); }
+.iconLink[aria-label="TikTok"]:hover { color: #000000; background: #fff; border-color: #fff; }
 
 .linkTitle {
   font-family: 'Playfair Display', serif;
