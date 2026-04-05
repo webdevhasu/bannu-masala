@@ -100,7 +100,7 @@ export default function HeroSlider({ products = [] }) {
           <div className={`${styles.productView} ${animating ? styles.productOut : styles.productIn}`}>
             <div className={styles.productCircle}>
               {slide.image ? (
-                <img src={slide.image} alt={slide.headline} className={styles.productImg} />
+                <img src={slide.image} alt={`Bannu Masala - ${slide.headline} Premium Spice Blend`} className={styles.productImg} />
               ) : (
                 <>
                   <div className={styles.floatingEmoji}>{slide.emoji === '🌶️' ? '📦' : slide.emoji === '📦' ? '🫙' : '🌿'}</div>

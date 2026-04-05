@@ -48,10 +48,36 @@ export const metadata = {
     },
   },
 };
-
 export default function RootLayout({ children }) {
+  const organizationJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Bannu Masala",
+    "url": "https://bannu-masala.vercel.app",
+    "logo": "https://bannu-masala.vercel.app/logo.png",
+    "description": "Premium handcrafted spice blends from Bannu, KPK. Authentic, pure, and preservative-free.",
+    "sameAs": [
+      "https://www.facebook.com/bannumasala",
+      "https://www.instagram.com/bannumasala786/",
+      "https://www.tiktok.com/@bannumasala786"
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+92-309-9907713",
+      "contactType": "customer service",
+      "areaServed": "PK",
+      "availableLanguage": ["Urdu", "English", "Pashto"]
+    }
+  };
+
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
+      </head>
       <body>
         <CartProvider>
           <Header />

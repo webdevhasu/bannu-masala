@@ -54,8 +54,37 @@ export default async function ProductDetailsPage({ params }) {
     allImages.push(...product.gallery);
   }
 
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": product.name,
+    "image": allImages,
+    "description": product.description,
+    "brand": {
+      "@type": "Brand",
+      "name": "Bannu Masala"
+    },
+    "offers": {
+      "@type": "AggregateOffer",
+      "priceCurrency": "PKR",
+      "lowPrice": product.price_250g,
+      "highPrice": product.price_1kg,
+      "offerCount": Object.keys(product.variants).length,
+      "availability": "https://schema.org/InStock"
+    },
+    "aggregateRating": reviewCount > 0 ? {
+      "@type": "AggregateRating",
+      "ratingValue": averageRating,
+      "reviewCount": reviewCount
+    } : undefined
+  };
+
   return (
     <div className={styles.pageWrapper}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
       <div className={styles.container}>
         {/* Breadcrumb */}
         <Link href="/#products" className={styles.backLink}>
