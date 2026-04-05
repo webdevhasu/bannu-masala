@@ -14,6 +14,9 @@ export const metadata = {
   alternates: {
     canonical: '/',
   },
+  verification: {
+    google: 'lsk5o-P8Ns6haaZc1jZs8h20ZScB3C_DqyJw-XrQY8E',
+  },
   openGraph: {
     title: 'Bannu Masala | Pure & Authentic Handcrafted Spices',
     description: 'The soul of Bannu on your dining table. Order 100% natural spices online.',
