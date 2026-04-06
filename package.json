@@ -11,13 +11,20 @@
     "@fortawesome/fontawesome-svg-core": "^7.2.0",
     "@fortawesome/free-solid-svg-icons": "^7.2.0",
     "@fortawesome/react-fontawesome": "^3.3.0",
+    "@google/generative-ai": "^0.24.1",
     "@neondatabase/serverless": "^1.0.2",
+    "@tailwindcss/postcss": "^4.2.2",
+    "autoprefixer": "^10.4.27",
     "bcryptjs": "^3.0.3",
     "better-sqlite3": "^12.8.0",
     "cloudinary": "^2.9.0",
+    "framer-motion": "^12.38.0",
     "jose": "^6.2.2",
+    "lucide-react": "^1.7.0",
     "next": "15.5.14",
+    "postcss": "^8.5.8",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "tailwindcss": "^4.2.2"
   }
 }
