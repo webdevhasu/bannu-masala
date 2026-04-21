@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faShoppingCart, faUser, faMapMarkerAlt, faClock, faMoneyBillWave } from '@fortawesome/free-solid-svg-icons';
+import { faShoppingCart, faUser, faMapMarkerAlt, faClock, faMoneyBillWave, faTrash } from '@fortawesome/free-solid-svg-icons';
 import styles from './page.module.css';
 
 export default function OrdersPage() {
@@ -41,6 +41,24 @@ export default function OrdersPage() {
       if (!res.ok) fetchOrders(); // Rollback if backend fails
     } catch (err) {
       fetchOrders(); // Rollback if backend fails
+    }
+  };
+
+  const handleDeleteOrder = async (id) => {
+    if (!confirm('Are you sure you want to delete this order permanently?')) return;
+
+    // Optimistic remove
+    setOrders(prev => prev.filter(o => o.id !== id));
+
+    try {
+      const res = await fetch(`/api/orders/${id}`, { method: 'DELETE' });
+      if (!res.ok) {
+        alert('Failed to delete order');
+        fetchOrders(); // Rollback
+      }
+    } catch (err) {
+      alert('Error deleting order');
+      fetchOrders(); // Rollback
     }
   };
 
@@ -177,9 +195,30 @@ export default function OrdersPage() {
                 )}
 
                 {activeTab === 'completed' && (
-                  <span style={{ color: '#10b981', fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>
-                    ✓ Delivered
-                  </span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <span style={{ color: '#10b981', fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>
+                      ✓ Delivered
+                    </span>
+                    <button 
+                      onClick={() => handleDeleteOrder(order.id)}
+                      title="Delete Order"
+                      style={{ 
+                        background: 'none', 
+                        border: '1px solid #ef4444', 
+                        color: '#ef4444', 
+                        padding: '6px 10px', 
+                        borderRadius: '6px', 
+                        cursor: 'pointer',
+                        fontSize: '0.85rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        fontWeight: '600'
+                      }}>
+                      <FontAwesomeIcon icon={faTrash} style={{width:'12px'}} />
+                      Delete
+                    </button>
+                  </div>
                 )}
               </div>
             </div>

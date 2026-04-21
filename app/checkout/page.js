@@ -61,7 +61,7 @@ function CheckoutContent() {
 
   const activeItems = isBuyNow ? (buyNowItem ? [buyNowItem] : []) : cartItems.filter(i => selectedKeys?.includes(i.key));
   const subtotal = isBuyNow ? (buyNowItem ? buyNowItem.price * buyNowItem.qty : 0) : cartSubtotal;
-  const shipping = subtotal >= 3000 ? 0 : (subtotal > 0 ? 200 : 0);
+  const shipping = subtotal >= 3000 ? 0 : (subtotal > 0 ? 250 : 0);
   const total = subtotal + shipping;
 
   const validate = () => {

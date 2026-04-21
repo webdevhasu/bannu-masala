@@ -25,3 +25,23 @@ export async function PATCH(request, props) {
     return NextResponse.json({ error: 'Failed to update order' }, { status: 500 });
   }
 }
+
+export async function DELETE(request, props) {
+  try {
+    const params = await props.params;
+    const id = parseInt(params.id);
+
+    const result = await sql`
+      DELETE FROM orders WHERE id = ${id} RETURNING id
+    `;
+
+    if (result.length === 0) {
+      return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true, id });
+  } catch (error) {
+    console.error('Failed to delete order:', error);
+    return NextResponse.json({ error: 'Failed to delete order' }, { status: 500 });
+  }
+}
