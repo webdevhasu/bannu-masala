@@ -14,7 +14,8 @@ export default function ProductsPage() {
   
   const [formData, setFormData] = useState({
     name: '', slug: '', description: '', image: '', gallery: [],
-    price_250g: '', price_500g: '', price_1kg: ''
+    price_250g: '', price_500g: '', price_1kg: '',
+    custom_variants: []
   });
   
   const [filesToUpload, setFilesToUpload] = useState([]);
@@ -52,6 +53,7 @@ export default function ProductsPage() {
         price_250g: product.price_250g,
         price_500g: product.price_500g,
         price_1kg: product.price_1kg,
+        custom_variants: product.custom_variants ? (typeof product.custom_variants === 'string' ? JSON.parse(product.custom_variants) : product.custom_variants) : []
       });
       // Build previews from existing db urls
       const existing = [];
@@ -62,7 +64,8 @@ export default function ProductsPage() {
       setEditingId(null);
       setFormData({
         name: '', slug: '', description: '', image: '', gallery: [],
-        price_250g: '', price_500g: '', price_1kg: ''
+        price_250g: '', price_500g: '', price_1kg: '',
+        custom_variants: []
       });
     }
     setIsModalOpen(true);
@@ -130,9 +133,10 @@ export default function ProductsPage() {
         ...formData,
         image: mainImageUrl,
         gallery: galleryUrls,
-        price_250g: parseInt(formData.price_250g),
-        price_500g: parseInt(formData.price_500g),
-        price_1kg: parseInt(formData.price_1kg),
+        price_250g: parseInt(formData.price_250g) || 0,
+        price_500g: parseInt(formData.price_500g) || 0,
+        price_1kg: parseInt(formData.price_1kg) || 0,
+        custom_variants: formData.custom_variants.filter(v => v.label && v.price).map(v => ({...v, price: parseInt(v.price) || 0}))
       };
 
       if (editingId) {
@@ -228,6 +232,11 @@ export default function ProductsPage() {
                   <span style={{fontSize:'0.85rem', color:'#64748b', background:'#f1f5f9', padding:'4px 8px', borderRadius:'12px'}}>
                     {1 + (Array.isArray(p.gallery) ? p.gallery.length : 0)} photos
                   </span>
+                  {p.custom_variants && (typeof p.custom_variants === 'string' ? JSON.parse(p.custom_variants) : p.custom_variants).length > 0 && (
+                    <span style={{fontSize:'0.85rem', color:'#0891b2', background:'#ecfeff', padding:'4px 8px', borderRadius:'12px', marginLeft:'4px'}}>
+                      +{(typeof p.custom_variants === 'string' ? JSON.parse(p.custom_variants) : p.custom_variants).length} custom
+                    </span>
+                  )}
                 </td>
                 <td className={styles.actionsCell}>
                   <button className={styles.btnEdit} onClick={() => handleOpenModal(p)}>
@@ -303,6 +312,38 @@ export default function ProductsPage() {
                 <div className={styles.formGroup}>
                   <label className={styles.label}>Price 1kg (Rs)</label>
                   <input required type="number" className={styles.input} value={formData.price_1kg} onChange={e => setFormData({...formData, price_1kg: e.target.value})} />
+                </div>
+              </div>
+              
+              <div className={styles.formGroup} style={{marginTop: '16px'}}>
+                <label className={styles.label} style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+                  Custom Variants (Fixed Packages)
+                  <button type="button" className={styles.btnPrimary} style={{padding: '4px 12px', fontSize: '0.8rem'}} onClick={() => setFormData({...formData, custom_variants: [...formData.custom_variants, {label: '', price: ''}]})}>
+                    + Add Variant
+                  </button>
+                </label>
+                <div style={{display:'flex', flexDirection:'column', gap:'8px', marginTop:'8px'}}>
+                  {formData.custom_variants && formData.custom_variants.map((v, idx) => (
+                    <div key={idx} style={{display:'flex', gap:'8px', alignItems:'center'}}>
+                      <input placeholder="Label (e.g. 750g)" className={styles.input} value={v.label} onChange={e => {
+                        const newV = [...formData.custom_variants];
+                        newV[idx].label = e.target.value;
+                        setFormData({...formData, custom_variants: newV});
+                      }} />
+                      <input placeholder="Price (Rs)" type="number" className={styles.input} value={v.price} onChange={e => {
+                        const newV = [...formData.custom_variants];
+                        newV[idx].price = e.target.value;
+                        setFormData({...formData, custom_variants: newV});
+                      }} />
+                      <button type="button" style={{color:'#ef4444', padding:'8px'}} onClick={() => {
+                        const newV = formData.custom_variants.filter((_, i) => i !== idx);
+                        setFormData({...formData, custom_variants: newV});
+                      }}>
+                        <FontAwesomeIcon icon={faTimes} />
+                      </button>
+                    </div>
+                  ))}
+                  {(!formData.custom_variants || formData.custom_variants.length === 0) && <p style={{fontSize: '0.8rem', color: '#64748b', textAlign: 'center'}}>No custom variants added yet.</p>}
                 </div>
               </div>
 

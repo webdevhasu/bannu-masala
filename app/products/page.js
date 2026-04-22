@@ -1,5 +1,6 @@
 import sql from '@/lib/db';
 import ProductCard from '@/components/ProductCard';
+import { buildVariantsMap } from '@/lib/productVariants';
 import styles from '../page.module.css';
 
 export const dynamic = 'force-dynamic';
@@ -24,11 +25,7 @@ export default async function ProductsListPage() {
     ...p,
     average_rating: parseFloat(p.average_rating).toFixed(1),
     review_count: parseInt(p.review_count),
-    variants: {
-      "250g": p.price_250g,
-      "500g": p.price_500g,
-      "1kg": p.price_1kg,
-    }
+    variants: buildVariantsMap(p),
   }));
 
   return (

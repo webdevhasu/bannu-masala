@@ -16,11 +16,16 @@ export default function ProductCard({ product }) {
   const price = product.variants[selectedVariant];
 
   const handleAddToCart = () => {
-    addToCart(product, selectedVariant, true);
+    addToCart(product, selectedVariant);
   };
 
   const handleBuyNow = () => {
-    router.push(`/checkout?productId=${product.id}&variant=${selectedVariant}&qty=1`);
+    const params = new URLSearchParams({
+      productId: String(product.id),
+      variant: selectedVariant,
+      qty: '1',
+    });
+    router.push(`/checkout?${params.toString()}`);
   };
 
   const isSpecial = product.id % 4 === 0;

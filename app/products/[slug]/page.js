@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import ProductGallery from './ProductGallery';
 import ProductActions from './ProductActions';
 import ReviewsSection from './ReviewsSection';
+import { buildVariantsMap } from '@/lib/productVariants';
 import styles from './page.module.css';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -31,13 +32,23 @@ export default async function ProductDetailsPage({ params }) {
     notFound();
   }
   const productData = products[0];
+  const gallery = (() => {
+    if (!productData.gallery) return [];
+    if (Array.isArray(productData.gallery)) return productData.gallery;
+    if (typeof productData.gallery === 'string') {
+      try {
+        const parsed = JSON.parse(productData.gallery);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  })();
   const product = {
     ...productData,
-    variants: {
-      "250g": productData.price_250g,
-      "500g": productData.price_500g,
-      "1kg": productData.price_1kg,
-    }
+    gallery,
+    variants: buildVariantsMap(productData),
   };
 
   // Fetch Reviews Average
@@ -49,10 +60,7 @@ export default async function ProductDetailsPage({ params }) {
   const averageRating = parseFloat(reviewStats[0].average || 0).toFixed(1);
 
   // Combine images
-  const allImages = [product.image];
-  if (product.gallery && Array.isArray(product.gallery)) {
-    allImages.push(...product.gallery);
-  }
+  const allImages = [product.image, ...gallery].filter(Boolean);
 
   const productJsonLd = {
     "@context": "https://schema.org",

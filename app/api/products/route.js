@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import sql from '@/lib/db';
+import { buildVariantsMap } from '@/lib/productVariants';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,11 +20,7 @@ export async function GET() {
       ...p,
       average_rating: parseFloat(p.average_rating).toFixed(1),
       review_count: parseInt(p.review_count),
-      variants: {
-        "250g": p.price_250g,
-        "500g": p.price_500g,
-        "1kg": p.price_1kg,
-      }
+      variants: buildVariantsMap(p),
     }));
 
     return NextResponse.json(formatted);
@@ -36,12 +33,13 @@ export async function GET() {
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { name, slug, description, image, price_250g, price_500g, price_1kg, gallery } = body;
+    const { name, slug, description, image, price_250g, price_500g, price_1kg, gallery, custom_variants } = body;
     const galleryJson = JSON.stringify(gallery || []);
+    const customVariantsJson = JSON.stringify(custom_variants || []);
 
     const result = await sql`
-      INSERT INTO products (name, slug, description, image, price_250g, price_500g, price_1kg, gallery)
-      VALUES (${name}, ${slug}, ${description}, ${image}, ${price_250g}, ${price_500g}, ${price_1kg}, ${galleryJson})
+      INSERT INTO products (name, slug, description, image, price_250g, price_500g, price_1kg, gallery, custom_variants)
+      VALUES (${name}, ${slug}, ${description}, ${image}, ${price_250g}, ${price_500g}, ${price_1kg}, ${galleryJson}, ${customVariantsJson})
       RETURNING id
     `;
 

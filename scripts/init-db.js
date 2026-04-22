@@ -17,11 +17,17 @@ db.exec(`
     image TEXT,
     gradient TEXT,
     badge TEXT,
+    gallery TEXT DEFAULT '[]',
+    custom_variants TEXT DEFAULT '[]',
     price_250g INTEGER NOT NULL,
     price_500g INTEGER NOT NULL,
     price_1kg INTEGER NOT NULL
   )
 `);
+
+// Backfill columns for older local DBs
+try { db.exec(`ALTER TABLE products ADD COLUMN gallery TEXT DEFAULT '[]'`); } catch {}
+try { db.exec(`ALTER TABLE products ADD COLUMN custom_variants TEXT DEFAULT '[]'`); } catch {}
 
 // Create Orders table
 db.exec(`

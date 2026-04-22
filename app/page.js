@@ -4,6 +4,7 @@ import SplashScreen from '@/components/SplashScreen';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTruck, faCircleCheck, faFire, faBox, faLeaf, faScroll, faHandHoldingHeart, faHandshake, faGlobe, faStar } from '@fortawesome/free-solid-svg-icons';
 import sql from '@/lib/db';
+import { buildVariantsMap } from '@/lib/productVariants';
 import styles from './page.module.css';
 
 export const dynamic = 'force-dynamic';
@@ -23,11 +24,7 @@ export default async function Home() {
     ...p,
     average_rating: parseFloat(p.average_rating).toFixed(1),
     review_count: parseInt(p.review_count),
-    variants: {
-      "250g": p.price_250g,
-      "500g": p.price_500g,
-      "1kg": p.price_1kg,
-    }
+    variants: buildVariantsMap(p),
   }));
 
   const jsonLd = {

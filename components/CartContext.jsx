@@ -34,6 +34,9 @@ export function CartProvider({ children }) {
     setItems(prev => {
       const key = `${product.id}-${variant}`;
       const existing = prev.find(i => i.key === key);
+      
+      const price = product.variants ? (parseInt(product.variants[variant], 10) || 0) : 0;
+
       if (existing) {
         return prev.map(i => i.key === key ? { ...i, qty: i.qty + (quantity || 1) } : i);
       }
@@ -42,7 +45,7 @@ export function CartProvider({ children }) {
         id: product.id,
         name: product.name,
         variant,
-        price: product.variants[variant],
+        price: price,
         image: product.image,
         qty: quantity || 1,
       }];

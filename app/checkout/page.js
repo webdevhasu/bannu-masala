@@ -32,7 +32,7 @@ function CheckoutContent() {
   useEffect(() => {
     const productId = searchParams.get('productId');
     const variant = searchParams.get('variant');
-    const qty = parseInt(searchParams.get('qty') || '1');
+    const qty = Math.max(1, parseInt(searchParams.get('qty') || '1', 10) || 1);
 
     if (productId && variant) {
       setIsBuyNow(true);
@@ -41,8 +41,9 @@ function CheckoutContent() {
         .then(res => res.json())
         .then(product => {
           if (product && !product.error) {
-            // Map consistent with cart item structure
-            const price = product[`price_${variant}`] || 0;
+            const price = product.variants ? (parseInt(product.variants[variant], 10) || 0) : 0;
+            if (!price) return;
+
             setBuyNowItem({
               id: product.id,
               name: product.name,
@@ -113,25 +114,20 @@ function CheckoutContent() {
         phone: form.phone,
         city: form.city,
         address: form.address,
-        subtotal,
-        shipping,
-        total,
-        shipping,
-        total,
         items: activeItems.map(i => ({
           id: i.id,
-          name: i.name,
           variant: i.variant,
-          qty: i.qty,
-          price: i.price
+          qty: i.qty
         }))
       };
 
-      await fetch('/api/orders', {
+      const res = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData)
       });
+      const result = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(result?.error || 'Failed to place order');
 
       // Show success state instead of WhatsApp redirect
       if (!isBuyNow) clearSelectedCart();
@@ -140,7 +136,7 @@ function CheckoutContent() {
 
     } catch (error) {
       console.error(error);
-      alert('There was an error processing your order. Please try again.');
+      alert(error?.message || 'There was an error processing your order. Please try again.');
       setSubmitting(false);
     }
   };

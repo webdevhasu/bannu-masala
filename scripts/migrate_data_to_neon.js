@@ -1,8 +1,45 @@
 const Database = require('better-sqlite3');
 const { neon } = require('@neondatabase/serverless');
+const fs = require('fs');
+const path = require('path');
 
 const localDb = new Database('bannu_masala.db');
-const dbUrl = process.env.DATABASE_URL || "postgresql://neondb_owner:npg_0fEVkwnKD5rc@ep-round-shape-a1squ9y0-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require";
+
+function loadEnvLocal() {
+  const envPath = path.join(process.cwd(), '.env.local');
+  if (!fs.existsSync(envPath)) return;
+
+  const lines = fs.readFileSync(envPath, 'utf8').split(/\r?\n/);
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#')) continue;
+
+    const eq = trimmed.indexOf('=');
+    if (eq === -1) continue;
+    const key = trimmed.slice(0, eq).trim();
+    let value = trimmed.slice(eq + 1).trim();
+
+    if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
+      value = value.slice(1, -1);
+    }
+
+    if (!Object.prototype.hasOwnProperty.call(process.env, key)) {
+      process.env[key] = value;
+    }
+  }
+}
+
+loadEnvLocal();
+
+const dbUrl = process.env.DATABASE_URL;
+if (!dbUrl) {
+  console.error('Missing DATABASE_URL. Set it as an environment variable or add it to .env.local');
+  process.exit(1);
+}
+
 const sql = neon(dbUrl);
 
 async function migrateData() {
@@ -27,8 +64,8 @@ async function migrateData() {
       }
 
       await sql`
-        INSERT INTO products (name, slug, description, image, price_250g, price_500g, price_1kg)
-        VALUES (${p.name}, ${p.slug}, ${p.description}, ${p.image}, ${p.price_250g}, ${p.price_500g}, ${p.price_1kg})
+        INSERT INTO products (name, slug, description, image, gallery, custom_variants, price_250g, price_500g, price_1kg)
+        VALUES (${p.name}, ${p.slug}, ${p.description}, ${p.image}, ${p.gallery || '[]'}, ${p.custom_variants || '[]'}, ${p.price_250g}, ${p.price_500g}, ${p.price_1kg})
       `;
       console.log(`✅ Migrated: ${p.name}`);
     }

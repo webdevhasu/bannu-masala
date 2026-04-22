@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import sql from '@/lib/db';
+import { buildVariantsMap } from '@/lib/productVariants';
 
 export async function GET(request, props) {
   try {
@@ -14,7 +15,11 @@ export async function GET(request, props) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 });
     }
 
-    return NextResponse.json(products[0]);
+    const product = products[0];
+    return NextResponse.json({
+      ...product,
+      variants: buildVariantsMap(product),
+    });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: 'Failed to fetch product' }, { status: 500 });
@@ -26,13 +31,15 @@ export async function PUT(request, props) {
     const params = await props.params;
     const id = parseInt(params.id);
     const body = await request.json();
-    const { name, slug, description, image, price_250g, price_500g, price_1kg, gallery } = body;
+    const { name, slug, description, image, price_250g, price_500g, price_1kg, gallery, custom_variants } = body;
     const galleryJson = JSON.stringify(gallery || []);
+    const customVariantsJson = JSON.stringify(custom_variants || []);
 
     const result = await sql`
       UPDATE products
       SET name = ${name}, slug = ${slug}, description = ${description}, image = ${image},
           gallery = ${galleryJson},
+          custom_variants = ${customVariantsJson},
           price_250g = ${price_250g}, price_500g = ${price_500g}, price_1kg = ${price_1kg}
       WHERE id = ${id}
       RETURNING id
