@@ -1,0 +1,359 @@
+.aboutPage {
+  background: var(--cream);
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ─── Hero Section ─────────────────────────── */
+.hero {
+  height: 500px;
+  background: linear-gradient(rgba(60, 10, 10, 0.72), rgba(123, 28, 28, 0.65)),
+              url('https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&q=80&w=1600');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #fff;
+}
+
+.heroContent {
+  animation: fadeUp 0.9s ease-out;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.heroTag {
+  display: inline-block;
+  background: rgba(201, 147, 42, 0.25);
+  border: 1px solid rgba(201, 147, 42, 0.5);
+  color: var(--gold);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 6px 18px;
+  border-radius: 50px;
+  margin-bottom: 20px;
+}
+
+.title {
+  font-family: 'Playfair Display', serif;
+  font-size: 3.8rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  opacity: 0.85;
+  font-weight: 300;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* ─── Founder Section ─────────────────────── */
+.founderSection {
+  padding: 110px 0 120px;
+  background: #fff;
+}
+
+.founderGrid {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 90px;
+  align-items: center;
+}
+
+.founderImageWrapper {
+  position: relative;
+  padding-bottom: 50px;
+}
+
+.imageFrame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 24px 24px 70px rgba(0, 0, 0, 0.12);
+  border: 12px solid #fff;
+}
+
+.founderImg {
+  transition: transform 0.6s ease;
+}
+
+.imageFrame:hover .founderImg {
+  transform: scale(1.05);
+}
+
+.founderLabel {
+  background: var(--maroon);
+  color: #fff;
+  padding: 22px 28px;
+  border-radius: 16px;
+  position: absolute;
+  bottom: 0px;
+  right: -24px;
+  box-shadow: 0 16px 40px rgba(123, 28, 28, 0.3);
+  z-index: 2;
+  min-width: 200px;
+}
+
+.founderLabel h3 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-family: 'Playfair Display', serif;
+  font-weight: 800;
+}
+
+.founderLabel p {
+  margin: 5px 0 0;
+  font-size: 0.85rem;
+  opacity: 0.8;
+  letter-spacing: 0.5px;
+}
+
+/* ─── Founder Text ──────────────────────── */
+.eyebrow {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: rgba(201, 147, 42, 0.1);
+  padding: 6px 16px;
+  border-radius: 50px;
+  margin-bottom: 18px;
+}
+
+.sectionTitle {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.6rem;
+  color: var(--maroon);
+  line-height: 1.2;
+  margin-bottom: 28px;
+}
+
+.founderText p {
+  font-size: 1.08rem;
+  line-height: 1.85;
+  color: #4a5568;
+  margin-bottom: 20px;
+}
+
+/* ─── Stats Row ─────────────────────────── */
+.founderStats {
+  display: flex;
+  gap: 36px;
+  margin: 36px 0 40px;
+  padding: 28px;
+  background: var(--cream);
+  border-radius: 16px;
+  border-left: 4px solid var(--maroon);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.statNum {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--maroon);
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #718096;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ─── Contact Button ────────────────────── */
+.contactBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #25D366;
+  color: #fff;
+  padding: 15px 30px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.3);
+}
+
+.contactBtn:hover {
+  background: #20ba5a;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(37, 211, 102, 0.4);
+}
+
+/* ─── Values Section ────────────────────── */
+.valuesSection {
+  padding: 90px 0;
+  background: var(--cream);
+  text-align: center;
+}
+
+.valuesTitle {
+  font-size: 2.5rem;
+  font-family: 'Playfair Display', serif;
+  color: var(--maroon-dark);
+  margin-bottom: 12px;
+}
+
+.valuesSubtitle {
+  font-size: 1.05rem;
+  color: #718096;
+  margin-bottom: 56px;
+}
+
+.valuesGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px;
+}
+
+.valueCard {
+  background: #fff;
+  padding: 40px 24px;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+  transition: all 0.35s ease;
+  border: 1px solid rgba(123, 28, 28, 0.04);
+}
+
+.valueCard:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(123, 28, 28, 0.1);
+}
+
+.valueIcon {
+  font-size: 2.2rem;
+  color: var(--gold);
+  margin-bottom: 20px;
+}
+
+.valueCard h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--maroon);
+  margin-bottom: 12px;
+  font-family: 'Playfair Display', serif;
+}
+
+.valueCard p {
+  font-size: 0.93rem;
+  color: #64748b;
+  line-height: 1.65;
+}
+
+/* ─── Mission Section ───────────────────── */
+.missionSection {
+  padding: 110px 0;
+  background: var(--maroon);
+  color: #fff;
+  text-align: center;
+}
+
+.missionContent {
+  max-width: 780px;
+  margin: 0 auto;
+}
+
+.missionTag {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: var(--gold);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  padding: 6px 18px;
+  border-radius: 50px;
+  margin-bottom: 24px;
+}
+
+.missionSection h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.8rem;
+  margin-bottom: 24px;
+  line-height: 1.2;
+}
+
+.missionContent p {
+  font-size: 1.2rem;
+  line-height: 1.75;
+  font-weight: 300;
+  opacity: 0.88;
+  margin-bottom: 48px;
+}
+
+.signatureWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.signature {
+  font-family: 'Dancing Script', cursive;
+  font-size: 2.8rem;
+  color: var(--gold);
+  opacity: 0.95;
+}
+
+.signatureTitle {
+  font-size: 0.85rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+/* ─── Responsive ────────────────────────── */
+@media (max-width: 1024px) {
+  .founderGrid { gap: 50px; }
+  .valuesGrid  { grid-template-columns: repeat(2, 1fr); }
+  .title        { font-size: 3rem; }
+}
+
+@media (max-width: 768px) {
+  .hero         { height: 420px; }
+  .title        { font-size: 2.4rem; }
+  .subtitle     { font-size: 1rem; }
+
+  .founderGrid       { grid-template-columns: 1fr; }
+  .founderImageWrapper { padding-bottom: 60px; }
+  .founderLabel      { right: 10px; bottom: 10px; }
+  .sectionTitle      { font-size: 2rem; }
+
+  .founderStats { flex-wrap: wrap; gap: 24px; }
+  .valuesGrid   { grid-template-columns: 1fr; }
+
+  .missionSection h2 { font-size: 2rem; }
+  .signature         { font-size: 2.2rem; }
+}
