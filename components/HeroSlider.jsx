@@ -28,24 +28,28 @@ const defaultSlides = [
 
 export default function HeroSlider({ products = [] }) {
   // Map actual products to slider format if they exist
-  const dynamicSlides = products.length > 0 ? products.map((p, index) => ({
-    id: p.id,
-    headline: p.name,
-    subtext: p.description || "Premium quality handcrafted spices direct from Bannu.",
-    cta: "Buy Now",
-    href: `/products/${p.slug}`,
-    // Vary backgrounds based on index
-    bg: index % 3 === 0 
-      ? "linear-gradient(135deg, #3D0000 0%, #7B1C1C 50%, #C9932A 100%)"
-      : index % 3 === 1 
-      ? "linear-gradient(135deg, #1A0A00 0%, #5C3317 50%, #C9932A 100%)"
-      : "linear-gradient(135deg, #0A1A00 0%, #2D4A14 50%, #C9932A 100%)",
-    badge: "Featured Product",
-    emoji: p.name.toLowerCase().includes('biryani') ? '🍚' : '🌶️',
-    image: p.image
-  })) : defaultSlides;
-
-  const slidesToUse = dynamicSlides;
+  const slidesToUse = [
+    {
+      id: 'free-shipping-1',
+      headline: "🎉 FREE DELIVERY ON ALL ORDERS!",
+      subtext: "Limited Time Offer: Get your favorite Bannu Masalas delivered anywhere in Pakistan for FREE. No minimum order required!",
+      cta: "Shop Now",
+      href: "/#products",
+      bg: "linear-gradient(135deg, #3D0000 0%, #7B1C1C 50%, #C9932A 100%)",
+      badge: "Special Promotion",
+      emoji: "🚚",
+    },
+    {
+      id: 'free-shipping-2',
+      headline: "Authentic Spices, Zero Delivery Charges",
+      subtext: "Taste the purity of handcrafted Bannu spices with our new Pan-Pakistan FREE SHIPPING policy.",
+      cta: "Explore Flavors",
+      href: "/#products",
+      bg: "linear-gradient(135deg, #1A0A00 0%, #5C3317 50%, #C9932A 100%)",
+      badge: "Free Shipping",
+      emoji: "📦",
+    }
+  ];
   const [current, setCurrent] = useState(0);
   const [animating, setAnimating] = useState(false);
 
@@ -108,12 +112,7 @@ export default function HeroSlider({ products = [] }) {
                 </>
               )}
             </div>
-            {/* Glossy Card */}
-            <div className={styles.glossyCard}>
-              <div className={styles.cardLine} style={{width: '60%'}}></div>
-              <div className={styles.cardLine} style={{width: '40%'}}></div>
-              <div className={styles.cardPrice}>Starting from Rs. {products.find(p => p.id === slide.id)?.price_250g || 250}</div>
-            </div>
+
           </div>
         </div>
       </div>

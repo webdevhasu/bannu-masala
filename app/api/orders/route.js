@@ -62,7 +62,7 @@ export async function POST(request) {
     }
 
     const subtotal = normalizedItems.reduce((sum, i) => sum + i.price * i.qty, 0);
-    const shipping = subtotal >= 3000 ? 0 : (subtotal > 0 ? 250 : 0);
+    const shipping = 0;
     const total = subtotal + shipping;
 
     // 2. Transaction start

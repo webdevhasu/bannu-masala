@@ -8,9 +8,7 @@ import styles from './CartSidebar.module.css';
 export default function CartSidebar() {
   const { items, selectedKeys, toggleSelection, removeFromCart, updateQty, subtotal, shipping, total, itemCount, sidebarOpen, setSidebarOpen } = useCart();
 
-  const freeShippingTarget = 3000;
-  const progress = Math.min((subtotal / freeShippingTarget) * 100, 100);
-  const remaining = freeShippingTarget - subtotal;
+
 
   return (
     <>
@@ -28,13 +26,8 @@ export default function CartSidebar() {
         {subtotal > 0 && (
           <div className={styles.shippingProgress}>
             <p className={styles.shippingText}>
-              {shipping === 0
-                ? '🎉 You have FREE SHIPPING!'
-                : `Rs ${remaining.toLocaleString()} more for FREE Shipping`}
+              🎉 You have FREE SHIPPING on this order!
             </p>
-            <div className={styles.progressBar}>
-              <div className={styles.progressFill} style={{ width: `${progress}%` }} />
-            </div>
           </div>
         )}
 

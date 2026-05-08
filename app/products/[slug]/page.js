@@ -133,7 +133,7 @@ export default async function ProductDetailsPage({ params }) {
             <ProductActions product={product} />
 
             <div className={styles.perks}>
-              <div className={styles.perk}>🚚 Free Shipping on Rs 3000+</div>
+              <div className={styles.perk}>🚚 FREE SHIPPING on all orders</div>
               <div className={styles.perk}>🛡️ Preservative Free</div>
               <div className={styles.perk}>👨‍🍳 Authentic Pashtun Recipe</div>
             </div>
