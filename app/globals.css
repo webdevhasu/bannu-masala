@@ -8,17 +8,32 @@
   --gold-light: #E5B54A;
   --cream: #FDF6EC;
   --cream-dark: #F5E8D3;
-  --text-dark: #1A0A0A;
-  --text-mid: #4A2020;
+  
+  /* Semantic Colors */
+  --bg-primary: #FDF6EC; /* --cream */
+  --bg-secondary: #F5E8D3; /* --cream-dark */
+  --bg-card: #FFFFFF;
+  --bg-input: #FFFFFF;
+  --bg-hover: rgba(123, 28, 28, 0.05);
+  
+  --text-primary: #1A0A0A;
+  --text-secondary: #4A2020;
   --text-muted: #8A6666;
-  --white: #FFFFFF;
+  --text-on-maroon: #FFFFFF;
+  
+  --border-color: rgba(123, 28, 28, 0.1);
+  --border-light: #EEEEEE;
+  
   --shadow-sm: 0 1px 3px rgba(123, 28, 28, 0.12);
   --shadow-md: 0 4px 16px rgba(123, 28, 28, 0.15);
   --shadow-lg: 0 8px 32px rgba(123, 28, 28, 0.18);
+  
+  --white: #FFFFFF;
   --border-radius: 12px;
   --border-radius-lg: 20px;
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -38,8 +53,8 @@ html {
 
 body {
   font-family: 'Inter', sans-serif;
-  background-color: var(--cream);
-  color: var(--text-dark);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
   line-height: 1.6;
   overflow-x: hidden;
 }
@@ -64,6 +79,8 @@ button {
   border: none;
   outline: none;
   font-family: 'Inter', sans-serif;
+  background: transparent;
+  color: inherit;
 }
 
 /* Utility */
@@ -161,5 +178,10 @@ button {
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--cream); }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
 ::-webkit-scrollbar-thumb { background: var(--maroon); border-radius: 10px; }
+
+/* Transitions */
+* {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}

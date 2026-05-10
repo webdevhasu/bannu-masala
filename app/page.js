@@ -76,14 +76,7 @@ export default async function Home() {
 
       {/* Hero Section */}
       <section id="home">
-        <HeroSlider products={products} />
-        {/* Free Shipping Banner */}
-        <div className={styles.shippingBanner}>
-          <span className={styles.bannerItem}><FontAwesomeIcon icon={faTruck} /> FREE DELIVERY on all orders across Pakistan</span>
-          <span className={styles.bannerItem}><FontAwesomeIcon icon={faCircleCheck} /> 100% Natural Spices</span>
-          <span className={styles.bannerItem}><FontAwesomeIcon icon={faFire} /> Authentic Bannu Recipes</span>
-          <span className={styles.bannerItem}><FontAwesomeIcon icon={faBox} /> Pan-Pakistan Delivery</span>
-        </div>
+        <HeroSlider />
       </section>
 
       {/* Products Section */}

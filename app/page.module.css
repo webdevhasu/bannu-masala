@@ -29,7 +29,7 @@
 
 .section { padding: 80px 0; }
 
-.productsSection { background: var(--cream); }
+.productsSection { background: var(--bg-primary); }
 
 .grid {
   display: grid;
@@ -41,7 +41,7 @@
 
 .whySection {
   padding: 80px 0;
-  background: linear-gradient(180deg, var(--cream-dark) 0%, var(--cream) 100%);
+  background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
 }
 
 .featureGrid {
@@ -51,7 +51,7 @@
 }
 
 .featureCard {
-  background: #fff;
+  background: var(--bg-card);
   border-radius: var(--border-radius-lg);
   padding: 36px 28px;
   text-align: center;

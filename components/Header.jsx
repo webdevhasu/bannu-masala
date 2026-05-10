@@ -50,6 +50,8 @@ export default function Header() {
 
         {/* Right Actions */}
         <div className={styles.actions}>
+
+
           {/* Cart Button */}
           <button className={styles.cartBtn} onClick={() => setSidebarOpen(true)}>
             <FontAwesomeIcon icon={faShoppingCart} />

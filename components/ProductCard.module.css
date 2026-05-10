@@ -1,14 +1,14 @@
 .card {
   position: relative;
-  background: #ffffff;
+  background: var(--bg-card);
   border-radius: 16px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   height: 100%;
   transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba(123, 28, 28, 0.04);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
 }
 
 .card:hover {
@@ -37,7 +37,7 @@
   width: 100%;
   aspect-ratio: 4 / 5;
   overflow: hidden;
-  background-color: #fdfaf7; /* Warm background to blend with product photography */
+  background-color: var(--bg-secondary); /* Warm background to blend with product photography */
 }
 
 .image {
@@ -81,7 +81,7 @@
   font-family: 'Playfair Display', serif;
   font-size: 1.15rem;
   font-weight: 800;
-  color: #222;
+  color: var(--text-primary);
   margin: 0;
   line-height: 1.25;
 }
@@ -90,18 +90,18 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  background: #fff9ed;
+  background: var(--bg-secondary);
   padding: 4px 8px;
   border-radius: 6px;
-  color: #ca8a04;
+  color: var(--gold);
   font-weight: 700;
   font-size: 0.8rem;
-  border: 1px solid #fef3c7;
+  border: 1px solid var(--border-color);
 }
 
 .desc {
   font-size: 0.85rem;
-  color: #777;
+  color: var(--text-muted);
   line-height: 1.6;
   margin-bottom: 20px;
   display: -webkit-box;
@@ -121,9 +121,9 @@
 .variant {
   padding: 6px 14px;
   border-radius: 6px;
-  border: 1.5px solid #eee;
-  background: white;
-  color: #444;
+  border: 1.5px solid var(--border-light);
+  background: var(--bg-card);
+  color: var(--text-secondary);
   font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
@@ -138,7 +138,7 @@
 .variantActive {
   background: var(--maroon);
   border-color: var(--maroon);
-  color: #ffffff;
+  color: var(--text-on-maroon);
 }
 
 .priceSection {

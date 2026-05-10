@@ -8,11 +8,11 @@
 }
 
 .scrolled {
-  background: rgba(255, 253, 248, 0.85);
+  background: var(--bg-primary);
   backdrop-filter: blur(12px);
   padding: 0;
-  border-bottom: 1px solid rgba(123, 28, 28, 0.1);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
 }
 .inner {
   max-width: 1200px;
@@ -159,10 +159,10 @@
   top: 100%;
   right: 0;
   margin-top: 8px;
-  background: #fff;
-  border: 1px solid #e2e8f0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   min-width: 150px;
   padding: 8px 0;
   z-index: 1000;
@@ -190,12 +190,33 @@
   font-family: inherit;
 }
 .dropdownItem:hover {
-  background: #fef2f2;
+  background: var(--bg-hover);
+}
+
+.themeToggle {
+  background: var(--bg-secondary);
+  border: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  color: var(--gold);
+  cursor: pointer;
+  transition: all 0.25s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.themeToggle:hover {
+  background: var(--maroon);
+  color: #fff;
+  transform: scale(1.05);
 }
 
 .cartBtn {
   position: relative;
-  background: var(--cream-dark);
+  background: var(--bg-secondary);
   border: none;
   width: 44px;
   height: 44px;
@@ -258,8 +279,8 @@
 .mobileMenu {
   display: none;
   flex-direction: column;
-  background: #fff;
-  border-top: 1px solid rgba(123,28,28,0.1);
+  background: var(--bg-card);
+  border-top: 1px solid var(--border-color);
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.4s ease;
