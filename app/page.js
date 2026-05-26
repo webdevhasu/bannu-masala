@@ -1,6 +1,7 @@
 import HeroSlider from '@/components/HeroSlider';
 import ProductCard from '@/components/ProductCard';
 import SplashScreen from '@/components/SplashScreen';
+import HotDealsSection from '@/components/HotDealsSection';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTruck, faCircleCheck, faFire, faBox, faLeaf, faScroll, faHandHoldingHeart, faHandshake, faGlobe, faStar } from '@fortawesome/free-solid-svg-icons';
 import sql from '@/lib/db';
@@ -19,6 +20,17 @@ export default async function Home() {
     GROUP BY p.id
     ORDER BY p.id ASC
   `;
+
+  let hotDeals = [];
+  try {
+    hotDeals = await sql`
+      SELECT * FROM hot_deals
+      WHERE is_active = true
+      ORDER BY id DESC
+    `;
+  } catch (err) {
+    console.error("Error fetching hot deals:", err);
+  }
 
   const products = rows.map(p => ({
     ...p,
@@ -78,6 +90,11 @@ export default async function Home() {
       <section id="home">
         <HeroSlider />
       </section>
+
+      {/* Hot Deals Section */}
+      {hotDeals && hotDeals.length > 0 && (
+        <HotDealsSection deals={hotDeals} />
+      )}
 
       {/* Products Section */}
       <section id="products" className={styles.productsSection}>
