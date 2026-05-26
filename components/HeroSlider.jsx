@@ -20,15 +20,15 @@ export default function HeroSlider() {
             <span className={styles.premiumBadge}>✨ Premium Handcrafted Quality</span>
             <h1 className={styles.headline}>
               Authentic Bannu Spices <br />
-              <span className={styles.highlight}>Delivered For FREE</span>
+              <span className={styles.highlight}>To Your Doorstep</span>
             </h1>
             <p className={styles.subtext}>
               Experience the soul of Bannu with our centuries-old traditional spice blends. 
-              Pure, natural ingredients delivered across Pakistan with <strong>Zero Shipping Charges</strong> on every order.
+              Pure, natural ingredients delivered across Pakistan.
             </p>
             <div className={styles.actions}>
               <Link href="/#products">
-                <button className={styles.ctaBtn}>Shop Now & Get Free Shipping</button>
+                <button className={styles.ctaBtn}>Shop Now</button>
               </Link>
               <Link href="/about">
                 <button className={styles.secondaryBtn}>Our Heritage</button>
@@ -51,8 +51,8 @@ export default function HeroSlider() {
               </div>
               <div className={styles.mainVisual}>
                 <div className={styles.freeBadge}>
-                  <span>FREE</span>
-                  <small>SHIPPING</small>
+                  <span>100%</span>
+                  <small>NATURAL</small>
                 </div>
                 <img src="/logo.png" alt="Bannu Masala" className={styles.heroLogo} />
               </div>

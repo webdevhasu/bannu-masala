@@ -43,7 +43,7 @@ export default function Footer() {
         </div>
         <div className={styles.info}>
           <h4 className={styles.linkTitle}>Information</h4>
-          <p className={styles.infoText}>🚚 Free delivery on orders Rs 3,000+</p>
+
           <p className={styles.infoText}>✅ 100% Natural, no preservatives</p>
           <p className={styles.infoText}>📦 Pan-Pakistan delivery</p>
           <p className={styles.infoText}>💬 WhatsApp order support</p>

@@ -22,14 +22,7 @@ export default function CartSidebar() {
           <button className={styles.closeBtn} onClick={() => setSidebarOpen(false)}>✕</button>
         </div>
 
-        {/* Free Shipping Progress */}
-        {subtotal > 0 && (
-          <div className={styles.shippingProgress}>
-            <p className={styles.shippingText}>
-              🎉 You have FREE SHIPPING on this order!
-            </p>
-          </div>
-        )}
+
 
         {/* Items */}
         <div className={styles.items}>
@@ -82,8 +75,8 @@ export default function CartSidebar() {
               </div>
               <div className={styles.summaryRow}>
                 <span>Shipping</span>
-                <span style={{ color: shipping === 0 ? 'green' : 'inherit' }}>
-                  {shipping === 0 ? 'FREE' : `Rs ${shipping}`}
+                <span>
+                  Rs {shipping}
                 </span>
               </div>
               <div className={`${styles.summaryRow} ${styles.total}`}>

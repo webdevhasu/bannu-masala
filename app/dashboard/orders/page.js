@@ -226,7 +226,7 @@ export default function OrdersPage() {
               
               <div className={styles.orderFooter} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
                 <span className={styles.shippingBadge}>
-                  {order.shipping === 0 ? 'Free Shipping Applied' : `Shipping Paid: Rs ${order.shipping}`}
+                  Shipping: Rs {order.shipping}
                 </span>
                 
                 {activeTab === 'pending' && (

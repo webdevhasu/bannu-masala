@@ -62,7 +62,7 @@ function CheckoutContent() {
 
   const activeItems = isBuyNow ? (buyNowItem ? [buyNowItem] : []) : cartItems.filter(i => selectedKeys?.includes(i.key));
   const subtotal = isBuyNow ? (buyNowItem ? buyNowItem.price * buyNowItem.qty : 0) : cartSubtotal;
-  const shipping = 0;
+  const shipping = 200;
   const total = subtotal + shipping;
 
   const validate = () => {
@@ -94,7 +94,7 @@ function CheckoutContent() {
       ...activeItems.map(i => `• ${i.name} (${i.variant}) × ${i.qty} = Rs ${(i.price * i.qty).toLocaleString()}`),
       ``,
       `Subtotal: Rs ${subtotal.toLocaleString()}`,
-      `Shipping: ${shipping === 0 ? 'FREE' : `Rs ${shipping}`}`,
+      `Shipping: Rs ${shipping}`,
       `*Total: Rs ${total.toLocaleString()}*`,
     ];
     return lines.join('\n');
@@ -269,8 +269,8 @@ function CheckoutContent() {
                   </div>
                   <div className={styles.row}>
                     <span>Shipping</span>
-                    <span className={shipping === 0 ? styles.freeShipping : ''}>
-                      {shipping === 0 ? '🎉 FREE' : `Rs ${shipping}`}
+                    <span>
+                      Rs {shipping}
                     </span>
                   </div>
 

@@ -7,7 +7,7 @@ import Footer from '@/components/Footer';
 
 export const metadata = {
   title: 'Bannu Masala | Premium Authentic Spices & Handcrafted Blends',
-  description: 'Authentic handcrafted spice blends from Bannu, KPK. Pure, natural, and preservative-free spices delivered across Pakistan. Free delivery on orders above Rs. 3,000.',
+  description: 'Authentic handcrafted spice blends from Bannu, KPK. Pure, natural, and preservative-free spices delivered across Pakistan.',
   keywords: 'Bannu Masala, authentic spices, pure masalas, KPK spices, handcrafted spice blends, biryani masala, Pulao masala, organic spices Pakistan, wholesale spices Bannu',
   authors: [{ name: 'Bannu Masala Team' }],
   metadataBase: new URL('https://bannumasala.vercel.app'), // Note: Update with custom domain later if needed

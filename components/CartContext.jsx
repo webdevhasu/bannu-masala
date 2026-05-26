@@ -83,7 +83,7 @@ export function CartProvider({ children }) {
 
   const selectedItems = items.filter(i => selectedKeys.includes(i.key));
   const subtotal = selectedItems.reduce((sum, i) => sum + i.price * i.qty, 0);
-  const shipping = 0;
+  const shipping = 200;
   const total = subtotal + shipping;
   const itemCount = items.reduce((sum, i) => sum + i.qty, 0);
 

@@ -62,7 +62,7 @@ export async function POST(request) {
     }
 
     const subtotal = normalizedItems.reduce((sum, i) => sum + i.price * i.qty, 0);
-    const shipping = 0;
+    const shipping = 200;
     const total = subtotal + shipping;
 
     // 2. Transaction start
