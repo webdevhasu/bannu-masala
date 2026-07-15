@@ -1,13 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   async redirects() {
-    return [
-      {
-        source: '/:path*',
-        destination: 'https://bannumasala.com/:path*',
-        permanent: true,
-      },
-    ];
+    return [];
   },
 };
 export default nextConfig;

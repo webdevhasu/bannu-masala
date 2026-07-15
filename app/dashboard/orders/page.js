@@ -16,9 +16,10 @@ export default function OrdersPage() {
     try {
       const res = await fetch('/api/orders?t=' + Date.now());
       const data = await res.json();
-      setOrders(data);
+      setOrders(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error(err);
+      setOrders([]);
     } finally {
       setLoading(false);
     }
