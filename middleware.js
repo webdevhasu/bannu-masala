@@ -1,6 +1,14 @@
 import { NextResponse } from 'next/server';
 
 export function middleware(request) {
+  const host = request.headers.get('host') || '';
+  if (host.includes('bannumasala.vercel.app')) {
+    const url = request.nextUrl.clone();
+    url.host = 'bannumasala.com';
+    url.protocol = 'https:';
+    return NextResponse.redirect(url, 301);
+  }
+
   // Only apply CORS to API routes
   if (request.nextUrl.pathname.startsWith('/api/')) {
     // Handle preflight OPTIONS request
@@ -28,5 +36,5 @@ export function middleware(request) {
 }
 
 export const config = {
-  matcher: ['/api/:path*', '/dashboard/:path*'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 };
