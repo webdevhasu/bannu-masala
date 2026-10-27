@@ -44,14 +44,6 @@ function requiresAdmin(request) {
 export async function middleware(request) {
   const { pathname, search } = request.nextUrl;
 
-  const host = request.headers.get('host') || '';
-  if (host.includes('bannumasala.vercel.app')) {
-    const url = request.nextUrl.clone();
-    url.host = 'bannumasala.com';
-    url.protocol = 'https:';
-    return NextResponse.redirect(url, 301);
-  }
-
   if (pathname.startsWith('/api/') && request.method === 'OPTIONS') {
     return new NextResponse(null, { status: 200, headers: CORS_HEADERS });
   }
