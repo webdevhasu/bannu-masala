@@ -24,8 +24,8 @@ export async function POST(request) {
     const { product_id, reviewer_name, rating, comment } = body;
 
     const result = await sql`
-      INSERT INTO reviews (product_id, reviewer_name, rating, comment)
-      VALUES (${product_id}, ${reviewer_name}, ${rating}, ${comment})
+      INSERT INTO reviews (product_id, reviewer_name, rating, comment, is_approved)
+      VALUES (${product_id}, ${reviewer_name}, ${rating}, ${comment}, true)
       RETURNING id
     `;
 

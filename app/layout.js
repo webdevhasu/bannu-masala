@@ -1,16 +1,18 @@
 import './globals.css';
 import { CartProvider } from '@/components/CartContext';
-import Header from '@/components/Header';
-import CartSidebar from '@/components/CartSidebar';
-import WhatsAppFloat from '@/components/WhatsAppFloat';
-import Footer from '@/components/Footer';
+import SiteChrome from '@/components/SiteChrome';
+import { getAllSettings } from '@/lib/settings';
+
+export const dynamic = 'force-dynamic';
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://bannumasala.com';
 
 export const metadata = {
   title: 'Bannu Masala | Premium Authentic Spices & Handcrafted Blends',
-  description: 'Authentic handcrafted spice blends from Bannu, KPK. Pure, natural, and preservative-free spices delivered across Pakistan.',
-  keywords: 'Bannu Masala, authentic spices, pure masalas, KPK spices, handcrafted spice blends, biryani masala, Pulao masala, organic spices Pakistan, wholesale spices Bannu',
+  description: 'Authentic handcrafted spice blends from Bannu, KPK. Shop Bannu Masala products online.',
+  keywords: 'Bannu Masala, handcrafted spice blends, biryani masala, karahi masala, tikka masala, KPK spices, Bannu spices',
   authors: [{ name: 'Bannu Masala Team' }],
-  metadataBase: new URL('https://bannumasala.vercel.app'), // Note: Update with custom domain later if needed
+  metadataBase: new URL(SITE_URL),
   alternates: {
     canonical: '/',
   },
@@ -18,13 +20,13 @@ export const metadata = {
     google: 'lsk5o-P8Ns6haaZc1jZs8h20ZScB3C_DqyJw-XrQY8E',
   },
   openGraph: {
-    title: 'Bannu Masala | Pure & Authentic Handcrafted Spices',
-    description: 'The soul of Bannu on your dining table. Order 100% natural spices online.',
-    url: 'https://bannumasala.vercel.app',
+    title: 'Bannu Masala | Handcrafted Spice Blends from Bannu',
+    description: 'Explore handcrafted spice blends from Bannu, KPK. Shop online or order on WhatsApp.',
+    url: SITE_URL,
     siteName: 'Bannu Masala',
     images: [
       {
-        url: '/logo.png', // Fallback to logo
+        url: '/logo.png',
         width: 800,
         height: 600,
         alt: 'Bannu Masala Premium Branding',
@@ -36,7 +38,7 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Bannu Masala | Premium Spices from Bannu',
-    description: 'Authentic handcrafted spice blends delivered pan-Pakistan.',
+    description: 'Handcrafted spice blends from Bannu, KPK.',
     images: ['/logo.png'],
   },
   robots: {
@@ -51,26 +53,34 @@ export const metadata = {
     },
   },
 };
-export default function RootLayout({ children }) {
+
+export default async function RootLayout({ children }) {
+  let settings = null;
+  try {
+    settings = await getAllSettings();
+  } catch (error) {
+    console.error('Failed to load settings for layout:', error.message);
+  }
+
   const organizationJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "Bannu Masala",
-    "url": "https://bannumasala.vercel.app",
-    "logo": "https://bannumasala.vercel.app/logo.png",
-    "description": "Premium handcrafted spice blends from Bannu, KPK. Authentic, pure, and preservative-free.",
-    "sameAs": [
-      "https://www.facebook.com/bannumasala",
-      "https://www.instagram.com/bannumasala786/",
-      "https://www.tiktok.com/@bannumasala786"
-    ],
-    "contactPoint": {
-      "@type": "ContactPoint",
-      "telephone": "+92-309-9907713",
-      "contactType": "customer service",
-      "areaServed": "PK",
-      "availableLanguage": ["Urdu", "English", "Pashto"]
-    }
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Bannu Masala',
+    url: SITE_URL,
+    logo: `${SITE_URL}/logo.png`,
+    description: 'Handcrafted spice blends from Bannu, KPK.',
+    sameAs: [
+      settings?.store?.facebook || 'https://www.facebook.com/bannumasala',
+      settings?.store?.instagram || 'https://www.instagram.com/bannumasala786/',
+      settings?.store?.tiktok || 'https://www.tiktok.com/@bannumasala786',
+    ].filter(Boolean),
+    contactPoint: {
+      '@type': 'ContactPoint',
+      telephone: settings?.store?.phone || '+92-309-9907713',
+      contactType: 'customer service',
+      areaServed: 'PK',
+      availableLanguage: ['Urdu', 'English', 'Pashto'],
+    },
   };
 
   return (
@@ -98,11 +108,7 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <CartProvider>
-          <Header />
-          <main>{children}</main>
-          <CartSidebar />
-          <WhatsAppFloat />
-          <Footer />
+          <SiteChrome settings={settings}>{children}</SiteChrome>
         </CartProvider>
       </body>
     </html>

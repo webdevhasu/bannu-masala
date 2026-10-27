@@ -1,10 +1,12 @@
 export default function robots() {
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bannumasala.com';
+
   return {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/api/', '/checkout/success'], // Don't index checkout success or APIs
+      disallow: ['/api/', '/checkout', '/dashboard', '/admin'],
     },
-    sitemap: 'https://bannumasala.vercel.app/sitemap.xml',
+    sitemap: `${baseUrl}/sitemap.xml`,
   };
 }

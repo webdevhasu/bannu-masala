@@ -6,7 +6,9 @@ import styles from '../orders/page.module.css';
 
 export default function ProductsPage() {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -15,7 +17,8 @@ export default function ProductsPage() {
   const [formData, setFormData] = useState({
     name: '', slug: '', description: '', image: '', gallery: [],
     price_250g: '', price_500g: '', price_1kg: '',
-    custom_variants: []
+    custom_variants: [], category_id: '', ingredients: '', how_to_use: '',
+    storage: '', stock: '', is_active: true, is_featured: false, badge: ''
   });
   
   const [filesToUpload, setFilesToUpload] = useState([]);
@@ -26,7 +29,7 @@ export default function ProductsPage() {
     try {
       const res = await fetch('/api/products?t=' + Date.now());
       const data = await res.json();
-      setProducts(data);
+      setProducts(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error(err);
     } finally {
@@ -36,6 +39,10 @@ export default function ProductsPage() {
 
   useEffect(() => {
     fetchProducts();
+    fetch('/api/categories')
+      .then((res) => res.json())
+      .then((data) => setCategories(Array.isArray(data) ? data : []))
+      .catch((err) => console.error(err));
   }, []);
 
   const handleOpenModal = (product = null) => {
@@ -53,7 +60,15 @@ export default function ProductsPage() {
         price_250g: product.price_250g,
         price_500g: product.price_500g,
         price_1kg: product.price_1kg,
-        custom_variants: product.custom_variants ? (typeof product.custom_variants === 'string' ? JSON.parse(product.custom_variants) : product.custom_variants) : []
+        custom_variants: product.custom_variants ? (typeof product.custom_variants === 'string' ? JSON.parse(product.custom_variants) : product.custom_variants) : [],
+        category_id: product.category_id || '',
+        ingredients: product.ingredients || '',
+        how_to_use: product.how_to_use || '',
+        storage: product.storage || '',
+        stock: product.stock ?? '',
+        is_active: product.is_active !== false,
+        is_featured: product.is_featured === true,
+        badge: product.badge || ''
       });
       // Build previews from existing db urls
       const existing = [];
@@ -65,7 +80,8 @@ export default function ProductsPage() {
       setFormData({
         name: '', slug: '', description: '', image: '', gallery: [],
         price_250g: '', price_500g: '', price_1kg: '',
-        custom_variants: []
+        custom_variants: [], category_id: '', ingredients: '', how_to_use: '',
+        storage: '', stock: '', is_active: true, is_featured: false, badge: ''
       });
     }
     setIsModalOpen(true);
@@ -136,6 +152,14 @@ export default function ProductsPage() {
         price_250g: parseInt(formData.price_250g) || 0,
         price_500g: parseInt(formData.price_500g) || 0,
         price_1kg: parseInt(formData.price_1kg) || 0,
+        category_id: formData.category_id ? parseInt(formData.category_id) : null,
+        stock: formData.stock === '' ? 0 : parseInt(formData.stock) || 0,
+        is_active: formData.is_active,
+        is_featured: formData.is_featured,
+        ingredients: formData.ingredients,
+        how_to_use: formData.how_to_use,
+        storage: formData.storage,
+        badge: formData.badge,
         custom_variants: formData.custom_variants.filter(v => v.label && v.price).map(v => ({...v, price: parseInt(v.price) || 0}))
       };
 
@@ -188,6 +212,21 @@ export default function ProductsPage() {
 
   if (loading) return <div style={{padding:'40px'}}>Loading products...</div>;
 
+  const needle = search.trim().toLowerCase();
+  const filteredProducts = needle
+    ? products.filter(
+        (p) =>
+          p.name.toLowerCase().includes(needle) ||
+          (p.category_name || '').toLowerCase().includes(needle) ||
+          p.slug.toLowerCase().includes(needle)
+      )
+    : products;
+
+  const customCount = (p) => {
+    const variants = typeof p.custom_variants === 'string' ? JSON.parse(p.custom_variants) : p.custom_variants;
+    return Array.isArray(variants) ? variants.length : 0;
+  };
+
   return (
     <div>
       <div className={styles.headerRow}>
@@ -200,57 +239,173 @@ export default function ProductsPage() {
         </button>
       </div>
 
+      <div style={{display:'flex', alignItems:'center', gap:'12px', flexWrap:'wrap', marginBottom:'18px'}}>
+        <input
+          type="search"
+          placeholder="Search products or categories..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          style={{flex:'1 1 260px', maxWidth:'380px', padding:'10px 14px', borderRadius:'10px', border:'1px solid #e2e8f0', outline:'none'}}
+        />
+        <span style={{fontSize:'0.85rem', color:'#64748b'}}>
+          {filteredProducts.length} of {products.length} products
+        </span>
+      </div>
+
       <div className={styles.tableContainer}>
         <table className={styles.table}>
           <thead>
             <tr>
-              <th>Image</th>
-              <th>Name & Slug</th>
-              <th>Prices (250g / 500g / 1kg)</th>
-              <th>Images</th>
-              <th>Actions</th>
+              <th style={{ width: '68px' }}>Image</th>
+              <th>Product Name</th>
+              <th>Category</th>
+              <th>Prices</th>
+              <th style={{ textAlign: 'center' }}>Stock</th>
+              <th style={{ textAlign: 'right' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {products.map(p => (
+            {filteredProducts.map(p => (
               <tr key={p.id}>
+                {/* Image */}
                 <td>
                   {p.image ? (
-                    <img src={p.image} alt={p.name} style={{width:'50px', height:'50px', objectFit:'contain', borderRadius:'8px', background:'#f8fafc', border:'1px solid #e2e8f0'}} />
+                    <img
+                      src={p.image}
+                      alt={p.name}
+                      style={{
+                        width: '52px',
+                        height: '52px',
+                        objectFit: 'cover',
+                        borderRadius: '10px',
+                        border: '1px solid #e2e8f0',
+                        display: 'block',
+                      }}
+                    />
                   ) : (
-                    <div style={{width:'50px', height:'50px', background:'#f8fafc', borderRadius:'8px', display:'flex', alignItems:'center', justifyContent:'center'}}>
-                      <FontAwesomeIcon icon={faImage} color="#cbd5e1"/>
+                    <div style={{
+                      width: '52px', height: '52px', background: '#f1f5f9',
+                      borderRadius: '10px', display: 'flex',
+                      alignItems: 'center', justifyContent: 'center',
+                      border: '1px solid #e2e8f0',
+                    }}>
+                      <FontAwesomeIcon icon={faImage} style={{ color: '#cbd5e1', fontSize: '1.1rem' }} />
                     </div>
                   )}
                 </td>
+
+                {/* Name + badges */}
                 <td>
                   <div className={styles.bold}>{p.name}</div>
-                  <div className={styles.subtext}>{p.slug}</div>
+                  <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap', marginTop: '5px' }}>
+                    {p.is_featured && (
+                      <span style={{
+                        fontSize: '0.68rem', color: '#92400e', background: '#fef3c7',
+                        padding: '2px 8px', borderRadius: '20px', fontWeight: 700, border: '1px solid #fde68a'
+                      }}>⭐ Featured</span>
+                    )}
+                    {p.is_active === false && (
+                      <span style={{
+                        fontSize: '0.68rem', color: '#b91c1c', background: '#fee2e2',
+                        padding: '2px 8px', borderRadius: '20px', fontWeight: 700, border: '1px solid #fca5a5'
+                      }}>Hidden</span>
+                    )}
+                    {customCount(p) > 0 && (
+                      <span style={{
+                        fontSize: '0.68rem', color: '#0369a1', background: '#e0f2fe',
+                        padding: '2px 8px', borderRadius: '20px', fontWeight: 700, border: '1px solid #bae6fd'
+                      }}>+{customCount(p)} variants</span>
+                    )}
+                  </div>
                 </td>
-                <td>Rs {p.price_250g} / Rs {p.price_500g} / Rs {p.price_1kg}</td>
+
+                {/* Category */}
                 <td>
-                  <span style={{fontSize:'0.85rem', color:'#64748b', background:'#f1f5f9', padding:'4px 8px', borderRadius:'12px'}}>
-                    {1 + (Array.isArray(p.gallery) ? p.gallery.length : 0)} photos
-                  </span>
-                  {p.custom_variants && (typeof p.custom_variants === 'string' ? JSON.parse(p.custom_variants) : p.custom_variants).length > 0 && (
-                    <span style={{fontSize:'0.85rem', color:'#0891b2', background:'#ecfeff', padding:'4px 8px', borderRadius:'12px', marginLeft:'4px'}}>
-                      +{(typeof p.custom_variants === 'string' ? JSON.parse(p.custom_variants) : p.custom_variants).length} custom
+                  {p.category_name ? (
+                    <span style={{
+                      fontSize: '0.8rem', fontWeight: 600, color: '#475569',
+                      background: '#f1f5f9', padding: '4px 10px',
+                      borderRadius: '6px', display: 'inline-block',
+                    }}>
+                      {p.category_name}
                     </span>
+                  ) : (
+                    <span className={styles.subtext}>—</span>
                   )}
                 </td>
-                <td className={styles.actionsCell}>
-                  <button className={styles.btnEdit} onClick={() => handleOpenModal(p)}>
-                    <FontAwesomeIcon icon={faEdit} style={{display:'inline', marginRight:'4px'}}/> Edit
-                  </button>
-                  <button className={styles.btnDanger} onClick={() => handleDeleteClick(p.id)}>
-                    <FontAwesomeIcon icon={faTrash} style={{display:'inline', marginRight:'4px'}}/> Delete
-                  </button>
+
+                {/* Prices as chips */}
+                <td>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    {p.price_250g && (
+                      <span style={{ fontSize: '0.8rem', color: '#374151', display: 'flex', gap: '6px', alignItems: 'center' }}>
+                        <span style={{ fontSize: '0.68rem', fontWeight: 700, background: '#f3f4f6', color: '#6b7280', padding: '1px 5px', borderRadius: '4px' }}>250g</span>
+                        <strong style={{ color: '#0f172a' }}>Rs {Number(p.price_250g).toLocaleString()}</strong>
+                      </span>
+                    )}
+                    {p.price_500g && (
+                      <span style={{ fontSize: '0.8rem', color: '#374151', display: 'flex', gap: '6px', alignItems: 'center' }}>
+                        <span style={{ fontSize: '0.68rem', fontWeight: 700, background: '#f3f4f6', color: '#6b7280', padding: '1px 5px', borderRadius: '4px' }}>500g</span>
+                        <strong style={{ color: '#0f172a' }}>Rs {Number(p.price_500g).toLocaleString()}</strong>
+                      </span>
+                    )}
+                    {p.price_1kg && (
+                      <span style={{ fontSize: '0.8rem', color: '#374151', display: 'flex', gap: '6px', alignItems: 'center' }}>
+                        <span style={{ fontSize: '0.68rem', fontWeight: 700, background: '#f3f4f6', color: '#6b7280', padding: '1px 5px', borderRadius: '4px' }}>1 kg</span>
+                        <strong style={{ color: '#0f172a' }}>Rs {Number(p.price_1kg).toLocaleString()}</strong>
+                      </span>
+                    )}
+                  </div>
+                </td>
+
+                {/* Stock */}
+                <td style={{ textAlign: 'center' }}>
+                  <span style={{
+                    fontSize: '0.82rem', fontWeight: 700,
+                    color: p.stock === null ? '#475569'
+                      : Number(p.stock) <= 0 ? '#b91c1c'
+                      : Number(p.stock) < 10 ? '#b45309'
+                      : '#047857',
+                    background: p.stock === null ? '#f1f5f9'
+                      : Number(p.stock) <= 0 ? '#fee2e2'
+                      : Number(p.stock) < 10 ? '#fef3c7'
+                      : '#d1fae5',
+                    padding: '5px 12px',
+                    borderRadius: '20px',
+                    display: 'inline-block',
+                    minWidth: '60px',
+                    textAlign: 'center',
+                  }}>
+                    {p.stock === null ? '∞' : `${Number(p.stock)} pcs`}
+                  </span>
+                </td>
+
+                {/* Actions */}
+                <td>
+                  <div className={styles.actionsCell} style={{ justifyContent: 'flex-end' }}>
+                    <button className={styles.btnEdit} onClick={() => handleOpenModal(p)}>
+                      <FontAwesomeIcon icon={faEdit} />
+                      Edit
+                    </button>
+                    <button className={styles.btnDanger} onClick={() => handleDeleteClick(p.id)}>
+                      <FontAwesomeIcon icon={faTrash} />
+                      Delete
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+
+        {filteredProducts.length === 0 && (
+          <div style={{ textAlign: 'center', padding: '48px', color: '#94a3b8' }}>
+            <div style={{ fontSize: '2.5rem', marginBottom: '10px' }}>📦</div>
+            <p style={{ margin: 0, fontWeight: 600, color: '#475569' }}>No products match your search.</p>
+          </div>
+        )}
       </div>
+
 
       {deleteConfirmId && (
         <div className={styles.modalOverlay}>
@@ -300,6 +455,39 @@ export default function ProductsPage() {
                 </div>
               </div>
 
+              <div className={styles.formRow}>
+                <div>
+                  <label className={styles.label}>Category</label>
+                  <select className={styles.input} value={formData.category_id} onChange={e => setFormData({...formData, category_id: e.target.value})}>
+                    <option value="">Uncategorized</option>
+                    {categories.map((cat) => (
+                      <option key={cat.id} value={cat.id}>{cat.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className={styles.label}>Stock (units)</label>
+                  <input type="number" min="0" className={styles.input} value={formData.stock} onChange={e => setFormData({...formData, stock: e.target.value})} />
+                </div>
+              </div>
+
+              <div className={styles.formRow}>
+                <div>
+                  <label className={styles.label}>Badge (optional)</label>
+                  <input className={styles.input} placeholder="e.g. Best Seller" value={formData.badge} onChange={e => setFormData({...formData, badge: e.target.value})} />
+                </div>
+                <div style={{display:'flex', alignItems:'flex-end', gap:'20px', paddingBottom:'10px'}}>
+                  <label style={{display:'flex', alignItems:'center', gap:'8px', fontSize:'0.9rem', fontWeight:600, color:'#334155', cursor:'pointer'}}>
+                    <input type="checkbox" checked={formData.is_featured} onChange={e => setFormData({...formData, is_featured: e.target.checked})} />
+                    Featured
+                  </label>
+                  <label style={{display:'flex', alignItems:'center', gap:'8px', fontSize:'0.9rem', fontWeight:600, color:'#334155', cursor:'pointer'}}>
+                    <input type="checkbox" checked={formData.is_active} onChange={e => setFormData({...formData, is_active: e.target.checked})} />
+                    Active (visible in store)
+                  </label>
+                </div>
+              </div>
+
               <div className={styles.priceGrid}>
                 <div className={styles.formGroup}>
                   <label className={styles.label}>Price 250g (Rs)</label>
@@ -313,6 +501,22 @@ export default function ProductsPage() {
                   <label className={styles.label}>Price 1kg (Rs)</label>
                   <input required type="number" className={styles.input} value={formData.price_1kg} onChange={e => setFormData({...formData, price_1kg: e.target.value})} />
                 </div>
+              </div>
+
+              <div className={styles.formRow} style={{marginTop: '16px'}}>
+                <div>
+                  <label className={styles.label}>Ingredients</label>
+                  <textarea className={styles.textarea} rows={2} placeholder="e.g. Coriander, cumin, red chilli..." value={formData.ingredients} onChange={e => setFormData({...formData, ingredients: e.target.value})} />
+                </div>
+                <div>
+                  <label className={styles.label}>Storage Instructions</label>
+                  <textarea className={styles.textarea} rows={2} placeholder="Store in a cool, dry place..." value={formData.storage} onChange={e => setFormData({...formData, storage: e.target.value})} />
+                </div>
+              </div>
+
+              <div className={styles.formGroup} style={{marginTop: '16px'}}>
+                <label className={styles.label}>How to Use</label>
+                <textarea className={styles.textarea} rows={2} placeholder="Usage instructions for customers..." value={formData.how_to_use} onChange={e => setFormData({...formData, how_to_use: e.target.value})} />
               </div>
               
               <div className={styles.formGroup} style={{marginTop: '16px'}}>

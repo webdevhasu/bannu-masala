@@ -1,0 +1,58 @@
+.bar {
+  background: linear-gradient(90deg, var(--maroon-dark) 0%, var(--maroon) 55%, #8b4513 100%);
+  color: #fff8ee;
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  overflow: hidden;
+  position: relative;
+  z-index: 450;
+}
+
+.inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: 36px;
+  padding: 7px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold-light);
+  flex-shrink: 0;
+  box-shadow: 0 0 0 3px rgba(229, 181, 74, 0.18);
+}
+
+.message {
+  animation: announcementIn 0.45s ease;
+}
+
+@keyframes announcementIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .bar {
+    font-size: 0.74rem;
+  }
+
+  .inner {
+    min-height: 32px;
+    padding: 6px 14px;
+    gap: 8px;
+  }
+}

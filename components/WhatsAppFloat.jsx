@@ -1,11 +1,13 @@
 import styles from './WhatsAppFloat.module.css';
 
-const WHATSAPP_NUMBER = '923099907713';
+const FALLBACK_WHATSAPP = '923099907713';
 
-export default function WhatsAppFloat() {
+export default function WhatsAppFloat({ number }) {
+  const whatsapp = number || FALLBACK_WHATSAPP;
+
   return (
     <a
-      href={`https://wa.me/${WHATSAPP_NUMBER}?text=Assalam%20o%20Alaikum!%20I%20want%20to%20order%20from%20Bannu%20Masala.`}
+      href={`https://wa.me/${whatsapp}?text=Assalam%20o%20Alaikum!%20I%20want%20to%20order%20from%20Bannu%20Masala.`}
       target="_blank"
       rel="noopener noreferrer"
       className={styles.btn}

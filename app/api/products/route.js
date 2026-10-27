@@ -7,16 +7,17 @@ export const dynamic = 'force-dynamic';
 export async function GET() {
   try {
     const products = await sql`
-      SELECT p.*, 
-             COALESCE(AVG(r.rating), 0) AS average_rating, 
+      SELECT p.*, c.name AS category_name, c.slug AS category_slug,
+             COALESCE(AVG(r.rating), 0) AS average_rating,
              COUNT(r.id) AS review_count
       FROM products p
-      LEFT JOIN reviews r ON p.id = r.product_id
-      GROUP BY p.id
-      ORDER BY p.id ASC
+      LEFT JOIN categories c ON c.id = p.category_id
+      LEFT JOIN reviews r ON p.id = r.product_id AND r.is_approved = true
+      GROUP BY p.id, c.name, c.slug
+      ORDER BY p.is_featured DESC, p.id ASC
     `;
 
-    const formatted = products.map(p => ({
+    const formatted = products.map((p) => ({
       ...p,
       average_rating: parseFloat(p.average_rating).toFixed(1),
       review_count: parseInt(p.review_count),
@@ -30,16 +31,50 @@ export async function GET() {
   }
 }
 
+function parseNullableInt(value) {
+  const parsed = Number.parseInt(value, 10);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { name, slug, description, image, price_250g, price_500g, price_1kg, gallery, custom_variants } = body;
+    const {
+      name,
+      slug,
+      description,
+      image,
+      price_250g,
+      price_500g,
+      price_1kg,
+      gallery,
+      custom_variants,
+      category_id,
+      ingredients,
+      how_to_use,
+      storage,
+      stock,
+      is_active,
+      is_featured,
+      badge,
+    } = body;
     const galleryJson = JSON.stringify(gallery || []);
     const customVariantsJson = JSON.stringify(custom_variants || []);
 
     const result = await sql`
-      INSERT INTO products (name, slug, description, image, price_250g, price_500g, price_1kg, gallery, custom_variants)
-      VALUES (${name}, ${slug}, ${description}, ${image}, ${price_250g}, ${price_500g}, ${price_1kg}, ${galleryJson}, ${customVariantsJson})
+      INSERT INTO products (
+        name, slug, description, image, price_250g, price_500g, price_1kg,
+        gallery, custom_variants, category_id, ingredients, how_to_use, storage,
+        stock, is_active, is_featured, badge
+      )
+      VALUES (
+        ${name}, ${slug}, ${description}, ${image}, ${parseNullableInt(price_250g) || 0},
+        ${parseNullableInt(price_500g) || 0}, ${parseNullableInt(price_1kg) || 0},
+        ${galleryJson}, ${customVariantsJson}, ${parseNullableInt(category_id)},
+        ${ingredients || null}, ${how_to_use || null}, ${storage || null},
+        ${parseNullableInt(stock) ?? 100}, ${is_active !== false}, ${is_featured === true},
+        ${badge || null}
+      )
       RETURNING id
     `;
 

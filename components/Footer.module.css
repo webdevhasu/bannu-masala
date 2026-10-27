@@ -9,8 +9,8 @@
   margin: 0 auto;
   padding: 60px 24px 40px;
   display: grid;
-  grid-template-columns: 2fr 1fr 1.5fr;
-  gap: 48px;
+  grid-template-columns: 1.8fr 0.9fr 1fr 1.2fr;
+  gap: 40px;
 }
 
 .brandName {
@@ -106,22 +106,53 @@
 }
 
 .infoText {
+  display: block;
   font-size: 0.88rem;
   color: rgba(255, 255, 255, 0.7);
   padding: 5px 0;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+a.infoText:hover {
+  color: var(--gold);
 }
 
 .bottom {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding: 20px 24px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
   font-size: 0.82rem;
   color: rgba(255, 255, 255, 0.45);
+}
+
+.adminLink {
+  color: rgba(255, 255, 255, 0.4);
+  text-decoration: none;
+  font-size: 0.78rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  transition: color 0.2s;
+}
+
+.adminLink:hover {
+  color: var(--gold);
+}
+
+@media (max-width: 900px) {
+  .inner {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
 }
 
 @media (max-width: 768px) {
   .inner {
     grid-template-columns: 1fr;
     gap: 32px;
+    padding: 44px 24px 32px;
   }
 }

@@ -2,13 +2,19 @@ import Image from 'next/image';
 import styles from './page.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLeaf, faUsers, faAward, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import { getAllSettings } from '@/lib/settings';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata = {
   title: 'About Us | The Story of Bannu Masala',
-  description: 'Pure, authentic, and handcrafted spices from the heart of Bannu. Meet Hassan Irfan, the man behind Bannu Masala.',
+  description: 'Handcrafted spices from the heart of Bannu. Meet Hassan Irfan, the founder of Bannu Masala.',
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const settings = await getAllSettings();
+  const whatsapp = settings.store?.whatsapp || '923099907713';
+
   return (
     <div className={styles.aboutPage}>
       {/* Hero Section */}
@@ -48,13 +54,13 @@ export default function AboutPage() {
               <p>
                 My name is <strong>Hassan Irfan</strong>, and I am the founder of Bannu Masala.
                 Growing up in Bannu, KPK, I was surrounded by the intoxicating aromas of our
-                kitchen — spices that were pure, hand-ground, and full of life.
+                 kitchen — spices that were freshly ground and full of life.
               </p>
               <p>
                 When I moved to the city, I noticed something was missing. The spices in the
-                market were pale imitations — full of fillers, artificial colors, and chemicals.
+                market did not carry the same aroma or depth of flavour I remembered from home.
                 I could no longer find that <em>real taste</em> from back home, and I knew
-                thousands of families felt the same.
+                other families felt the same.
               </p>
               <p>
                 So I went back to my roots. I began working with trusted farmers and artisans
@@ -65,21 +71,21 @@ export default function AboutPage() {
 
               <div className={styles.founderStats}>
                 <div className={styles.stat}>
-                  <span className={styles.statNum}>100%</span>
-                  <span className={styles.statLabel}>Pure & Natural</span>
+                  <span className={styles.statNum}>Bannu</span>
+                  <span className={styles.statLabel}>Our Home</span>
                 </div>
                 <div className={styles.stat}>
-                  <span className={styles.statNum}>0</span>
-                  <span className={styles.statLabel}>Additives or Fillers</span>
+                  <span className={styles.statNum}>Small</span>
+                  <span className={styles.statLabel}>Batch Blends</span>
                 </div>
                 <div className={styles.stat}>
-                  <span className={styles.statNum}>✦</span>
-                  <span className={styles.statLabel}>Bannu Origin</span>
+                  <span className={styles.statNum}>Online</span>
+                  <span className={styles.statLabel}>Ordering</span>
                 </div>
               </div>
 
               <a
-                href="https://wa.me/923001234567"
+                href={`https://wa.me/${whatsapp}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.contactBtn}
@@ -99,23 +105,23 @@ export default function AboutPage() {
           <div className={styles.valuesGrid}>
             <div className={styles.valueCard}>
               <div className={styles.valueIcon}><FontAwesomeIcon icon={faLeaf} /></div>
-              <h3>100% Organic</h3>
-              <p>Sourced directly from farmers who avoid harmful pesticides and fertilizers.</p>
+              <h3>Whole Spices</h3>
+              <p>Sourced from trusted farmers in our region and ground fresh in small batches.</p>
             </div>
             <div className={styles.valueCard}>
               <div className={styles.valueIcon}><FontAwesomeIcon icon={faCheckCircle} /></div>
-              <h3>Zero Additives</h3>
-              <p>No MSG, no artificial colors, and no anti-caking agents. Just pure spice.</p>
+              <h3>Packed with Care</h3>
+              <p>Every order is checked and packed carefully before it is dispatched.</p>
             </div>
             <div className={styles.valueCard}>
               <div className={styles.valueIcon}><FontAwesomeIcon icon={faAward} /></div>
-              <h3>Premium Quality</h3>
-              <p>Each batch is carefully selected and checked to ensure the highest standard.</p>
+              <h3>Made for Everyday Cooking</h3>
+              <p>Blends prepared for the dishes you cook at home every day.</p>
             </div>
             <div className={styles.valueCard}>
               <div className={styles.valueIcon}><FontAwesomeIcon icon={faUsers} /></div>
-              <h3>Community First</h3>
-              <p>We take pride in supporting local artisans and spice farmers of our region.</p>
+              <h3>Easy Ordering</h3>
+              <p>Shop online in a few taps, or send your order directly on WhatsApp.</p>
             </div>
           </div>
         </div>

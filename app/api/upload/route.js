@@ -26,7 +26,7 @@ export async function POST(request) {
     const result = await cloudinary.uploader.upload(dataURI, {
       folder: 'bannu-masala',
       transformation: [
-        { width: 800, height: 800, crop: 'limit' }, // Max size
+        { width: 2000, height: 2000, crop: 'limit' }, // Max size
         { quality: 'auto' },                         // Auto compress
         { fetch_format: 'auto' }                     // Best format
       ]

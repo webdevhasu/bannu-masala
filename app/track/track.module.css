@@ -1,0 +1,427 @@
+.wrapper {
+  min-height: 80vh;
+  padding: 40px 16px 80px;
+  background-color: var(--cream);
+}
+
+.hero {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 36px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 6px 14px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: rgba(123, 28, 28, 0.08);
+  color: var(--maroon);
+  border-radius: 50px;
+  margin-bottom: 12px;
+}
+
+.title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.2rem;
+  color: var(--maroon);
+  margin-bottom: 10px;
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  color: #64748b;
+}
+
+.searchCard {
+  max-width: 640px;
+  margin: 0 auto 36px;
+  background: #ffffff;
+  padding: 28px;
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(123, 28, 28, 0.08);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 600px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.inputGroup label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #334155;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.inputField {
+  padding: 12px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: #1e293b;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background-color: #f8fafc;
+}
+
+.inputField:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201, 147, 42, 0.18);
+  background-color: #ffffff;
+}
+
+.trackBtn {
+  width: 100%;
+  padding: 14px;
+  background-color: var(--maroon);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.trackBtn:hover:not(:disabled) {
+  background-color: var(--maroon-dark);
+}
+
+.trackBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.errorBanner {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  margin-bottom: 24px;
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Order Result Section */
+.orderCard {
+  max-width: 680px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: var(--border-radius);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(123, 28, 28, 0.1);
+  overflow: hidden;
+}
+
+.orderHeader {
+  padding: 24px 28px;
+  background: linear-gradient(135deg, #fdf6ec, #f5e8d3);
+  border-bottom: 1px solid rgba(123, 28, 28, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.orderRefLabel {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.orderRefNumber {
+  font-size: 1.35rem;
+  font-weight: 800;
+  font-family: monospace;
+  color: var(--maroon);
+  margin-top: 2px;
+}
+
+.statusTag {
+  padding: 8px 16px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-radius: 50px;
+  background: var(--gold);
+  color: #1a0a0a;
+}
+
+/* Timeline */
+.timelineBox {
+  padding: 32px 24px;
+  background: #ffffff;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.timelineRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+
+.stepItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  min-width: 60px;
+}
+
+.stepCircle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+  background: #e2e8f0;
+  color: #64748b;
+  transition: all 0.3s;
+}
+
+.stepCircleActive {
+  background: #16a34a;
+  color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.15);
+}
+
+.stepLabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 8px;
+  color: #94a3b8;
+  white-space: nowrap;
+}
+
+.stepLabelActive {
+  color: #16a34a;
+}
+
+.stepLine {
+  flex: 1;
+  height: 3px;
+  background: #e2e8f0;
+  margin: 0 4px 20px;
+}
+
+.stepLineActive {
+  background: #16a34a;
+}
+
+/* Alert Boxes for Cancelled / Returned */
+.specialStatusBox {
+  padding: 16px 20px;
+  margin: 20px 24px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.cancelledBox {
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+  color: #b91c1c;
+}
+
+.returnedBox {
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  color: #b45309;
+}
+
+/* Shipment Courier Live Box */
+.shipmentCard {
+  margin: 24px;
+  padding: 20px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.shipmentInfoTitle {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #166534;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.shipmentInfoText {
+  font-size: 0.95rem;
+  color: #14532d;
+}
+
+.liveTrackBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #16a34a;
+  color: #ffffff;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: background 0.2s;
+}
+
+.liveTrackBtn:hover {
+  background: #15803d;
+}
+
+/* Items List */
+.itemsBox {
+  padding: 24px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.sectionHeader {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--maroon);
+  margin-bottom: 16px;
+}
+
+.itemRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid #f8fafc;
+}
+
+.itemRow:last-child {
+  border-bottom: none;
+}
+
+.itemImg {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  flex-shrink: 0;
+}
+
+.itemInfo {
+  flex: 1;
+}
+
+.itemName {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.itemMeta {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.itemPrice {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--maroon);
+  white-space: nowrap;
+}
+
+/* Summary Details */
+.summaryBox {
+  padding: 20px 24px;
+  background: #fafaf9;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: #475569;
+  margin-bottom: 10px;
+}
+
+.summaryTotalRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--maroon);
+  padding-top: 12px;
+  margin-top: 8px;
+  border-top: 1px dashed #cbd5e1;
+}
+
+/* Contact / Actions at Bottom */
+.footerActions {
+  padding: 20px 24px;
+  background: #ffffff;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.whatsappHelpBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #25d366;
+  color: #ffffff;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.whatsappHelpBtn:hover {
+  background: #20ba59;
+}

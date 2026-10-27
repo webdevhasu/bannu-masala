@@ -5,8 +5,6 @@ import { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import styles from './page.module.css';
 
-const WHATSAPP_NUMBER = '923099907713';
-
 export default function CheckoutPage() {
   return (
     <Suspense fallback={<div>Loading checkout...</div>}>
@@ -18,16 +16,49 @@ export default function CheckoutPage() {
 function CheckoutContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { items: cartItems, selectedKeys, subtotal: cartSubtotal, shipping: cartShipping, total: cartTotal, clearSelectedCart } = useCart();
+  const { items: cartItems, selectedKeys, subtotal: cartSubtotal, clearSelectedCart } = useCart();
   
   const [buyNowItem, setBuyNowItem] = useState(null);
   const [isBuyNow, setIsBuyNow] = useState(false);
   const [loadingProduct, setLoadingProduct] = useState(false);
+  const [shippingConfig, setShippingConfig] = useState({ flat_rate: 200, free_threshold: 0 });
+  const [paymentMethods, setPaymentMethods] = useState([]);
+  const [paymentMethod, setPaymentMethod] = useState('');
+  const [storeWhatsapp, setStoreWhatsapp] = useState('923099907713');
 
-  const [form, setForm] = useState({ name: '', phone: '', address: '', city: '' });
+  const [form, setForm] = useState({ name: '', phone: '', address: '', city: '', landmark: '' });
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
-  const [orderPlaced, setOrderPlaced] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [orderResult, setOrderResult] = useState(null);
+
+  useEffect(() => {
+    fetch('/api/settings/public')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.shipping) {
+          setShippingConfig({
+            flat_rate: Number(data.shipping.flat_rate) || 0,
+            free_threshold: Number(data.shipping.free_threshold) || 0,
+          });
+        }
+
+        const methods = [...(data?.payment?.methods || [])].filter(Boolean);
+        if (
+          data?.payment?.cod_enabled &&
+          !methods.some((method) => /cash/i.test(method))
+        ) {
+          methods.unshift('Cash on Delivery');
+        }
+        setPaymentMethods(methods);
+        setPaymentMethod((current) => current || methods[0] || '');
+
+        if (data?.store?.whatsapp) {
+          setStoreWhatsapp(data.store.whatsapp);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const productId = searchParams.get('productId');
@@ -41,7 +72,8 @@ function CheckoutContent() {
         .then(res => res.json())
         .then(product => {
           if (product && !product.error) {
-            const price = product.variants ? (parseInt(product.variants[variant], 10) || 0) : 0;
+            const deal = (product.deals || []).find((d) => d.variant === variant);
+            const price = deal?.sale_price || (product.variants ? (parseInt(product.variants[variant], 10) || 0) : 0);
             if (!price) return;
 
             setBuyNowItem({
@@ -50,6 +82,7 @@ function CheckoutContent() {
               variant,
               qty,
               price,
+              originalPrice: deal?.original_price || null,
               image: product.image,
               key: `buy-now-${product.id}`
             });
@@ -62,7 +95,9 @@ function CheckoutContent() {
 
   const activeItems = isBuyNow ? (buyNowItem ? [buyNowItem] : []) : cartItems.filter(i => selectedKeys?.includes(i.key));
   const subtotal = isBuyNow ? (buyNowItem ? buyNowItem.price * buyNowItem.qty : 0) : cartSubtotal;
-  const shipping = 200;
+  const flatRate = Number(shippingConfig.flat_rate) || 0;
+  const freeThreshold = Number(shippingConfig.free_threshold) || 0;
+  const shipping = freeThreshold > 0 && subtotal >= freeThreshold ? 0 : flatRate;
   const total = subtotal + shipping;
 
   const validate = () => {
@@ -89,6 +124,8 @@ function CheckoutContent() {
       `Phone: ${form.phone}`,
       `City: ${form.city}`,
       `Address: ${form.address}`,
+      ...(form.landmark ? [`Landmark: ${form.landmark}`] : []),
+      ...(paymentMethod ? [`Payment Method: ${paymentMethod}`] : []),
       ``,
       `*Order Details:*`,
       ...activeItems.map(i => `• ${i.name} (${i.variant}) × ${i.qty} = Rs ${(i.price * i.qty).toLocaleString()}`),
@@ -102,11 +139,15 @@ function CheckoutContent() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitError('');
     if (!validate()) return;
-    if (activeItems.length === 0) { alert('Your order is empty!'); return; }
+    if (activeItems.length === 0) {
+      setSubmitError('Your order is empty. Please add a product before checking out.');
+      return;
+    }
 
     setSubmitting(true);
-    
+
     try {
       // Save order to database
       const orderData = {
@@ -114,6 +155,8 @@ function CheckoutContent() {
         phone: form.phone,
         city: form.city,
         address: form.address,
+        landmark: form.landmark,
+        payment_method: paymentMethod,
         items: activeItems.map(i => ({
           id: i.id,
           variant: i.variant,
@@ -129,14 +172,18 @@ function CheckoutContent() {
       const result = await res.json().catch(() => null);
       if (!res.ok) throw new Error(result?.error || 'Failed to place order');
 
-      // Show success state instead of WhatsApp redirect
+      const confirmationMessage = buildMessage();
+      setOrderResult({
+        ...result,
+        payment_method: result.payment_method || paymentMethod,
+        message: confirmationMessage,
+      });
       if (!isBuyNow) clearSelectedCart();
       setSubmitting(false);
-      setOrderPlaced(true);
 
     } catch (error) {
       console.error(error);
-      alert(error?.message || 'There was an error processing your order. Please try again.');
+      setSubmitError(error?.message || 'There was an error processing your order. Please try again.');
       setSubmitting(false);
     }
   };
@@ -155,21 +202,58 @@ function CheckoutContent() {
     <div className={styles.wrapper}>
       <div className={styles.pageHero}>
         <h1 className={styles.heroTitle}>Checkout</h1>
-        <p className={styles.heroSub}>Just a few details and your order is on its way!</p>
+        <p className={styles.heroSub}>Just a few details to complete your order.</p>
       </div>
 
       <div className="container">
         <div className={styles.grid}>
           {/* Form or Success State */}
-          <div className={styles.formCard}>
-            {orderPlaced ? (
+          <div className={`${styles.formCard} ${orderResult ? styles.formCardWide : ''}`}>
+            {orderResult ? (
               <div style={{ textAlign: 'center', padding: '40px 20px' }}>
                 <div style={{ fontSize: '48px', marginBottom: '16px' }}>🎉</div>
                 <h2 style={{ color: 'var(--maroon)', marginBottom: '8px' }}>Order Placed Successfully!</h2>
-                <p style={{ color: '#475569', marginBottom: '24px' }}>Thank you for your order. We will contact you shortly to confirm delivery.</p>
-                <Link href="/#products" className={styles.submitBtn} style={{ display: 'inline-block', textDecoration: 'none', width: 'auto', padding: '12px 32px' }}>
-                  Continue Shopping
-                </Link>
+                <p style={{ color: '#475569', marginBottom: '20px' }}>
+                  Thank you, {form.name.split(' ')[0] || 'friend'}! Your order{' '}
+                  <strong>#{orderResult.id}</strong> has been received. We will contact you shortly
+                  to confirm delivery.
+                </p>
+
+                <div className={styles.confirmDetails}>
+                  <div>
+                    <span>Order Total</span>
+                    <strong>Rs {Number(orderResult.total).toLocaleString()}</strong>
+                  </div>
+                  <div>
+                    <span>Payment Method</span>
+                    <strong>{orderResult.payment_method || 'To be confirmed'}</strong>
+                  </div>
+                  <div>
+                    <span>Delivering To</span>
+                    <strong>{form.city}</strong>
+                  </div>
+                </div>
+
+                <div className={styles.confirmActions}>
+                  <Link
+                    href={`/track?order=BM-${orderResult.id}&phone=${encodeURIComponent(form.phone)}`}
+                    className={styles.confirmWa}
+                    style={{ background: 'var(--maroon)' }}
+                  >
+                    Track Your Order Live
+                  </Link>
+                  <a
+                    href={`https://wa.me/${storeWhatsapp}?text=${encodeURIComponent(orderResult.message)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.confirmSecondary}
+                  >
+                    Send Order on WhatsApp
+                  </a>
+                  <Link href="/products" className={styles.confirmSecondary}>
+                    Continue Shopping
+                  </Link>
+                </div>
               </div>
             ) : (
               <>
@@ -225,6 +309,50 @@ function CheckoutContent() {
                     />
                     {errors.address && <p className={styles.error}>{errors.address}</p>}
                   </div>
+                  <div className={styles.field}>
+                    <label className={styles.label}>Landmark (optional)</label>
+                    <input
+                      className={styles.input}
+                      name="landmark"
+                      value={form.landmark}
+                      onChange={handleChange}
+                      placeholder="Nearby mosque, school, or shop"
+                    />
+                    <p className={styles.hint}>Helps the rider find your address faster.</p>
+                  </div>
+
+                  {paymentMethods.length > 0 && (
+                    <div className={styles.field}>
+                      <label className={styles.label}>Payment Method *</label>
+                      <div className={styles.paymentOptions}>
+                        {paymentMethods.map((method) => (
+                          <label
+                            key={method}
+                            className={`${styles.paymentOption} ${
+                              paymentMethod === method ? styles.paymentActive : ''
+                            }`}
+                          >
+                            <input
+                              type="radio"
+                              name="paymentMethod"
+                              value={method}
+                              checked={paymentMethod === method}
+                              onChange={() => setPaymentMethod(method)}
+                            />
+                            <span>{method}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {paymentMethods.length === 0 && (
+                    <p className={styles.note}>
+                      Payment method will be confirmed when we call to confirm your order.
+                    </p>
+                  )}
+
+                  {submitError && <p className={styles.submitError}>{submitError}</p>}
 
                   <button
                     type="submit"
@@ -239,6 +367,7 @@ function CheckoutContent() {
           </div>
 
           {/* Order Summary */}
+          {!orderResult && (
           <div className={styles.summary}>
             <h2 className={styles.sectionHead}>Order Summary {isBuyNow && <span style={{fontSize:'0.8rem', color: 'var(--maroon)'}}>(Direct Buy)</span>}</h2>
             {activeItems.length === 0 ? (
@@ -257,6 +386,11 @@ function CheckoutContent() {
                       <div className={styles.itemInfo}>
                         <p className={styles.itemName}>{item.name}</p>
                         <p className={styles.itemMeta}>{item.variant} × {item.qty}</p>
+                        {item.originalPrice > item.price && (
+                          <p className={styles.itemMeta} style={{ color: '#15803d', fontWeight: 600 }}>
+                            Deal price applied — was Rs {Number(item.originalPrice).toLocaleString()}
+                          </p>
+                        )}
                       </div>
                       <p className={styles.itemPrice}>Rs {(item.price * item.qty).toLocaleString()}</p>
                     </div>
@@ -270,9 +404,15 @@ function CheckoutContent() {
                   <div className={styles.row}>
                     <span>Shipping</span>
                     <span>
-                      Rs {shipping}
+                      {shipping === 0 ? 'Free' : `Rs ${shipping}`}
                     </span>
                   </div>
+
+                  {freeThreshold > 0 && subtotal < freeThreshold && (
+                    <p className={styles.itemMeta} style={{ marginBottom: '8px' }}>
+                      Add Rs {(freeThreshold - subtotal).toLocaleString()} more for free delivery.
+                    </p>
+                  )}
 
                   <div className={`${styles.row} ${styles.totalRow}`}>
                     <span>Total</span>
@@ -282,6 +422,7 @@ function CheckoutContent() {
               </>
             )}
           </div>
+          )}
         </div>
       </div>
     </div>

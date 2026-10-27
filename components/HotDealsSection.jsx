@@ -1,11 +1,16 @@
 'use client';
 import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFire, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { faFire, faArrowRight, faClock } from '@fortawesome/free-solid-svg-icons';
 import { useCart } from './CartContext';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import styles from './HotDealsSection.module.css';
+
+function formatDate(value) {
+  if (!value) return null;
+  return new Date(value).toLocaleDateString('en-PK', { day: 'numeric', month: 'short' });
+}
 
 export default function HotDealsSection({ deals }) {
   const { addToCart } = useCart();
@@ -14,17 +19,19 @@ export default function HotDealsSection({ deals }) {
   if (!deals || deals.length === 0) return null;
 
   const handleGrabDeal = (deal) => {
+    if (!deal.product_id) {
+      router.push(deal.link || '/products');
+      return;
+    }
+
     const dealProduct = {
-      id: `deal-${deal.id}`,
-      name: deal.title,
-      image: deal.image,
-      variants: {
-        'Hot Deal': deal.price
-      }
+      id: deal.product_id,
+      name: deal.product_name || deal.title,
+      image: deal.product_image || deal.image,
+      variants: { [deal.variant]: deal.sale_price },
     };
-    // Add to cart without opening sidebar
-    addToCart(dealProduct, 'Hot Deal', 1, false);
-    // Go to checkout
+
+    addToCart(dealProduct, deal.variant, 1, false);
     router.push('/checkout');
   };
 
@@ -32,7 +39,7 @@ export default function HotDealsSection({ deals }) {
     <section className={styles.section}>
       <div className="container">
         <div className={styles.header}>
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -41,42 +48,63 @@ export default function HotDealsSection({ deals }) {
             <FontAwesomeIcon icon={faFire} className={styles.fireIcon} />
             <h2 className={styles.title}>Hot Deals</h2>
           </motion.div>
-          <p className={styles.subtitle}>Limited time offers crafted just for you.</p>
+          <div className={styles.headerBottom}>
+            <p className={styles.subtitle}>Limited time offers crafted just for you.</p>
+            <Link href="/deals" className={styles.viewAll}>
+              View All Deals <FontAwesomeIcon icon={faArrowRight} />
+            </Link>
+          </div>
         </div>
 
         <div className={styles.sliderContainer}>
           <div className={styles.slider}>
-            {deals.map((deal, index) => (
-              <motion.div
-                key={deal.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
-                className={styles.card}
-              >
-                <div className={styles.imageContainer}>
-                  {deal.image && <img src={deal.image} alt={deal.title} className={styles.image} />}
-                  <div className={styles.badge}>Save Big</div>
-                </div>
-                
-                <div className={styles.content}>
-                  <h3 className={styles.cardTitle}>{deal.title}</h3>
-                  {deal.description && <p className={styles.description}>{deal.description}</p>}
-                  
-                  <div className={styles.priceRow}>
-                    {deal.original_price > 0 && (
-                      <span className={styles.originalPrice}>Rs {deal.original_price}</span>
-                    )}
-                    <span className={styles.price}>Rs {deal.price}</span>
-                  </div>
+            {deals.map((deal, index) => {
+              const title = deal.product_name || deal.title;
+              const image = deal.product_image || deal.image;
+              const endDate = formatDate(deal.end_at);
 
-                  <button onClick={() => handleGrabDeal(deal)} className={styles.btn}>
-                    Grab Deal <FontAwesomeIcon icon={faArrowRight} style={{marginLeft: '8px'}} />
-                  </button>
-                </div>
-              </motion.div>
-            ))}
+              return (
+                <motion.div
+                  key={deal.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1, duration: 0.5 }}
+                  className={styles.card}
+                >
+                  <Link
+                    href={deal.product_id ? `/products/${deal.product_slug}` : deal.link || '/products'}
+                    className={styles.imageContainer}
+                  >
+                    {image && <img src={image} alt={title} className={styles.image} />}
+                    <div className={styles.badge}>{deal.discount_percent}% OFF</div>
+                  </Link>
+
+                  <div className={styles.content}>
+                    <h3 className={styles.cardTitle}>{title}</h3>
+                    {deal.variant && <p className={styles.variant}>{deal.variant} pack</p>}
+                    {endDate && (
+                      <p className={styles.endsOn}>
+                        <FontAwesomeIcon icon={faClock} /> Offer ends {endDate}
+                      </p>
+                    )}
+
+                    <div className={styles.priceRow}>
+                      <span className={styles.price}>Rs {Number(deal.sale_price).toLocaleString()}</span>
+                      {deal.original_price > 0 && (
+                        <span className={styles.originalPrice}>
+                          Rs {Number(deal.original_price).toLocaleString()}
+                        </span>
+                      )}
+                    </div>
+
+                    <button onClick={() => handleGrabDeal(deal)} className={styles.btn}>
+                      Grab Deal <FontAwesomeIcon icon={faArrowRight} style={{ marginLeft: '8px' }} />
+                    </button>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </div>

@@ -1,20 +1,40 @@
 import { NextResponse } from 'next/server';
 import sql from '@/lib/db';
 
+const ALLOWED_STATUSES = [
+  'pending',
+  'confirmed',
+  'dispatched',
+  'delivered',
+  'shipped',
+  'completed',
+  'returned',
+  'cancelled',
+];
+
 export async function PATCH(request, props) {
   try {
     const params = await props.params;
-    const id = parseInt(params.id);
+    const id = parseInt(params.id, 10);
     const body = await request.json();
 
     if (!body.status) {
       return NextResponse.json({ error: 'Status is required' }, { status: 400 });
     }
 
+    if (!ALLOWED_STATUSES.includes(body.status)) {
+      return NextResponse.json({ error: 'Invalid order status' }, { status: 400 });
+    }
+
     let result;
-    if (body.tracking_number !== undefined) {
+    if (body.tracking_number !== undefined || body.courier_name !== undefined) {
       result = await sql`
-        UPDATE orders SET status = ${body.status}, tracking_number = ${body.tracking_number} WHERE id = ${id} RETURNING id
+        UPDATE orders 
+        SET status = ${body.status}, 
+            tracking_number = COALESCE(${body.tracking_number !== undefined ? body.tracking_number : null}, tracking_number),
+            courier_name = COALESCE(${body.courier_name !== undefined ? body.courier_name : null}, courier_name)
+        WHERE id = ${id} 
+        RETURNING id
       `;
     } else {
       result = await sql`

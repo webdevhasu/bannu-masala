@@ -129,6 +129,27 @@
   font-size: 0.8rem;
   font-weight: 700;
 }
+.badgeDeal {
+  background: #fee2e2;
+  color: #b91c1c;
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+}
+
+.categoryLink {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--gold-dark, #a17c1a);
+  text-decoration: none;
+  margin-bottom: 12px;
+}
+.categoryLink:hover { text-decoration: underline; }
 
 .productName {
   font-family: 'Playfair Display', serif;
@@ -167,10 +188,65 @@
   display: flex;
   align-items: baseline;
   gap: 12px;
-  margin-bottom: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
 }
 .priceLabel { font-size: 1rem; color: #64748b; }
 .priceValue { font-size: 2rem; font-weight: 800; color: var(--maroon); }
+
+.originalPrice {
+  font-size: 1.1rem;
+  color: #94a3b8;
+  text-decoration: line-through;
+}
+
+.saveBadge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: #047857;
+  background: #d1fae5;
+  border-radius: 999px;
+  padding: 4px 10px;
+}
+
+.dealEnds {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #b45309;
+  margin: 0 0 20px;
+}
+
+.dealDot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.stockNote {
+  font-size: 0.82rem;
+  color: #64748b;
+  margin: 4px 0 16px;
+}
+
+.stockNoteLow {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #b45309;
+  margin: 4px 0 16px;
+}
+
+.stockNoteOut {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #b91c1c;
+  margin: 4px 0 16px;
+}
 
 .selectorGroup { margin-bottom: 20px; }
 .selectorGroup label { display: block; font-size: 0.9rem; font-weight: 600; color: #0f172a; margin-bottom: 8px; }
@@ -210,6 +286,10 @@
   border-radius: 6px;
   font-weight: bold;
   cursor: pointer;
+}
+.qtyControl button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 .qtyControl span { font-weight: 700; width: 24px; text-align: center; }
 
@@ -256,6 +336,37 @@
   box-shadow: 0 6px 20px rgba(123, 28, 28, 0.3);
 }
 
+.addToCartBtn:disabled,
+.buyNowBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.whatsappOrderBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #25d366;
+  color: #ffffff;
+  padding: 15px 20px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-decoration: none;
+  margin-top: 14px;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.22);
+  transition: all 0.2s ease;
+}
+
+.whatsappOrderBtn:hover {
+  background: #20ba59;
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.32);
+  transform: translateY(-2px);
+}
+
 @media (max-width: 600px) {
   .btnGroup { grid-template-columns: 1fr; }
 }
@@ -291,6 +402,62 @@
 
 .customToggle:hover {
   opacity: 0.8;
+}
+
+/* Product Info */
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  margin-bottom: 60px;
+}
+
+.infoCard {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 26px 28px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.03);
+}
+
+.infoTitle {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  color: var(--maroon);
+  margin: 0 0 10px;
+}
+
+.infoText {
+  font-size: 0.92rem;
+  color: #475569;
+  line-height: 1.7;
+  margin: 0;
+  white-space: pre-line;
+}
+
+/* Related Products */
+.relatedSection {
+  margin-top: 70px;
+}
+
+.relatedTitle {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  color: var(--maroon);
+  text-align: center;
+  margin: 0 0 8px;
+}
+
+.relatedSubtitle {
+  text-align: center;
+  color: #64748b;
+  margin: 0 0 32px;
+}
+
+.relatedGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 28px;
 }
 
 /* Reviews Section */
@@ -372,6 +539,40 @@
 .reviewStars { display: flex; gap: 2px; }
 .reviewComment { font-size: 0.95rem; color: #475569; line-height: 1.6; }
 
+.verifiedBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  color: #047857;
+  background: #d1fae5;
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+
+.formNote {
+  font-size: 0.78rem;
+  color: #94a3b8;
+  margin-top: 10px;
+}
+
+.reviewSuccess {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.88rem;
+  color: #047857;
+  background: #d1fae5;
+  border: 1px solid #a7f3d0;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
 .seeMoreBtn {
   width: 100%;
   padding: 12px;
@@ -420,4 +621,8 @@
   
   .perks { margin-top: 20px; }
   .perk { font-size: 0.85rem; }
+
+  .infoCard { padding: 20px; }
+  .relatedGrid { grid-template-columns: 1fr; }
+  .relatedTitle { font-size: 1.6rem; }
 }

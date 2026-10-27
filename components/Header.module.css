@@ -53,15 +53,16 @@
 .nav {
   display: flex;
   align-items: center;
-  gap: 36px;
+  gap: 24px;
 }
 .navLink {
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   font-weight: 500;
-  color: var(--text-mid);
+  color: var(--text-secondary);
   text-decoration: none;
   position: relative;
   transition: color 0.2s;
+  white-space: nowrap;
 }
 .navLink::after {
   content: '';
@@ -77,7 +78,58 @@
 .navLink:hover { color: var(--maroon); }
 .navLink:hover::after { width: 100%; }
 
-.actions { display: flex; align-items: center; gap: 12px; }
+.actions { display: flex; align-items: center; gap: 10px; }
+
+.searchForm,
+.mobileSearch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 50px;
+  padding: 9px 14px;
+  width: 190px;
+  transition: var(--transition);
+}
+
+.searchForm:focus-within,
+.mobileSearch:focus-within {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201, 147, 42, 0.12);
+}
+
+.searchIcon {
+  color: var(--maroon);
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.searchInput {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  width: 100%;
+  min-width: 0;
+}
+
+.searchInput::placeholder {
+  color: var(--text-muted);
+}
+
+.mobileSearch {
+  width: auto;
+  margin: 14px 24px 4px;
+  background: var(--bg-secondary);
+}
+
+@media (max-width: 1100px) {
+  .searchForm { display: none; }
+  .nav { gap: 18px; }
+}
 
 .waBtn {
   display: flex;
@@ -151,7 +203,7 @@
 .userName {
   font-size: 0.9rem;
   font-weight: 600;
-  color: var(--text-dark);
+  color: var(--text-primary);
 }
 
 .dropdownMenu {
@@ -285,12 +337,12 @@
   overflow: hidden;
   transition: max-height 0.4s ease;
 }
-.mobileMenuOpen { max-height: 320px; }
+.mobileMenuOpen { max-height: 620px; }
 .mobileLink {
-  padding: 16px 24px;
-  font-size: 1rem;
+  padding: 15px 24px;
+  font-size: 0.98rem;
   font-weight: 500;
-  color: var(--text-mid);
+  color: var(--text-secondary);
   border-bottom: 1px solid rgba(123,28,28,0.06);
   text-decoration: none;
   transition: background 0.2s;

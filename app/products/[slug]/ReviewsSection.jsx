@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar, faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import { faStar, faUserCircle, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 import styles from './page.module.css';
 
 export default function ReviewsSection({ productId }) {
@@ -10,7 +10,9 @@ export default function ReviewsSection({ productId }) {
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState('');
   const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
   const [visibleCount, setVisibleCount] = useState(10);
 
   useEffect(() => {
@@ -22,7 +24,7 @@ export default function ReviewsSection({ productId }) {
       const res = await fetch(`/api/reviews/${productId}`);
       const data = await res.json();
       if (res.ok) {
-        setReviews(data);
+        setReviews(Array.isArray(data) ? data : []);
       }
     } catch (err) {
       console.error('Failed to fetch reviews', err);
@@ -33,9 +35,10 @@ export default function ReviewsSection({ productId }) {
 
   const handleSubmitReview = async (e) => {
     e.preventDefault();
-    
+    setSuccessMessage('');
+
     if (!name.trim()) {
-      alert("Please enter your name");
+      alert('Please enter your name');
       return;
     }
 
@@ -44,20 +47,26 @@ export default function ReviewsSection({ productId }) {
       const res = await fetch(`/api/reviews/${productId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ rating, comment, name })
+        body: JSON.stringify({ rating, comment, name, phone }),
       });
-      
+
       const result = await res.json();
       if (res.ok) {
         setComment('');
         setName('');
-        fetchReviews(); // Refresh list
+        setPhone('');
+        setRating(5);
+        setSuccessMessage(
+          result.verified
+            ? 'Thank you! Your verified review has been submitted and will appear after approval.'
+            : 'Thank you! Your review has been submitted and will appear after approval.'
+        );
       } else {
         alert(result.error);
       }
     } catch (err) {
       console.error(err);
-      alert("Failed to submit review");
+      alert('Failed to submit review');
     } finally {
       setSubmitting(false);
     }
@@ -66,7 +75,7 @@ export default function ReviewsSection({ productId }) {
   return (
     <div className={styles.reviewsContainer}>
       <h2 className={styles.reviewsTitle}>Customer Reviews</h2>
-      
+
       <div className={styles.reviewsList}>
         {loading ? (
           <p>Loading reviews...</p>
@@ -74,22 +83,27 @@ export default function ReviewsSection({ productId }) {
           <p className={styles.emptyReviews}>No reviews yet. Be the first to review this product!</p>
         ) : (
           <>
-            {reviews.slice(0, visibleCount).map(review => (
+            {reviews.slice(0, visibleCount).map((review) => (
               <div key={review.id} className={styles.reviewCard}>
                 <div className={styles.reviewHeader}>
                   <div className={styles.reviewUser}>
                     <FontAwesomeIcon icon={faUserCircle} className={styles.userIcon} />
                     <span>{review.reviewer_name}</span>
+                    {review.is_verified && (
+                      <span className={styles.verifiedBadge} title="Verified purchase">
+                        <FontAwesomeIcon icon={faCircleCheck} /> Verified
+                      </span>
+                    )}
                     <span className={styles.reviewDate}>
                       {new Date(review.created_at).toLocaleDateString()}
                     </span>
                   </div>
                   <div className={styles.reviewStars}>
-                    {[1, 2, 3, 4, 5].map(star => (
-                      <FontAwesomeIcon 
-                        key={star} 
-                        icon={faStar} 
-                        color={star <= review.rating ? '#fbbf24' : '#cbd5e1'} 
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <FontAwesomeIcon
+                        key={star}
+                        icon={faStar}
+                        color={star <= review.rating ? '#fbbf24' : '#cbd5e1'}
                         size="sm"
                       />
                     ))}
@@ -98,11 +112,11 @@ export default function ReviewsSection({ productId }) {
                 <p className={styles.reviewComment}>{review.comment}</p>
               </div>
             ))}
-            
+
             {reviews.length > visibleCount && (
-              <button 
-                className={styles.seeMoreBtn} 
-                onClick={() => setVisibleCount(prev => prev + 10)}
+              <button
+                className={styles.seeMoreBtn}
+                onClick={() => setVisibleCount((prev) => prev + 10)}
               >
                 See More Reviews ({reviews.length - visibleCount} left)
               </button>
@@ -113,10 +127,27 @@ export default function ReviewsSection({ productId }) {
 
       <div className={styles.reviewFormBox}>
         <h3>Write a Review</h3>
+
+        {successMessage && (
+          <p className={styles.reviewSuccess}>
+            <FontAwesomeIcon icon={faCircleCheck} /> {successMessage}
+          </p>
+        )}
+
         <form onSubmit={handleSubmitReview}>
-          <div className={styles.formGroup} style={{marginBottom: '16px'}}>
-            <label style={{display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#334155', marginBottom: '8px'}}>Your Name</label>
-            <input 
+          <div className={styles.formGroup} style={{ marginBottom: '16px' }}>
+            <label
+              style={{
+                display: 'block',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                color: '#334155',
+                marginBottom: '8px',
+              }}
+            >
+              Your Name
+            </label>
+            <input
               type="text"
               className={styles.reviewInput}
               placeholder="e.g. Hassan Ali"
@@ -125,17 +156,42 @@ export default function ReviewsSection({ productId }) {
               required
             />
           </div>
+
+          <div className={styles.formGroup} style={{ marginBottom: '16px' }}>
+            <label
+              style={{
+                display: 'block',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                color: '#334155',
+                marginBottom: '8px',
+              }}
+            >
+              Phone Number (optional — for verified purchase badge)
+            </label>
+            <input
+              type="tel"
+              className={styles.reviewInput}
+              placeholder="0300 1234567"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+          </div>
+
           <div className={styles.starSelect}>
-            {[1, 2, 3, 4, 5].map(star => (
+            {[1, 2, 3, 4, 5].map((star) => (
               <FontAwesomeIcon
                 key={star}
                 icon={faStar}
                 color={star <= rating ? '#fbbf24' : '#cbd5e1'}
                 className={styles.clickableStar}
                 onClick={() => setRating(star)}
+                role="button"
+                aria-label={`${star} star${star > 1 ? 's' : ''}`}
               />
             ))}
           </div>
+
           <textarea
             className={styles.reviewInput}
             rows={3}
@@ -144,9 +200,14 @@ export default function ReviewsSection({ productId }) {
             onChange={(e) => setComment(e.target.value)}
             required
           />
+
           <button className={styles.submitReviewBtn} disabled={submitting}>
             {submitting ? 'Submitting...' : 'Submit Review'}
           </button>
+
+          <p className={styles.formNote}>
+            Reviews are checked by our team before they are published.
+          </p>
         </form>
       </div>
     </div>

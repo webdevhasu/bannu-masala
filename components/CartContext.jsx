@@ -7,6 +7,7 @@ export function CartProvider({ children }) {
   const [items, setItems] = useState([]);
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [shippingConfig, setShippingConfig] = useState({ flat_rate: 200, free_threshold: 0 });
 
   useEffect(() => {
     try {
@@ -30,6 +31,20 @@ export function CartProvider({ children }) {
     localStorage.setItem('bm-cart-sel', JSON.stringify(selectedKeys));
   }, [items, selectedKeys]);
 
+  useEffect(() => {
+    fetch('/api/settings/public')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.shipping) {
+          setShippingConfig({
+            flat_rate: Number(data.shipping.flat_rate) || 0,
+            free_threshold: Number(data.shipping.free_threshold) || 0,
+          });
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   const addToCart = (product, variant, quantity = 1, openSidebar = true) => {
     setItems(prev => {
       const key = `${product.id}-${variant}`;
@@ -38,7 +53,9 @@ export function CartProvider({ children }) {
       const price = product.variants ? (parseInt(product.variants[variant], 10) || 0) : 0;
 
       if (existing) {
-        return prev.map(i => i.key === key ? { ...i, qty: i.qty + (quantity || 1) } : i);
+        return prev.map(i => i.key === key
+          ? { ...i, qty: i.qty + (quantity || 1), price: price || i.price }
+          : i);
       }
       return [...prev, {
         key,
@@ -83,14 +100,16 @@ export function CartProvider({ children }) {
 
   const selectedItems = items.filter(i => selectedKeys.includes(i.key));
   const subtotal = selectedItems.reduce((sum, i) => sum + i.price * i.qty, 0);
-  const shipping = 200;
+  const shipping = shippingConfig.free_threshold > 0 && subtotal >= shippingConfig.free_threshold
+    ? 0
+    : shippingConfig.flat_rate;
   const total = subtotal + shipping;
   const itemCount = items.reduce((sum, i) => sum + i.qty, 0);
 
   return (
     <CartContext.Provider value={{
       items, selectedKeys, toggleSelection, addToCart, removeFromCart, updateQty, clearCart, clearSelectedCart,
-      subtotal, shipping, total, itemCount,
+      subtotal, shipping, total, itemCount, shippingConfig,
       sidebarOpen, setSidebarOpen,
     }}>
       {children}
