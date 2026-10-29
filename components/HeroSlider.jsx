@@ -33,32 +33,14 @@ export default function HeroSlider({ hero, storeWhatsapp }) {
     <section className={styles.hero}>
       <div className={styles.ambientGlow} />
 
-      <div className="container">
+      <div className={styles.heroContainer}>
         <div className={styles.bannerGrid}>
-          {/* Left: 3 Spices Pouches Showcase */}
+          {/* Left Column: Text, CTAs & Trust Bar */}
           <motion.div
-            className={styles.imageCol}
+            className={styles.textCol}
             initial={{ opacity: 0, x: -35 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, ease: 'easeOut' }}
-          >
-            <div className={styles.pouchWrap}>
-              <div className={styles.pouchSpotlight} />
-              <img
-                src="/heroimg.png"
-                alt="Bannu Masala - Turmeric, Chilli & Mix Spice Powder"
-                className={styles.pouchImg}
-                loading="eager"
-              />
-            </div>
-          </motion.div>
-
-          {/* Right: Text & Actions */}
-          <motion.div
-            className={styles.textCol}
-            initial={{ opacity: 0, x: 35 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7, ease: 'easeOut', delay: 0.1 }}
           >
             {content.badge && (
               <span className={styles.badge}>{content.badge}</span>
@@ -123,6 +105,24 @@ export default function HeroSlider({ hero, storeWhatsapp }) {
                 <span className={styles.trustNum}>1999</span>
                 <span className={styles.trustLabel}>Est.</span>
               </div>
+            </div>
+          </motion.div>
+
+          {/* Right Column: 3 Spices Pouches Showcase */}
+          <motion.div
+            className={styles.imageCol}
+            initial={{ opacity: 0, x: 35 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7, ease: 'easeOut', delay: 0.1 }}
+          >
+            <div className={styles.pouchWrap}>
+              <div className={styles.pouchSpotlight} />
+              <img
+                src="/heroimg.png"
+                alt="Bannu Masala - Turmeric, Chilli & Mix Spice Powder"
+                className={styles.pouchImg}
+                loading="eager"
+              />
             </div>
           </motion.div>
         </div>
