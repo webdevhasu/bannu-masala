@@ -100,30 +100,6 @@ export default function HeroSlider({ hero }) {
               </div>
             </div>
           </motion.div>
-
-          {!hasImage && (
-            <motion.div
-              className={styles.productView}
-              initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
-              animate={{ opacity: 1, scale: 1, rotate: 0 }}
-              transition={{ duration: 1, ease: 'easeOut', delay: 0.2 }}
-            >
-              <div className={styles.productCircle}>
-                <div className={styles.floatingIcons}>
-                  <span className={styles.float1}>🌶️</span>
-                  <span className={styles.float2}>🌿</span>
-                  <span className={styles.float3}>🥘</span>
-                </div>
-                <div className={styles.mainVisual}>
-                  <div className={styles.freeBadge}>
-                    <span>BANNU</span>
-                    <small>MASALA</small>
-                  </div>
-                  <img src="/logo.png" alt="Bannu Masala" className={styles.heroLogo} />
-                </div>
-              </div>
-            </motion.div>
-          )}
         </div>
       </div>
     </section>
