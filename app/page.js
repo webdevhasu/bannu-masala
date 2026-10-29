@@ -129,7 +129,9 @@ export default async function Home() {
       <SplashScreen />
 
       <section id="home">
-        {settings.hero?.enabled !== false && <HeroSlider hero={settings.hero} />}
+        {settings.hero?.enabled !== false && (
+          <HeroSlider hero={settings.hero} storeWhatsapp={settings.store?.whatsapp} />
+        )}
       </section>
 
       {settings.homepage?.show_categories !== false && (
