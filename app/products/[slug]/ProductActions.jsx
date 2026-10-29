@@ -143,7 +143,7 @@ export default function ProductActions({ product, storeWhatsapp }) {
           onClick={handleAddToCart}
           disabled={outOfStock}
         >
-          {outOfStock ? 'Out of Stock' : 'Add to Cart'}
+          {outOfStock ? 'OUT OF STOCK' : 'ADD TO CART'}
         </button>
         <button
           type="button"
@@ -151,7 +151,7 @@ export default function ProductActions({ product, storeWhatsapp }) {
           onClick={handleBuyNow}
           disabled={outOfStock}
         >
-          {outOfStock ? 'Unavailable' : `Buy Now - Rs ${(currentPrice * qty).toLocaleString()}`}
+          {outOfStock ? 'UNAVAILABLE' : `BUY IT NOW — Rs ${(currentPrice * qty).toLocaleString()}`}
         </button>
       </div>
 
@@ -165,7 +165,7 @@ export default function ProductActions({ product, storeWhatsapp }) {
         className={styles.whatsappOrderBtn}
       >
         <WhatsAppIcon size={20} />
-        Order / Ask on WhatsApp
+        Order via WhatsApp
       </a>
     </div>
   );

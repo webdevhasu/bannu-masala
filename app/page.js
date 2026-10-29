@@ -142,10 +142,16 @@ export default async function Home() {
 
       <section id="products" className={styles.productsSection}>
         <div className="container" style={{ paddingTop: '80px', paddingBottom: '80px' }}>
-          <h2 className="section-title">
-            {featuredProducts.length > 0 ? 'Best Sellers' : 'Our Premium Spices'}
+          <p className={styles.customerFavsLabel}>
+            {featuredProducts.length > 0 ? 'CUSTOMER FAVOURITES' : 'OUR COLLECTION'}
+          </p>
+          <h2 className={styles.lovedSpicesTitle}>
+            Our Most Loved<br />
+            <span className={styles.lovedSpicesHighlight}>Spices You Must Try</span>
           </h2>
-          <p className="section-subtitle">Authentic flavors crafted for your kitchen</p>
+          <p className={styles.lovedSpicesSubtitle}>
+            Pure ingredients, traditional recipes, authentic homemade flavour in every blend.
+          </p>
           <div className="gold-line" />
 
           <div className={styles.grid}>

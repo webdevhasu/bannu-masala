@@ -31,6 +31,37 @@
 
 .productsSection { background: var(--bg-primary); }
 
+/* "Customer Favourites" label above section title */
+.customerFavsLabel {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+
+/* "Our Most Loved Spices You Must Try" heading */
+.lovedSpicesTitle {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 900;
+  color: var(--text-primary);
+  line-height: 1.1;
+  margin-bottom: 12px;
+}
+
+.lovedSpicesHighlight {
+  color: var(--gold);
+}
+
+.lovedSpicesSubtitle {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+  max-width: 420px;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));

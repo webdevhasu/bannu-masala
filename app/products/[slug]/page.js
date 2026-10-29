@@ -227,6 +227,14 @@ export default async function ProductDetailsPage({ params }) {
 
             <p className={styles.description}>{product.description}</p>
 
+            {/* Trust badges */}
+            <div className={styles.trustBadges}>
+              <span className={styles.trustBadge}>✅ 100% Pure</span>
+              <span className={styles.trustBadge}>🌿 No Preservatives</span>
+              <span className={styles.trustBadge}>🏠 Authentic Blend</span>
+              <span className={styles.trustBadge}>📍 Made in Bannu</span>
+            </div>
+
             <ProductActions product={product} storeWhatsapp={settings.store?.whatsapp} />
 
             <div className={styles.perks}>

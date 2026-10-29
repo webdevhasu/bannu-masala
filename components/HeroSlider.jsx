@@ -76,6 +76,29 @@ export default function HeroSlider({ hero }) {
                 </CtaLink>
               )}
             </div>
+
+            {/* Trust Stats Bar */}
+            <div className={styles.trustBar}>
+              <div className={styles.trustStat}>
+                <span className={styles.trustNum}>50k+</span>
+                <span className={styles.trustLabel}>Customers</span>
+              </div>
+              <div className={styles.trustDivider} />
+              <div className={styles.trustStat}>
+                <span className={styles.trustNum}>100%</span>
+                <span className={styles.trustLabel}>Pure</span>
+              </div>
+              <div className={styles.trustDivider} />
+              <div className={styles.trustStat}>
+                <span className={styles.trustNum}>50+</span>
+                <span className={styles.trustLabel}>Blends</span>
+              </div>
+              <div className={styles.trustDivider} />
+              <div className={styles.trustStat}>
+                <span className={styles.trustNum}>1999</span>
+                <span className={styles.trustLabel}>Est.</span>
+              </div>
+            </div>
           </motion.div>
 
           {!hasImage && (

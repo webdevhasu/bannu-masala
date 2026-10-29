@@ -77,6 +77,14 @@
   gap: 10px;
 }
 
+/* Name + stars stacked vertically */
+.nameBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
 .name {
   font-family: 'Playfair Display', serif;
   font-size: 1.15rem;
@@ -98,6 +106,30 @@
   font-size: 0.8rem;
   border: 1px solid var(--border-color);
   white-space: nowrap;
+}
+
+/* 5-star row below product name */
+.starRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  margin-bottom: 2px;
+}
+
+.stars {
+  display: flex;
+  gap: 2px;
+}
+
+.starFilled {
+  color: #fbbf24;
+  font-size: 0.78rem;
+}
+
+.starEmpty {
+  color: #d1d5db;
+  font-size: 0.78rem;
 }
 
 .reviewCount {

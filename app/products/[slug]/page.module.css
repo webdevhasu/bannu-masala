@@ -172,7 +172,30 @@
   font-size: 1.05rem;
   color: #475569;
   line-height: 1.7;
-  margin-bottom: 32px;
+  margin-bottom: 20px;
+}
+
+/* Trust Badges Row */
+.trustBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.trustBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(135deg, rgba(123, 28, 28, 0.05), rgba(201, 147, 42, 0.05));
+  border: 1px solid rgba(201, 147, 42, 0.3);
+  color: #5a1c1c;
+  padding: 6px 14px;
+  border-radius: 50px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
 }
 
 /* Product Actions Component */
@@ -294,46 +317,52 @@
 .qtyControl span { font-weight: 700; width: 24px; text-align: center; }
 
 .btnGroup {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 14px;
 }
 
 .addToCartBtn {
-  background: #fff;
-  color: var(--maroon);
-  padding: 18px;
-  border: 2px solid var(--maroon);
-  border-radius: 12px;
-  font-size: 1rem;
-  font-weight: 700;
+  background: var(--maroon);
+  color: #fff;
+  padding: 16px;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(123, 28, 28, 0.25);
 }
 
 .addToCartBtn:hover {
-  background: rgba(123, 28, 28, 0.05);
+  background: #5a1414;
   transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(123, 28, 28, 0.35);
 }
 
 .buyNowBtn {
-  background: var(--maroon);
-  color: #fff;
-  padding: 18px;
-  border: none;
-  border-radius: 12px;
-  font-size: 1rem;
+  background: #ffffff;
+  color: #1e293b;
+  padding: 15px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 0.95rem;
   font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 0 4px 15px rgba(123, 28, 28, 0.2);
+  transition: all 0.2s ease;
 }
 
 .buyNowBtn:hover {
-  background: #5a1414;
+  background: #f8fafc;
+  border-color: var(--maroon);
+  color: var(--maroon);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(123, 28, 28, 0.3);
 }
 
 .addToCartBtn:disabled,

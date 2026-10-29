@@ -3,9 +3,23 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBox, faStar, faCartPlus, faBolt } from '@fortawesome/free-solid-svg-icons';
+import { faBox, faCartPlus, faBolt } from '@fortawesome/free-solid-svg-icons';
 import { useCart } from './CartContext';
 import styles from './ProductCard.module.css';
+
+function StarRating({ rating, count }) {
+  const filled = Math.round(Number(rating));
+  return (
+    <div className={styles.starRow}>
+      {[1, 2, 3, 4, 5].map((s) => (
+        <span key={s} className={s <= filled ? styles.starFilled : styles.starEmpty}>
+          {s <= filled ? '★' : '☆'}
+        </span>
+      ))}
+      <span className={styles.reviewCount}>({count})</span>
+    </div>
+  );
+}
 
 export default function ProductCard({ product }) {
   const router = useRouter();
@@ -60,16 +74,12 @@ export default function ProductCard({ product }) {
       </Link>
 
       <div className={styles.body}>
-        <div className={styles.headerRow}>
+        <div className={styles.nameBlock}>
           <Link href={`/products/${product.slug}`}>
             <h3 className={styles.name}>{product.name}</h3>
           </Link>
           {Number(product.review_count) > 0 ? (
-            <div className={styles.rating}>
-              <FontAwesomeIcon icon={faStar} />
-              <span>{product.average_rating}</span>
-              <span className={styles.reviewCount}>({product.review_count})</span>
-            </div>
+            <StarRating rating={product.average_rating} count={product.review_count} />
           ) : (
             <span className={styles.noReviews}>New</span>
           )}
