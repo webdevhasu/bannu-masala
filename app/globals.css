@@ -42,7 +42,8 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  /* Note: avoid scroll-behavior: smooth on html as it breaks Next.js router scroll-to-top */
+  scroll-behavior: auto;
 }
 
 /* Prevent sticky header from covering anchor targets */
