@@ -1,114 +1,232 @@
 .section {
-  padding: 80px 0;
-  background: linear-gradient(to bottom, #fffcf5, #ffffff);
+  padding: 60px 0 70px;
+  background: var(--bg-primary, #fffdf8);
   overflow: hidden;
 }
 
-.header {
-  text-align: left;
-  margin-bottom: 40px;
+.dealContainer {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 32px;
 }
 
-.titleWrapper {
-  display: flex;
+/* Promo Banner matching the uploaded reference */
+.dealBanner {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
   align-items: center;
-  gap: 12px;
+  gap: 32px;
+  padding: 48px 56px;
+  color: #ffffff;
+  /* Brand deep luxury maroon gradient with warm ambient light */
+  background: radial-gradient(circle at 75% 50%, #4a0d0d 0%, #220505 55%, #120202 100%);
+  box-shadow: 0 20px 45px rgba(26, 3, 3, 0.22);
 }
 
-.fireIcon {
-  font-size: 2.5rem;
-  color: #ef4444;
-  animation: pulse 2s infinite;
+.bannerPattern {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(201, 147, 42, 0.08) 1px, transparent 1px);
+  background-size: 20px 20px;
+  opacity: 0.6;
+  pointer-events: none;
 }
 
-.title {
-  font-size: 2.5rem;
+.bannerText {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 580px;
+}
+
+.bannerBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(201, 147, 42, 0.2);
+  color: #e6b95d;
+  padding: 5px 14px;
+  border-radius: 50px;
+  font-size: 0.72rem;
   font-weight: 800;
-  color: var(--text-dark, #1e293b);
-  margin: 0;
-  font-family: 'Playfair Display', serif;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border: 1px solid rgba(201, 147, 42, 0.35);
+  margin-bottom: 16px;
 }
 
-.headerBottom {
+.bannerTitle {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 3.2vw, 3rem);
+  font-weight: 900;
+  line-height: 1.15;
+  color: #ffffff;
+  margin: 0 0 14px;
+  letter-spacing: -0.3px;
+}
+
+.bannerSub {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0 0 26px;
+  max-width: 500px;
+}
+
+.viewOffersBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #15803d; /* Fresh green pill like reference */
+  color: #ffffff;
+  padding: 13px 30px;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 16px rgba(21, 128, 61, 0.4);
+}
+
+.viewOffersBtn:hover {
+  background: #16a34a;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(21, 128, 61, 0.55);
+}
+
+.bannerImgWrap {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+
+.dealSpotlight {
+  position: absolute;
+  width: 90%;
+  height: 90%;
+  background: radial-gradient(circle, rgba(201, 147, 42, 0.22) 0%, rgba(123, 28, 28, 0.18) 45%, transparent 70%);
+  filter: blur(28px);
+  border-radius: 50%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.dealImg {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: auto;
+  max-height: 380px;
+  object-fit: contain;
+  filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.6));
+  transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.dealImg:hover {
+  transform: translateY(-6px) scale(1.02);
+}
+
+/* Deals Cards Slider below the banner */
+.dealsSliderWrap {
+  margin-top: 48px;
+}
+
+.sliderHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-top: 8px;
+  margin-bottom: 24px;
 }
 
-.subtitle {
-  color: var(--text-light, #64748b);
-  font-size: 1.1rem;
+.sliderHeadingWrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fireDot {
+  font-size: 1.3rem;
+}
+
+.sliderHeading {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text-dark, #1e293b);
   margin: 0;
 }
 
-.viewAll {
+.viewAllLink {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  color: var(--maroon, #800000);
+  gap: 6px;
+  color: var(--maroon, #7B1C1C);
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   text-decoration: none;
 }
 
-.viewAll:hover {
+.viewAllLink:hover {
   text-decoration: underline;
 }
 
 .sliderContainer {
   width: 100%;
   overflow-x: auto;
-  padding-bottom: 24px;
-  /* Hide scrollbar */
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.sliderContainer::-webkit-scrollbar {
-  display: none;
+  padding-bottom: 12px;
+  scrollbar-width: thin;
 }
 
 .slider {
   display: flex;
   gap: 24px;
-  padding: 10px 4px;
+  padding: 6px 2px;
 }
 
 .card {
-  min-width: 300px;
-  max-width: 350px;
+  min-width: 290px;
+  max-width: 320px;
   background: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   flex-shrink: 0;
-  border: 1px solid rgba(239, 68, 68, 0.1);
+  border: 1px solid #f1f5f9;
 }
 
 .card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(239, 68, 68, 0.15);
+  transform: translateY(-6px);
+  box-shadow: 0 16px 32px rgba(123, 28, 28, 0.12);
 }
 
 .imageContainer {
   width: 100%;
   height: 200px;
   position: relative;
-  background: #f8fafc;
+  background: #fdfaf6;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
+  object-fit: contain;
+  transition: transform 0.4s ease;
 }
 
 .card:hover .image {
@@ -117,45 +235,41 @@
 
 .badge {
   position: absolute;
-  top: 16px;
-  right: 16px;
-  background: #ef4444;
+  top: 12px;
+  right: 12px;
+  background: var(--maroon, #7B1C1C);
   color: white;
-  padding: 6px 12px;
+  padding: 4px 10px;
   border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
 }
 
 .content {
-  padding: 24px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
 }
 
 .cardTitle {
-  font-size: 1.4rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: var(--text-dark, #1e293b);
-  margin: 0 0 4px 0;
+  margin: 0 0 6px 0;
   line-height: 1.3;
 }
 
 .variant {
   display: inline-block;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.4px;
   text-transform: uppercase;
-  color: var(--maroon, #800000);
-  background: #fdf2f2;
-  border-radius: 999px;
-  padding: 3px 10px;
-  margin: 0 0 10px;
+  color: var(--gold-dark, #966b15);
+  margin: 0 0 8px;
 }
 
 .endsOn {
@@ -163,40 +277,30 @@
   align-items: center;
   gap: 6px;
   color: #94a3b8;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   margin: 0 0 12px;
-}
-
-.description {
-  color: #64748b;
-  font-size: 0.95rem;
-  margin: 0 0 20px 0;
-  line-height: 1.5;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
 .priceRow {
   margin-top: auto;
   display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.price {
+  color: var(--maroon, #7B1C1C);
+  font-size: 1.35rem;
+  font-weight: 900;
+  font-family: 'Playfair Display', serif;
 }
 
 .originalPrice {
   color: #94a3b8;
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   text-decoration: line-through;
   font-weight: 500;
-}
-
-.price {
-  color: #ef4444;
-  font-size: 1.5rem;
-  font-weight: 800;
 }
 
 .btn {
@@ -204,36 +308,57 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  background: var(--maroon, #800000);
+  background: var(--maroon, #7B1C1C);
   color: white;
-  padding: 12px 20px;
-  border-radius: 12px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.3s ease;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   border: none;
   cursor: pointer;
+  transition: all 0.25s ease;
 }
 
 .btn:hover {
-  background: var(--maroon-dark, #5a0000);
-  transform: scale(1.02);
+  background: #5a1414;
 }
 
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
+/* Mobile Responsiveness */
+@media (max-width: 900px) {
+  .dealContainer {
+    padding: 0 16px;
+  }
+  .dealBanner {
+    grid-template-columns: 1fr;
+    text-align: center;
+    padding: 36px 24px;
+    gap: 28px;
+  }
+  .bannerText {
+    align-items: center;
+    max-width: 100%;
+  }
+  .bannerSub {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .dealImg {
+    max-height: 260px;
+  }
 }
 
-@media (max-width: 768px) {
-  .section {
-    padding: 60px 0;
+@media (max-width: 600px) {
+  .dealBanner {
+    padding: 28px 18px;
+    border-radius: 16px;
   }
-  .title {
-    font-size: 2rem;
+  .bannerTitle {
+    font-size: 1.85rem;
   }
-  .card {
-    min-width: 280px;
+  .viewOffersBtn {
+    width: 100%;
+    justify-content: center;
   }
 }

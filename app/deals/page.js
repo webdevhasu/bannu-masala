@@ -27,15 +27,26 @@ export default async function DealsPage() {
   return (
     <div className={styles.page}>
       <section className={styles.hero}>
-        <div className="container">
-          <span className={styles.eyebrow}>
-            <FontAwesomeIcon icon={faFire} /> Limited Time Only
-          </span>
-          <h1 className={styles.title}>Sales &amp; Deals</h1>
-          <p className={styles.subtitle}>
-            Authentic Bannu flavours at special prices. Grab your favourites before these offers
-            expire.
-          </p>
+        <div className={styles.heroContainer}>
+          <div className={styles.heroBanner}>
+            <div className={styles.heroText}>
+              <span className={styles.eyebrow}>
+                <FontAwesomeIcon icon={faFire} /> Special Deals &amp; Discounts
+              </span>
+              <h1 className={styles.title}>Special Deals &amp; Discounts</h1>
+              <p className={styles.subtitle}>
+                Enjoy exciting discounts and exclusive deals on your favorite spice collections today.
+              </p>
+            </div>
+            <div className={styles.heroImgWrap}>
+              <div className={styles.dealSpotlight} />
+              <img
+                src="/dealimg.png"
+                alt="Special Deals & Discounts - Bannu Masala"
+                className={styles.dealHeroImg}
+              />
+            </div>
+          </div>
         </div>
       </section>
 

@@ -138,7 +138,7 @@ export default async function Home() {
         <CategoryGrid categories={categoryCards} />
       )}
 
-      {settings.homepage?.show_deals !== false && activeDeals.length > 0 && (
+      {settings.homepage?.show_deals !== false && (
         <HotDealsSection deals={activeDeals} />
       )}
 

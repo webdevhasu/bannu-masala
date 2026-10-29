@@ -12,11 +12,9 @@ function formatDate(value) {
   return new Date(value).toLocaleDateString('en-PK', { day: 'numeric', month: 'short' });
 }
 
-export default function HotDealsSection({ deals }) {
+export default function HotDealsSection({ deals = [] }) {
   const { addToCart } = useCart();
   const router = useRouter();
-
-  if (!deals || deals.length === 0) return null;
 
   const handleGrabDeal = (deal) => {
     if (!deal.product_id) {
@@ -37,76 +35,113 @@ export default function HotDealsSection({ deals }) {
 
   return (
     <section className={styles.section}>
-      <div className="container">
-        <div className={styles.header}>
+      <div className={styles.dealContainer}>
+        {/* Special Deals & Discounts Banner */}
+        <div className={styles.dealBanner}>
+          <div className={styles.bannerPattern} />
+
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
+            className={styles.bannerText}
+            initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className={styles.titleWrapper}
+            transition={{ duration: 0.6 }}
           >
-            <FontAwesomeIcon icon={faFire} className={styles.fireIcon} />
-            <h2 className={styles.title}>Hot Deals</h2>
-          </motion.div>
-          <div className={styles.headerBottom}>
-            <p className={styles.subtitle}>Limited time offers crafted just for you.</p>
-            <Link href="/deals" className={styles.viewAll}>
-              View All Deals <FontAwesomeIcon icon={faArrowRight} />
+            <span className={styles.bannerBadge}>
+              <FontAwesomeIcon icon={faFire} /> Special Offers
+            </span>
+            <h2 className={styles.bannerTitle}>Special Deals &amp; Discounts</h2>
+            <p className={styles.bannerSub}>
+              Enjoy exciting discounts and exclusive deals on your favorite spice collections today.
+            </p>
+            <Link href="/deals" className={styles.viewOffersBtn}>
+              View Offers <FontAwesomeIcon icon={faArrowRight} style={{ marginLeft: '8px' }} />
             </Link>
-          </div>
+          </motion.div>
+
+          <motion.div
+            className={styles.bannerImgWrap}
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
+            <div className={styles.dealSpotlight} />
+            <img
+              src="/dealimg.png"
+              alt="Special Deals & Discounts - Bannu Masala"
+              className={styles.dealImg}
+              loading="lazy"
+            />
+          </motion.div>
         </div>
 
-        <div className={styles.sliderContainer}>
-          <div className={styles.slider}>
-            {deals.map((deal, index) => {
-              const title = deal.product_name || deal.title;
-              const image = deal.product_image || deal.image;
-              const endDate = formatDate(deal.end_at);
+        {/* Active Deals Slider (if deals exist) */}
+        {deals && deals.length > 0 && (
+          <div className={styles.dealsSliderWrap}>
+            <div className={styles.sliderHeader}>
+              <div className={styles.sliderHeadingWrap}>
+                <span className={styles.fireDot}>🔥</span>
+                <h3 className={styles.sliderHeading}>Active Special Deals</h3>
+              </div>
+              <Link href="/deals" className={styles.viewAllLink}>
+                View All Deals <FontAwesomeIcon icon={faArrowRight} />
+              </Link>
+            </div>
 
-              return (
-                <motion.div
-                  key={deal.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1, duration: 0.5 }}
-                  className={styles.card}
-                >
-                  <Link
-                    href={deal.product_id ? `/products/${deal.product_slug}` : deal.link || '/products'}
-                    className={styles.imageContainer}
-                  >
-                    {image && <img src={image} alt={title} className={styles.image} />}
-                    <div className={styles.badge}>{deal.discount_percent}% OFF</div>
-                  </Link>
+            <div className={styles.sliderContainer}>
+              <div className={styles.slider}>
+                {deals.map((deal, index) => {
+                  const title = deal.product_name || deal.title;
+                  const image = deal.product_image || deal.image;
+                  const endDate = formatDate(deal.end_at);
 
-                  <div className={styles.content}>
-                    <h3 className={styles.cardTitle}>{title}</h3>
-                    {deal.variant && <p className={styles.variant}>{deal.variant} pack</p>}
-                    {endDate && (
-                      <p className={styles.endsOn}>
-                        <FontAwesomeIcon icon={faClock} /> Offer ends {endDate}
-                      </p>
-                    )}
+                  return (
+                    <motion.div
+                      key={deal.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: index * 0.08, duration: 0.4 }}
+                      className={styles.card}
+                    >
+                      <Link
+                        href={deal.product_id ? `/products/${deal.product_slug}` : deal.link || '/products'}
+                        className={styles.imageContainer}
+                      >
+                        {image && <img src={image} alt={title} className={styles.image} />}
+                        <div className={styles.badge}>{deal.discount_percent}% OFF</div>
+                      </Link>
 
-                    <div className={styles.priceRow}>
-                      <span className={styles.price}>Rs {Number(deal.sale_price).toLocaleString()}</span>
-                      {deal.original_price > 0 && (
-                        <span className={styles.originalPrice}>
-                          Rs {Number(deal.original_price).toLocaleString()}
-                        </span>
-                      )}
-                    </div>
+                      <div className={styles.content}>
+                        <h4 className={styles.cardTitle}>{title}</h4>
+                        {deal.variant && <p className={styles.variant}>{deal.variant} pack</p>}
+                        {endDate && (
+                          <p className={styles.endsOn}>
+                            <FontAwesomeIcon icon={faClock} /> Offer ends {endDate}
+                          </p>
+                        )}
 
-                    <button onClick={() => handleGrabDeal(deal)} className={styles.btn}>
-                      Grab Deal <FontAwesomeIcon icon={faArrowRight} style={{ marginLeft: '8px' }} />
-                    </button>
-                  </div>
-                </motion.div>
-              );
-            })}
+                        <div className={styles.priceRow}>
+                          <span className={styles.price}>Rs {Number(deal.sale_price).toLocaleString()}</span>
+                          {deal.original_price > 0 && (
+                            <span className={styles.originalPrice}>
+                              Rs {Number(deal.original_price).toLocaleString()}
+                            </span>
+                          )}
+                        </div>
+
+                        <button onClick={() => handleGrabDeal(deal)} className={styles.btn}>
+                          Grab Deal <FontAwesomeIcon icon={faArrowRight} style={{ marginLeft: '8px' }} />
+                        </button>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );
