@@ -1,74 +1,101 @@
 .hero {
   position: relative;
-  min-height: calc(100vh - 80px);
-  max-height: 750px;
+  min-height: 520px;
   display: flex;
   align-items: center;
   overflow: hidden;
   color: #ffffff;
-  background-image: url('/hero-bg.jpg');
-  background-size: cover;
-  background-position: center;
+  /* Brand luxury dark maroon gradient with subtle texture */
+  background: radial-gradient(circle at 28% 50%, #3e0b0b 0%, #1e0505 55%, #100202 100%);
 }
 
-.imageHero {
-  background-image: none;
-  background: #1a0202;
-}
-
-.heroMedia {
+.ambientGlow {
   position: absolute;
-  inset: 0;
-  z-index: 0;
-  display: block;
-}
-
-.heroMedia img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-}
-
-.overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to right,
-    rgba(18, 3, 3, 0.94) 0%,
-    rgba(18, 3, 3, 0.78) 50%,
-    rgba(18, 3, 3, 0.45) 100%
-  );
+  top: -20%;
+  left: 15%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(201, 147, 42, 0.12) 0%, transparent 65%);
+  filter: blur(40px);
+  pointer-events: none;
   z-index: 1;
 }
 
-.grid {
+.bannerGrid {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  align-items: center;
+  gap: 48px;
+  padding: 48px 0;
   position: relative;
   z-index: 2;
-  padding: 40px 0;
   max-width: 1200px;
   margin: 0 auto;
 }
 
-.content {
-  max-width: 700px;
+/* Left Image Column */
+.imageCol {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
 }
 
-.badgeWrapper {
-  margin-bottom: 14px;
+.pouchWrap {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.premiumBadge {
+.pouchSpotlight {
+  position: absolute;
+  width: 90%;
+  height: 90%;
+  background: radial-gradient(circle, rgba(201, 147, 42, 0.24) 0%, rgba(123, 28, 28, 0.2) 45%, transparent 70%);
+  filter: blur(28px);
+  border-radius: 50%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.pouchImg {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: auto;
+  max-height: 440px;
+  object-fit: contain;
+  filter: drop-shadow(0 20px 35px rgba(0, 0, 0, 0.65));
+  transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.pouchImg:hover {
+  transform: translateY(-6px) scale(1.02);
+}
+
+/* Right Content Column */
+.textCol {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  z-index: 2;
+}
+
+.badge {
   display: inline-block;
   background: rgba(201, 147, 42, 0.15);
   color: #C9932A;
   padding: 5px 14px;
-  border-radius: 100px;
+  border-radius: 50px;
   font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1.5px;
   border: 1px solid rgba(201, 147, 42, 0.35);
+  margin-bottom: 14px;
   backdrop-filter: blur(8px);
 }
 
@@ -76,7 +103,7 @@
   font-family: 'Playfair Display', serif;
   font-size: clamp(2rem, 3.4vw, 3.3rem);
   line-height: 1.15;
-  margin: 0 0 12px;
+  margin: 0 0 14px;
   font-weight: 900;
   color: #ffffff;
   letter-spacing: -0.3px;
@@ -84,7 +111,7 @@
 
 .highlight {
   display: block;
-  background: linear-gradient(135deg, #f3d082 0%, #C9932A 50%, #b58019 100%);
+  background: linear-gradient(135deg, #f4d48e 0%, #C9932A 60%, #b27f1c 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -93,96 +120,87 @@
 }
 
 .subtext {
-  font-size: 0.98rem;
-  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.96rem;
+  color: rgba(255, 255, 255, 0.85);
   line-height: 1.6;
   margin: 0 0 24px;
-  max-width: 540px;
+  max-width: 520px;
 }
 
-/* 3 CTA Buttons */
+/* 3 Action Buttons */
 .actions {
   display: flex;
-  gap: 12px;
   align-items: center;
+  gap: 12px;
   flex-wrap: wrap;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
 
 .shopNowBtn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
   background: var(--maroon, #7B1C1C);
   color: #ffffff;
-  padding: 13px 24px;
-  border-radius: 8px;
-  font-size: 0.85rem;
+  padding: 13px 28px;
+  border-radius: 50px;
+  font-size: 0.88rem;
   font-weight: 800;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.5px;
   text-transform: uppercase;
   text-decoration: none;
   border: 1.5px solid var(--maroon, #7B1C1C);
+  box-shadow: 0 4px 18px rgba(123, 28, 28, 0.45);
   transition: all 0.25s ease;
-  box-shadow: 0 4px 16px rgba(123, 28, 28, 0.4);
 }
 
 .shopNowBtn:hover {
   background: #5a1414;
   border-color: #5a1414;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(123, 28, 28, 0.5);
-}
-
-.arrowIcon {
-  font-size: 1rem;
-  transition: transform 0.2s ease;
-}
-
-.shopNowBtn:hover .arrowIcon {
-  transform: translateX(4px);
+  box-shadow: 0 6px 22px rgba(123, 28, 28, 0.6);
 }
 
 .exploreBtn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.35);
   color: #ffffff;
-  padding: 13px 22px;
-  border-radius: 8px;
-  font-size: 0.85rem;
+  padding: 13px 24px;
+  border-radius: 50px;
+  font-size: 0.88rem;
   font-weight: 700;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.5px;
   text-transform: uppercase;
   text-decoration: none;
-  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
   backdrop-filter: blur(8px);
   transition: all 0.25s ease;
 }
 
 .exploreBtn:hover {
-  background: rgba(255, 255, 255, 0.16);
-  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.5);
   transform: translateY(-2px);
 }
 
 .whatsappBtn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   background: #25D366;
   color: #ffffff;
   padding: 13px 22px;
-  border-radius: 8px;
+  border-radius: 50px;
   font-size: 0.85rem;
   font-weight: 700;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.4px;
   text-transform: uppercase;
   text-decoration: none;
   border: 1.5px solid #25D366;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3);
   transition: all 0.25s ease;
-  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.28);
 }
 
 .whatsappBtn:hover {
@@ -197,10 +215,10 @@
   display: inline-flex;
   align-items: center;
   gap: 0;
-  background: rgba(18, 4, 4, 0.55);
+  background: rgba(14, 3, 3, 0.6);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(201, 147, 42, 0.35);
-  border-radius: 10px;
+  border: 1px solid rgba(201, 147, 42, 0.3);
+  border-radius: 12px;
   padding: 10px 18px;
   width: max-content;
   max-width: 100%;
@@ -241,15 +259,25 @@
 @media (max-width: 900px) {
   .hero {
     min-height: auto;
-    max-height: none;
-    padding: 30px 0;
+    padding: 24px 0;
   }
-  .grid {
-    padding: 30px 16px;
+  .bannerGrid {
+    grid-template-columns: 1fr;
     text-align: center;
+    gap: 24px;
+    padding: 24px 16px;
   }
-  .content {
+  .imageCol {
+    order: 1;
+    max-width: 320px;
     margin: 0 auto;
+  }
+  .pouchImg {
+    max-height: 280px;
+  }
+  .textCol {
+    order: 2;
+    align-items: center;
   }
   .subtext {
     margin-left: auto;
@@ -289,7 +317,7 @@
     padding: 10px 12px;
   }
   .trustStat {
-    padding: 0 6px;
+    padding: 0 4px;
   }
   .trustNum {
     font-size: 1.1rem;

@@ -4,16 +4,14 @@ import { motion } from 'framer-motion';
 import styles from './HeroSlider.module.css';
 
 const DEFAULTS = {
-  badge: 'Premium Handcrafted Quality',
-  headline: 'Har Pakwan Ka Asal Zaiqa',
-  highlight: 'Bannu Masala',
-  subheading: 'Apne khanay mein laayein lajawab khushboo aur bharpoor zaiqa — 100% khaliss aur zaiqedaar masalay.',
+  badge: '100% Pure & Authentic Spices',
+  headline: 'Bringing Authentic Flavor',
+  highlight: 'to Your Kitchen',
+  subheading: 'Apne khanay mein laayein lajawab khushboo aur bharpoor zaiqa — 100% pure, natural ingredients se tayar kardah masalay.',
   primary_label: 'Shop Now',
   primary_link: '/products',
-  secondary_label: 'Explore Products',
+  secondary_label: 'Explore Spices',
   secondary_link: '/products',
-  desktop_image: '',
-  mobile_image: '',
 };
 
 function WhatsAppIcon({ size = 18 }) {
@@ -24,67 +22,73 @@ function WhatsAppIcon({ size = 18 }) {
   );
 }
 
-function BagIcon({ size = 16 }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" width={size} height={size} aria-hidden="true">
-      <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-      <line x1="3" y1="6" x2="21" y2="6" />
-      <path d="M16 10a4 4 0 0 1-8 0" />
-    </svg>
-  );
-}
-
 export default function HeroSlider({ hero, storeWhatsapp }) {
   const content = { ...DEFAULTS, ...(hero || {}) };
-  const hasImage = Boolean(content.desktop_image);
   const waNumber = storeWhatsapp || '923099907713';
   const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(
     'Assalam-o-Alaikum! Mujhe Bannu Masala ke baare mein maloomat / order karna hai.'
   )}`;
 
   return (
-    <section className={`${styles.hero} ${hasImage ? styles.imageHero : ''}`}>
-      {hasImage && (
-        <picture className={styles.heroMedia}>
-          {content.mobile_image && (
-            <source media="(max-width: 768px)" srcSet={content.mobile_image} />
-          )}
-          <img src={content.desktop_image} alt="" fetchPriority="high" />
-        </picture>
-      )}
-      <div className={styles.overlay} />
+    <section className={styles.hero}>
+      <div className={styles.ambientGlow} />
 
       <div className="container">
-        <div className={styles.grid}>
+        <div className={styles.bannerGrid}>
+          {/* Left: 3 Spices Pouches Showcase */}
           <motion.div
-            className={styles.content}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: 'easeOut' }}
+            className={styles.imageCol}
+            initial={{ opacity: 0, x: -35 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7, ease: 'easeOut' }}
+          >
+            <div className={styles.pouchWrap}>
+              <div className={styles.pouchSpotlight} />
+              <img
+                src="/heroimg.png"
+                alt="Bannu Masala - Turmeric, Chilli & Mix Spice Powder"
+                className={styles.pouchImg}
+                loading="eager"
+              />
+            </div>
+          </motion.div>
+
+          {/* Right: Text & Actions */}
+          <motion.div
+            className={styles.textCol}
+            initial={{ opacity: 0, x: 35 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7, ease: 'easeOut', delay: 0.1 }}
           >
             {content.badge && (
-              <div className={styles.badgeWrapper}>
-                <span className={styles.premiumBadge}>{content.badge}</span>
-              </div>
+              <span className={styles.badge}>{content.badge}</span>
             )}
 
             <h1 className={styles.headline}>
               <span>{content.headline}</span>
-              {content.highlight && <span className={styles.highlight}>{content.highlight}</span>}
+              {content.highlight && (
+                <span className={styles.highlight}>{content.highlight}</span>
+              )}
             </h1>
 
-            {content.subheading && <p className={styles.subtext}>{content.subheading}</p>}
+            {content.subheading && (
+              <p className={styles.subtext}>{content.subheading}</p>
+            )}
 
-            {/* 3 CTAs: Shop Now, Explore Products, Order on WhatsApp */}
+            {/* Buttons: Shop Now, Explore Spices, WhatsApp */}
             <div className={styles.actions}>
-              <Link href={content.primary_link || '/products'} className={styles.shopNowBtn}>
-                <BagIcon size={16} />
-                <span>{content.primary_label || 'Shop Now'}</span>
-                <span className={styles.arrowIcon}>→</span>
+              <Link
+                href={content.primary_link || '/products'}
+                className={styles.shopNowBtn}
+              >
+                {content.primary_label || 'Shop Now'}
               </Link>
 
-              <Link href={content.secondary_link || '/products'} className={styles.exploreBtn}>
-                <span>{content.secondary_label || 'Explore Products'}</span>
+              <Link
+                href={content.secondary_link || '/products'}
+                className={styles.exploreBtn}
+              >
+                {content.secondary_label || 'Explore Spices'}
               </Link>
 
               <a
@@ -94,7 +98,7 @@ export default function HeroSlider({ hero, storeWhatsapp }) {
                 className={styles.whatsappBtn}
               >
                 <WhatsAppIcon size={18} />
-                <span>Order on WhatsApp</span>
+                <span>WhatsApp</span>
               </a>
             </div>
 
