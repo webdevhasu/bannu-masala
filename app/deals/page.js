@@ -84,9 +84,29 @@ export default async function DealsPage() {
                     </h2>
 
                     <div className={styles.dealRatingRow}>
-                      <span className={styles.dealStars}>★★★★★</span>
-                      <span className={styles.dealRatingScore}>5.0</span>
-                      <span className={styles.dealRatingCount}>(Verified)</span>
+                      <span className={styles.dealStars}>
+                        {[1, 2, 3, 4, 5].map((s) => (
+                          <span
+                            key={s}
+                            style={{
+                              color:
+                                deal.review_count > 0 && s <= Math.round(Number(deal.average_rating))
+                                  ? '#f59e0b'
+                                  : '#cbd5e1',
+                            }}
+                          >
+                            {deal.review_count > 0 && s <= Math.round(Number(deal.average_rating)) ? '★' : '☆'}
+                          </span>
+                        ))}
+                      </span>
+                      {deal.review_count > 0 ? (
+                        <>
+                          <span className={styles.dealRatingScore}>{deal.average_rating}</span>
+                          <span className={styles.dealRatingCount}>({deal.review_count})</span>
+                        </>
+                      ) : (
+                        <span className={styles.dealRatingCount}>(0)</span>
+                      )}
                     </div>
 
                     <span className={styles.variant}>{deal.variant} pack</span>

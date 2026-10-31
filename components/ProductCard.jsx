@@ -8,23 +8,31 @@ import { useCart } from './CartContext';
 import styles from './ProductCard.module.css';
 
 function StarRating({ rating, count }) {
-  const hasReviews = Number(count) > 0;
-  const ratingNum = hasReviews ? Number(rating) : 5.0;
+  const reviewCount = Number(count) || 0;
+  const hasReviews = reviewCount > 0;
+  const ratingNum = hasReviews ? Number(rating) || 0 : 0;
   const filled = Math.round(ratingNum);
 
   return (
     <div className={styles.starRow}>
       <div className={styles.stars}>
         {[1, 2, 3, 4, 5].map((s) => (
-          <span key={s} className={s <= filled ? styles.starFilled : styles.starEmpty}>
-            ★
+          <span
+            key={s}
+            className={hasReviews && s <= filled ? styles.starFilled : styles.starEmpty}
+          >
+            {hasReviews && s <= filled ? '★' : '☆'}
           </span>
         ))}
       </div>
-      <span className={styles.ratingScore}>{ratingNum.toFixed(1)}</span>
-      <span className={styles.reviewCount}>
-        {hasReviews ? `(${count})` : '(Verified)'}
-      </span>
+      {hasReviews ? (
+        <>
+          <span className={styles.ratingScore}>{ratingNum.toFixed(1)}</span>
+          <span className={styles.reviewCount}>({reviewCount})</span>
+        </>
+      ) : (
+        <span className={styles.reviewCount}>(0)</span>
+      )}
     </div>
   );
 }

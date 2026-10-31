@@ -85,9 +85,10 @@ export default function ReviewsSection({ productId }) {
     }
   };
 
-  const avgRating = reviews.length
+  const hasReviews = reviews.length > 0;
+  const avgRating = hasReviews
     ? (reviews.reduce((sum, r) => sum + Number(r.rating || 5), 0) / reviews.length).toFixed(1)
-    : '5.0';
+    : '0.0';
 
   return (
     <div className={styles.reviewsContainer}>
@@ -109,21 +110,25 @@ export default function ReviewsSection({ productId }) {
       {/* Trust Rating Summary Card */}
       <div className={styles.ratingSummaryCard}>
         <div className={styles.ratingBigScoreCol}>
-          <span className={styles.bigRatingScore}>{avgRating}</span>
+          <span className={styles.bigRatingScore}>{hasReviews ? avgRating : '—'}</span>
           <div className={styles.summaryStars}>
             {[1, 2, 3, 4, 5].map((s) => (
               <span
                 key={s}
-                className={s <= Math.round(Number(avgRating)) ? styles.summaryStarFilled : styles.summaryStarEmpty}
+                className={
+                  hasReviews && s <= Math.round(Number(avgRating))
+                    ? styles.summaryStarFilled
+                    : styles.summaryStarEmpty
+                }
               >
                 ★
               </span>
             ))}
           </div>
           <span className={styles.summaryCountText}>
-            {reviews.length > 0
-              ? `Based on ${reviews.length} customer review${reviews.length > 1 ? 's' : ''}`
-              : '100% Quality & Taste Satisfaction'}
+            {hasReviews
+              ? `Based on ${reviews.length} verified customer review${reviews.length > 1 ? 's' : ''}`
+              : 'No reviews yet — be the first to rate!'}
           </span>
         </div>
 

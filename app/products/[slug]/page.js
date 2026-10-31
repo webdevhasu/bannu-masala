@@ -211,7 +211,7 @@ export default async function ProductDetailsPage({ params }) {
                     key={star}
                     icon={faStar}
                     className={
-                      star <= (reviewCount > 0 ? Math.round(Number(averageRating)) : 5)
+                      reviewCount > 0 && star <= Math.round(Number(averageRating))
                         ? styles.starFilled
                         : styles.starEmpty
                     }
@@ -219,15 +219,20 @@ export default async function ProductDetailsPage({ params }) {
                 ))}
               </div>
               <a href="#reviews" className={styles.ratingTextLink}>
-                <span className={styles.ratingScore}>
-                  {reviewCount > 0 ? averageRating : '5.0'}
-                </span>
-                <span className={styles.ratingCount}>
-                  {reviewCount > 0
-                    ? `(${reviewCount} ${reviewCount === 1 ? 'Customer Review' : 'Customer Reviews'})`
-                    : '(Bannu Quality • 100% Pure)'}
-                </span>
-                <span className={styles.writeReviewCta}>• Write a Review</span>
+                {reviewCount > 0 ? (
+                  <>
+                    <span className={styles.ratingScore}>{averageRating}</span>
+                    <span className={styles.ratingCount}>
+                      ({reviewCount} {reviewCount === 1 ? 'Customer Review' : 'Customer Reviews'})
+                    </span>
+                    <span className={styles.writeReviewCta}>• Write a Review</span>
+                  </>
+                ) : (
+                  <>
+                    <span className={styles.ratingCount}>(0 Reviews)</span>
+                    <span className={styles.writeReviewCta}>• Be the first to review</span>
+                  </>
+                )}
               </a>
             </div>
 
