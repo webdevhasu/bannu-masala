@@ -25,6 +25,8 @@ export default function ProductsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [deleteConfirmId, setDeleteConfirmId] = useState(null);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -74,13 +76,13 @@ export default function ProductsPage() {
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
-        if (isModalOpen) handleCloseModal();
-        if (deleteConfirmId) setDeleteConfirmId(null);
+        setIsModalOpen(false);
+        setDeleteConfirmId(null);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isModalOpen, deleteConfirmId]);
+  }, []);
 
   const handleOpenModal = (product = null) => {
     setFilesToUpload([]);
@@ -233,9 +235,6 @@ export default function ProductsPage() {
       setSaving(false);
     }
   };
-
-  const [deleteConfirmId, setDeleteConfirmId] = useState(null);
-  const [showSuccessToast, setShowSuccessToast] = useState(false);
 
   const handleDeleteClick = (id) => {
     setDeleteConfirmId(id);
