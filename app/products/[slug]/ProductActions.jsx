@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/components/CartContext';
 import styles from './page.module.css';
@@ -20,6 +20,31 @@ function formatDealEnd(value) {
 export default function ProductActions({ product, storeWhatsapp }) {
   const router = useRouter();
   const { addToCart } = useCart();
+  const [isWishlisted, setIsWishlisted] = useState(false);
+
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('bannu_wishlist') || '[]');
+      if (saved.includes(product.id)) setIsWishlisted(true);
+    } catch {}
+  }, [product.id]);
+
+  const toggleWishlist = () => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('bannu_wishlist') || '[]');
+      let updated;
+      if (saved.includes(product.id)) {
+        updated = saved.filter((id) => id !== product.id);
+        setIsWishlisted(false);
+      } else {
+        updated = [...saved, product.id];
+        setIsWishlisted(true);
+      }
+      localStorage.setItem('bannu_wishlist', JSON.stringify(updated));
+    } catch {
+      setIsWishlisted(!isWishlisted);
+    }
+  };
 
   const variants = product.variants
     ? Object.entries(product.variants)
@@ -137,36 +162,61 @@ export default function ProductActions({ product, storeWhatsapp }) {
       ) : null}
 
       <div className={styles.btnGroup}>
-        <button
-          type="button"
-          className={styles.addToCartBtn}
-          onClick={handleAddToCart}
-          disabled={outOfStock}
-        >
-          {outOfStock ? 'OUT OF STOCK' : 'ADD TO CART'}
-        </button>
+        {/* Row 1: Add to cart + Wishlist button */}
+        <div className={styles.cartActionRow}>
+          <button
+            type="button"
+            className={styles.addToCartBtn}
+            onClick={handleAddToCart}
+            disabled={outOfStock}
+          >
+            {outOfStock ? 'OUT OF STOCK' : 'ADD TO CART'}
+          </button>
+          <button
+            type="button"
+            className={`${styles.wishlistBtn} ${isWishlisted ? styles.wishlisted : ''}`}
+            onClick={toggleWishlist}
+            aria-label={isWishlisted ? 'Saved in Wishlist' : 'Add to Wishlist'}
+            title={isWishlisted ? 'Saved in Wishlist' : 'Save to Wishlist'}
+          >
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill={isWishlisted ? '#7B1C1C' : 'none'}
+              stroke={isWishlisted ? '#7B1C1C' : '#475569'}
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Row 2: Buy It Now */}
         <button
           type="button"
           className={styles.buyNowBtn}
           onClick={handleBuyNow}
           disabled={outOfStock}
         >
-          {outOfStock ? 'UNAVAILABLE' : `BUY IT NOW — Rs ${(currentPrice * qty).toLocaleString()}`}
+          {outOfStock ? 'UNAVAILABLE' : `BUY IT NOW`}
         </button>
-      </div>
 
-      {/* Direct Order on WhatsApp Button */}
-      <a
-        href={`https://wa.me/${waNumber}?text=${encodeURIComponent(
-          `Assalam-o-Alaikum, mujhe ${product.name} (${selectedVariant?.label || '250g'}) ke baare mein maloomat/order karna hai. Product link: ${productUrl}`
-        )}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={styles.whatsappOrderBtn}
-      >
-        <WhatsAppIcon size={20} />
-        Order via WhatsApp
-      </a>
+        {/* Row 3: Direct Order on WhatsApp */}
+        <a
+          href={`https://wa.me/${waNumber}?text=${encodeURIComponent(
+            `Assalam-o-Alaikum, mujhe ${product.name} (${selectedVariant?.label || '250g'}) ke baare mein maloomat/order karna hai. Product link: ${productUrl}`
+          )}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.whatsappOrderBtn}
+        >
+          <WhatsAppIcon size={22} />
+          Order via WhatsApp
+        </a>
+      </div>
     </div>
   );
 }

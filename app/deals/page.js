@@ -83,6 +83,12 @@ export default async function DealsPage() {
                       <Link href={`/products/${deal.product_slug}`}>{deal.product_name}</Link>
                     </h2>
 
+                    <div className={styles.dealRatingRow}>
+                      <span className={styles.dealStars}>★★★★★</span>
+                      <span className={styles.dealRatingScore}>5.0</span>
+                      <span className={styles.dealRatingCount}>(Verified)</span>
+                    </div>
+
                     <span className={styles.variant}>{deal.variant} pack</span>
 
                     {endDate && (

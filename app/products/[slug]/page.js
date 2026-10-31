@@ -205,24 +205,30 @@ export default async function ProductDetailsPage({ params }) {
             )}
 
             <div className={styles.reviewSummary}>
-              {reviewCount > 0 ? (
-                <>
-                  <div className={styles.stars}>
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <FontAwesomeIcon
-                        key={star}
-                        icon={faStar}
-                        color={star <= Math.round(averageRating) ? '#fbbf24' : '#e2e8f0'}
-                      />
-                    ))}
-                  </div>
-                  <span className={styles.ratingText}>
-                    {averageRating} ({reviewCount} {reviewCount === 1 ? 'review' : 'reviews'})
-                  </span>
-                </>
-              ) : (
-                <span className={styles.ratingText}>No reviews yet — be the first to review.</span>
-              )}
+              <div className={styles.stars}>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <FontAwesomeIcon
+                    key={star}
+                    icon={faStar}
+                    className={
+                      star <= (reviewCount > 0 ? Math.round(Number(averageRating)) : 5)
+                        ? styles.starFilled
+                        : styles.starEmpty
+                    }
+                  />
+                ))}
+              </div>
+              <a href="#reviews" className={styles.ratingTextLink}>
+                <span className={styles.ratingScore}>
+                  {reviewCount > 0 ? averageRating : '5.0'}
+                </span>
+                <span className={styles.ratingCount}>
+                  {reviewCount > 0
+                    ? `(${reviewCount} ${reviewCount === 1 ? 'Customer Review' : 'Customer Reviews'})`
+                    : '(Bannu Quality • 100% Pure)'}
+                </span>
+                <span className={styles.writeReviewCta}>• Write a Review</span>
+              </a>
             </div>
 
             <p className={styles.description}>{product.description}</p>

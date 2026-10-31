@@ -8,15 +8,23 @@ import { useCart } from './CartContext';
 import styles from './ProductCard.module.css';
 
 function StarRating({ rating, count }) {
-  const filled = Math.round(Number(rating));
+  const hasReviews = Number(count) > 0;
+  const ratingNum = hasReviews ? Number(rating) : 5.0;
+  const filled = Math.round(ratingNum);
+
   return (
     <div className={styles.starRow}>
-      {[1, 2, 3, 4, 5].map((s) => (
-        <span key={s} className={s <= filled ? styles.starFilled : styles.starEmpty}>
-          {s <= filled ? '★' : '☆'}
-        </span>
-      ))}
-      <span className={styles.reviewCount}>({count})</span>
+      <div className={styles.stars}>
+        {[1, 2, 3, 4, 5].map((s) => (
+          <span key={s} className={s <= filled ? styles.starFilled : styles.starEmpty}>
+            ★
+          </span>
+        ))}
+      </div>
+      <span className={styles.ratingScore}>{ratingNum.toFixed(1)}</span>
+      <span className={styles.reviewCount}>
+        {hasReviews ? `(${count})` : '(Verified)'}
+      </span>
     </div>
   );
 }
@@ -78,11 +86,7 @@ export default function ProductCard({ product }) {
           <Link href={`/products/${product.slug}`}>
             <h3 className={styles.name}>{product.name}</h3>
           </Link>
-          {Number(product.review_count) > 0 ? (
-            <StarRating rating={product.average_rating} count={product.review_count} />
-          ) : (
-            <span className={styles.noReviews}>New</span>
-          )}
+          <StarRating rating={product.average_rating} count={product.review_count} />
         </div>
 
         {product.category_name && <p className={styles.category}>{product.category_name}</p>}

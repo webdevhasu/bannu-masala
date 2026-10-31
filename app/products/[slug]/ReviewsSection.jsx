@@ -1,19 +1,28 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar, faUserCircle, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
+import { faStar, faCircleCheck, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import styles from './page.module.css';
+
+function getInitials(name) {
+  if (!name) return 'BM';
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
 
 export default function ReviewsSection({ productId }) {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [rating, setRating] = useState(5);
+  const [hoverRating, setHoverRating] = useState(0);
   const [comment, setComment] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
-  const [visibleCount, setVisibleCount] = useState(10);
+  const [visibleCount, setVisibleCount] = useState(8);
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
     fetchReviews();
@@ -41,6 +50,10 @@ export default function ReviewsSection({ productId }) {
       alert('Please enter your name');
       return;
     }
+    if (!comment.trim()) {
+      alert('Please write your review comment');
+      return;
+    }
 
     setSubmitting(true);
     try {
@@ -58,11 +71,11 @@ export default function ReviewsSection({ productId }) {
         setRating(5);
         setSuccessMessage(
           result.verified
-            ? 'Thank you! Your verified review has been submitted and will appear after approval.'
-            : 'Thank you! Your review has been submitted and will appear after approval.'
+            ? 'Shukriya! Aapka verified review submit ho chuka hai aur approve hone par display hoga.'
+            : 'Shukriya! Aapka review submit ho chuka hai aur approval ke baad display hoga.'
         );
       } else {
-        alert(result.error);
+        alert(result.error || 'Failed to submit review');
       }
     } catch (err) {
       console.error(err);
@@ -72,143 +85,218 @@ export default function ReviewsSection({ productId }) {
     }
   };
 
+  const avgRating = reviews.length
+    ? (reviews.reduce((sum, r) => sum + Number(r.rating || 5), 0) / reviews.length).toFixed(1)
+    : '5.0';
+
   return (
     <div className={styles.reviewsContainer}>
-      <h2 className={styles.reviewsTitle}>Customer Reviews</h2>
+      <div className={styles.reviewsHeader}>
+        <div>
+          <span className={styles.reviewsEyebrow}>CUSTOMER OPINIONS</span>
+          <h2 className={styles.reviewsTitle}>Customer Reviews &amp; Ratings</h2>
+        </div>
+        <button
+          type="button"
+          className={styles.writeReviewToggleBtn}
+          onClick={() => setShowForm(!showForm)}
+        >
+          <FontAwesomeIcon icon={faPenToSquare} />
+          {showForm ? 'Hide Form' : 'Write a Review'}
+        </button>
+      </div>
 
+      {/* Trust Rating Summary Card */}
+      <div className={styles.ratingSummaryCard}>
+        <div className={styles.ratingBigScoreCol}>
+          <span className={styles.bigRatingScore}>{avgRating}</span>
+          <div className={styles.summaryStars}>
+            {[1, 2, 3, 4, 5].map((s) => (
+              <span
+                key={s}
+                className={s <= Math.round(Number(avgRating)) ? styles.summaryStarFilled : styles.summaryStarEmpty}
+              >
+                ★
+              </span>
+            ))}
+          </div>
+          <span className={styles.summaryCountText}>
+            {reviews.length > 0
+              ? `Based on ${reviews.length} customer review${reviews.length > 1 ? 's' : ''}`
+              : '100% Quality & Taste Satisfaction'}
+          </span>
+        </div>
+
+        <div className={styles.ratingPerksCol}>
+          <div className={styles.ratingPerkItem}>
+            <span className={styles.perkIcon}>⭐</span>
+            <div>
+              <strong>Pure KPK Spices:</strong>
+              <p>Authentic traditional recipes made from freshly selected spices.</p>
+            </div>
+          </div>
+          <div className={styles.ratingPerkItem}>
+            <span className={styles.perkIcon}>🛡️</span>
+            <div>
+              <strong>Verified Purchases:</strong>
+              <p>Real customer experiences and honest feedback across Pakistan.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Review Form Drawer / Box */}
+      {showForm && (
+        <div className={styles.reviewFormBox}>
+          <div className={styles.formHeader}>
+            <h3>Share Your Experience</h3>
+            <p>Tell us how this Bannu Masala blend enhanced your dish!</p>
+          </div>
+
+          {successMessage && (
+            <div className={styles.reviewSuccess}>
+              <FontAwesomeIcon icon={faCircleCheck} /> {successMessage}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmitReview}>
+            <div className={styles.formGrid}>
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Your Name *</label>
+                <input
+                  type="text"
+                  className={styles.reviewInput}
+                  placeholder="e.g. Hassan Irfan"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Phone / WhatsApp (Optional for verification)</label>
+                <input
+                  type="tel"
+                  className={styles.reviewInput}
+                  placeholder="0300 1234567"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className={styles.ratingSelectWrap}>
+              <label className={styles.formLabel}>Your Rating *</label>
+              <div className={styles.interactiveStars}>
+                {[1, 2, 3, 4, 5].map((star) => {
+                  const active = hoverRating ? star <= hoverRating : star <= rating;
+                  return (
+                    <button
+                      key={star}
+                      type="button"
+                      className={`${styles.starBtn} ${active ? styles.starBtnActive : ''}`}
+                      onMouseEnter={() => setHoverRating(star)}
+                      onMouseLeave={() => setHoverRating(0)}
+                      onClick={() => setRating(star)}
+                      aria-label={`${star} star`}
+                    >
+                      ★
+                    </button>
+                  );
+                })}
+                <span className={styles.ratingLabelText}>
+                  {hoverRating || rating} out of 5 Stars
+                </span>
+              </div>
+            </div>
+
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Your Review / Recipe Feedback *</label>
+              <textarea
+                className={styles.reviewTextarea}
+                rows={4}
+                placeholder="Khushboo aur zaika kaisa laga? Recipe mein results kaisay thay..."
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                required
+              />
+            </div>
+
+            <button type="submit" className={styles.submitReviewBtn} disabled={submitting}>
+              {submitting ? 'Submitting...' : 'Submit Review'}
+            </button>
+          </form>
+        </div>
+      )}
+
+      {/* Reviews List */}
       <div className={styles.reviewsList}>
         {loading ? (
-          <p>Loading reviews...</p>
+          <div className={styles.loadingReviews}>
+            <p>Loading authentic customer reviews...</p>
+          </div>
         ) : reviews.length === 0 ? (
-          <p className={styles.emptyReviews}>No reviews yet. Be the first to review this product!</p>
+          <div className={styles.emptyReviews}>
+            <p className={styles.emptyTitle}>No reviews published yet for this blend.</p>
+            <p className={styles.emptySub}>
+              Be the first to share your review! Click &quot;Write a Review&quot; above to let other food lovers know your experience.
+            </p>
+          </div>
         ) : (
           <>
             {reviews.slice(0, visibleCount).map((review) => (
               <div key={review.id} className={styles.reviewCard}>
                 <div className={styles.reviewHeader}>
                   <div className={styles.reviewUser}>
-                    <FontAwesomeIcon icon={faUserCircle} className={styles.userIcon} />
-                    <span>{review.reviewer_name}</span>
-                    {review.is_verified && (
-                      <span className={styles.verifiedBadge} title="Verified purchase">
-                        <FontAwesomeIcon icon={faCircleCheck} /> Verified
+                    <div className={styles.avatarCircle}>
+                      {getInitials(review.reviewer_name)}
+                    </div>
+                    <div>
+                      <div className={styles.reviewerNameRow}>
+                        <span className={styles.reviewerName}>{review.reviewer_name}</span>
+                        {review.is_verified && (
+                          <span className={styles.verifiedBadge} title="Verified Order">
+                            <FontAwesomeIcon icon={faCircleCheck} /> Verified Buyer
+                          </span>
+                        )}
+                      </div>
+                      <span className={styles.reviewDate}>
+                        {new Date(review.created_at).toLocaleDateString('en-PK', {
+                          day: 'numeric',
+                          month: 'short',
+                          year: 'numeric',
+                        })}
                       </span>
-                    )}
-                    <span className={styles.reviewDate}>
-                      {new Date(review.created_at).toLocaleDateString()}
-                    </span>
+                    </div>
                   </div>
+
                   <div className={styles.reviewStars}>
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <FontAwesomeIcon
-                        key={star}
-                        icon={faStar}
-                        color={star <= review.rating ? '#fbbf24' : '#cbd5e1'}
-                        size="sm"
-                      />
+                    {[1, 2, 3, 4, 5].map((s) => (
+                      <span
+                        key={s}
+                        className={s <= review.rating ? styles.reviewStarFilled : styles.reviewStarEmpty}
+                      >
+                        ★
+                      </span>
                     ))}
                   </div>
                 </div>
+
                 <p className={styles.reviewComment}>{review.comment}</p>
               </div>
             ))}
 
             {reviews.length > visibleCount && (
               <button
+                type="button"
                 className={styles.seeMoreBtn}
-                onClick={() => setVisibleCount((prev) => prev + 10)}
+                onClick={() => setVisibleCount((prev) => prev + 6)}
               >
-                See More Reviews ({reviews.length - visibleCount} left)
+                Load More Reviews ({reviews.length - visibleCount} remaining)
               </button>
             )}
           </>
         )}
-      </div>
-
-      <div className={styles.reviewFormBox}>
-        <h3>Write a Review</h3>
-
-        {successMessage && (
-          <p className={styles.reviewSuccess}>
-            <FontAwesomeIcon icon={faCircleCheck} /> {successMessage}
-          </p>
-        )}
-
-        <form onSubmit={handleSubmitReview}>
-          <div className={styles.formGroup} style={{ marginBottom: '16px' }}>
-            <label
-              style={{
-                display: 'block',
-                fontSize: '0.85rem',
-                fontWeight: 600,
-                color: '#334155',
-                marginBottom: '8px',
-              }}
-            >
-              Your Name
-            </label>
-            <input
-              type="text"
-              className={styles.reviewInput}
-              placeholder="e.g. Hassan Ali"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className={styles.formGroup} style={{ marginBottom: '16px' }}>
-            <label
-              style={{
-                display: 'block',
-                fontSize: '0.85rem',
-                fontWeight: 600,
-                color: '#334155',
-                marginBottom: '8px',
-              }}
-            >
-              Phone Number (optional — for verified purchase badge)
-            </label>
-            <input
-              type="tel"
-              className={styles.reviewInput}
-              placeholder="0300 1234567"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-            />
-          </div>
-
-          <div className={styles.starSelect}>
-            {[1, 2, 3, 4, 5].map((star) => (
-              <FontAwesomeIcon
-                key={star}
-                icon={faStar}
-                color={star <= rating ? '#fbbf24' : '#cbd5e1'}
-                className={styles.clickableStar}
-                onClick={() => setRating(star)}
-                role="button"
-                aria-label={`${star} star${star > 1 ? 's' : ''}`}
-              />
-            ))}
-          </div>
-
-          <textarea
-            className={styles.reviewInput}
-            rows={3}
-            placeholder="How was the product? Leave your thoughts here..."
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            required
-          />
-
-          <button className={styles.submitReviewBtn} disabled={submitting}>
-            {submitting ? 'Submitting...' : 'Submit Review'}
-          </button>
-
-          <p className={styles.formNote}>
-            Reviews are checked by our team before they are published.
-          </p>
-        </form>
       </div>
     </div>
   );

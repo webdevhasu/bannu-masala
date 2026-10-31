@@ -194,8 +194,33 @@
 .name {
   font-family: 'Playfair Display', serif;
   font-size: 1.3rem;
-  margin: 0 0 8px;
+  margin: 0 0 4px;
   line-height: 1.3;
+}
+
+.dealRatingRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.dealStars {
+  color: #f59e0b;
+  font-size: 0.86rem;
+  letter-spacing: 1px;
+}
+
+.dealRatingScore {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.dealRatingCount {
+  font-size: 0.72rem;
+  color: #64748b;
+  font-weight: 600;
 }
 
 .name a {
