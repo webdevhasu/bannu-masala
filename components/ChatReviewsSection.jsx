@@ -236,3 +236,4 @@ export default function ChatReviewsSection({ productId, initialReviews = null })
     </section>
   );
 }
+

@@ -60,3 +60,4 @@ export async function PATCH(request, props) {
     return NextResponse.json({ error: 'Failed to update chat review' }, { status: 500 });
   }
 }
+

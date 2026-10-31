@@ -210,8 +210,13 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .lightboxModal {
@@ -339,15 +344,19 @@
     padding: 22px 18px;
     margin: 28px 0 40px;
   }
+
   .title {
     font-size: 1.5rem;
   }
+
   .reviewCard {
     flex: 0 0 135px;
   }
+
   .prevBtn {
     left: 4px;
   }
+
   .nextBtn {
     right: 4px;
   }

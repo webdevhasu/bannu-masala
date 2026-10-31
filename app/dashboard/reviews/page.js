@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faStar,
@@ -112,6 +113,42 @@ export default function ReviewsManager() {
             className={styles.searchInput}
           />
         </div>
+      </div>
+
+      {/* Review Type Switcher */}
+      <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+        <Link
+          href="/dashboard/reviews"
+          style={{
+            padding: '8px 18px',
+            borderRadius: '50px',
+            background: 'var(--maroon, #7b1c1c)',
+            color: '#fff',
+            fontWeight: 700,
+            fontSize: '0.85rem',
+            textDecoration: 'none',
+          }}
+        >
+          Customer Text Reviews
+        </Link>
+        <Link
+          href="/dashboard/chat-reviews"
+          style={{
+            padding: '8px 18px',
+            borderRadius: '50px',
+            background: '#ffffff',
+            border: '1.5px solid #cbd5e1',
+            color: '#334155',
+            fontWeight: 700,
+            fontSize: '0.85rem',
+            textDecoration: 'none',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '6px',
+          }}
+        >
+          💬 WhatsApp Chat Reviews
+        </Link>
       </div>
 
       {/* Stats */}
