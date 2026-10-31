@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import ProductGallery from './ProductGallery';
 import ProductActions from './ProductActions';
 import ReviewsSection from './ReviewsSection';
+import ChatReviewsSection from '@/components/ChatReviewsSection';
 import ProductCard from '@/components/ProductCard';
 import { buildVariantsMap } from '@/lib/productVariants';
 import { getActiveDeals, dealsForProduct } from '@/lib/deals';
@@ -56,7 +57,7 @@ export default async function ProductDetailsPage({ params }) {
     return [];
   })();
 
-  const [reviewStats, activeDeals, settings] = await Promise.all([
+  const [reviewStats, activeDeals, settings, chatReviews] = await Promise.all([
     sql`
       SELECT COUNT(*)::int AS count, AVG(rating) AS average
       FROM reviews
@@ -64,6 +65,14 @@ export default async function ProductDetailsPage({ params }) {
     `,
     getActiveDeals(),
     getAllSettings(),
+    sql`
+      SELECT cr.*, p.name AS product_name
+      FROM chat_reviews cr
+      LEFT JOIN products p ON p.id = cr.product_id
+      WHERE (cr.product_id = ${productData.id} OR cr.product_id IS NULL)
+        AND cr.is_active = true
+      ORDER BY (cr.product_id = ${productData.id}) DESC, cr.sort_order ASC, cr.id DESC
+    `,
   ]);
 
   const productDeals = dealsForProduct(activeDeals, productData.id);
@@ -281,6 +290,9 @@ export default async function ProductDetailsPage({ params }) {
             )}
           </div>
         )}
+
+        {/* Real WhatsApp Chat Reviews Slider & Lightbox */}
+        <ChatReviewsSection productId={product.id} initialReviews={chatReviews} />
 
         <div id="reviews" className={styles.reviewsWrapper}>
           <ReviewsSection productId={product.id} />

@@ -14,6 +14,7 @@ import {
   faHouse,
   faLayerGroup,
   faEnvelope,
+  faComments,
 } from '@fortawesome/free-solid-svg-icons';
 import styles from './layout.module.css';
 
@@ -23,6 +24,7 @@ const NAV_ITEMS = [
   { href: '/dashboard/categories', label: 'Categories', icon: faLayerGroup },
   { href: '/dashboard/orders', label: 'Orders', icon: faShoppingCart },
   { href: '/dashboard/reviews', label: 'Reviews', icon: faMessage, badgeKey: 'reviews' },
+  { href: '/dashboard/chat-reviews', label: 'Chat Reviews', icon: faComments },
   { href: '/dashboard/messages', label: 'Messages', icon: faEnvelope, badgeKey: 'messages' },
   { href: '/dashboard/deals', label: 'Hot Deals', icon: faFire },
   { href: '/dashboard/settings', label: 'Settings', icon: faCog },
