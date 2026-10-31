@@ -18,9 +18,14 @@ export async function POST(request) {
     }
 
     // Convert file to base64 for Cloudinary upload
-    const buffer = Buffer.from(await file.arrayBuffer());
+    const originalBuffer = Buffer.from(await file.arrayBuffer());
+    // Convert to WebP using Sharp (rotate handles EXIF orientation)
+    const sharp = require('sharp');
+    const webpBuffer = await sharp(originalBuffer).rotate().webp({ quality: 80 }).toBuffer();
+    const buffer = webpBuffer;
     const base64 = buffer.toString('base64');
-    const dataURI = `data:${file.type};base64,${base64}`;
+    // Use correct MIME type for WebP
+    const dataURI = `data:image/webp;base64,${base64}`;
 
     // Upload to Cloudinary
     const result = await cloudinary.uploader.upload(dataURI, {
