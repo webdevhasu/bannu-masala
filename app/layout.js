@@ -17,7 +17,7 @@ export const metadata = {
     canonical: '/',
   },
   verification: {
-    google: 'lsk5o-P8Ns6haaZc1jZs8h20ZScB3C_DqyJw-XrQY8E',
+    google: 'cZkMIvG7Ka88t49H85igcyyV7YmsJAI8M-5estXtSbw',
   },
   openGraph: {
     title: 'Bannu Masala | Handcrafted Spice Blends from Bannu',
