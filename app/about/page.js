@@ -14,6 +14,7 @@ export const metadata = {
 export default async function AboutPage() {
   const settings = await getAllSettings();
   const whatsapp = settings.store?.whatsapp || '923099907713';
+  const founded = settings.store?.founded || 1988;
 
   return (
     <div className={styles.aboutPage}>
@@ -70,6 +71,10 @@ export default async function AboutPage() {
               </p>
 
               <div className={styles.founderStats}>
+                <div className={styles.stat}>
+                  <span className={styles.statNum}>{founded}</span>
+                  <span className={styles.statLabel}>Founded</span>
+                </div>
                 <div className={styles.stat}>
                   <span className={styles.statNum}>Bannu</span>
                   <span className={styles.statLabel}>Our Home</span>

@@ -5,7 +5,8 @@ const FALLBACK_STORE = {
   whatsapp: '923099907713',
   phone: '+92 309 9907713',
   email: '',
-  address: 'Bannu, KPK, Pakistan',
+  address: 'Dalazak Road, Main Gujar, Peshawar, Pakistan',
+  founded: 1988,
   hours: '',
   facebook: 'https://www.facebook.com/bannumasala',
   instagram: 'https://www.instagram.com/bannumasala786/',
@@ -80,6 +81,7 @@ export default function Footer({ store, shipping }) {
           {info.phone && <a href={`tel:${info.phone.replace(/\s+/g, '')}`} className={styles.infoText}>{info.phone}</a>}
           {info.email && <a href={`mailto:${info.email}`} className={styles.infoText}>{info.email}</a>}
           {info.address && <p className={styles.infoText}>{info.address}</p>}
+          {info.founded && <p className={styles.infoText}>Founded: {info.founded}</p>}
           {info.hours && <p className={styles.infoText}>{info.hours}</p>}
           {deliveryAreas && <p className={styles.infoText}>Delivery: {deliveryAreas}</p>}
           {deliveryDays && <p className={styles.infoText}>Delivery time: {deliveryDays}</p>}

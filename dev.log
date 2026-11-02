@@ -520,3 +520,5 @@ Error [NeonDbError]: Error connecting to database: TypeError: fetch failed
   syscall: 'open',
   path: 'D:\\bannu-masala-main\\bannu-masala-main\\.next\\server\\pages\\_app\\build-manifest.json'
 }
+ ✓ Compiled in 816ms
+ ✓ Compiled in 400ms
