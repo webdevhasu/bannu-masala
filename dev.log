@@ -1,0 +1,522 @@
+
+> bannu-masala@0.1.0 dev
+> next dev --turbopack
+
+   ▲ Next.js 15.5.14 (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.0.107:3000
+   - Environments: .env.local, .env
+
+ ✓ Starting...
+ ○ Compiling middleware ...
+ ✓ Compiled middleware in 2.4s
+ ✓ Ready in 11.7s
+ ○ Compiling /deals ...
+ ✓ Compiled /deals in 18.4s
+ GET /deals 200 in 24170ms
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /favicon.ico in 1289ms
+ GET /favicon.ico?favicon.0f1e27f2.ico 200 in 1895ms
+ ○ Compiling /api/settings/public ...
+ ✓ Compiled /api/settings/public in 691ms
+ GET /api/settings/public 200 in 2807ms
+ ○ Compiling /deals/[id] ...
+ ✓ Compiled /deals/[id] in 2.2s
+ GET /deals/6 200 in 7958ms
+ ○ Compiling /dashboard/deals ...
+ ✓ Compiled /dashboard/deals in 1590ms
+ GET /dashboard/deals 200 in 6231ms
+ ○ Compiling /api/deals ...
+ GET /favicon.ico?favicon.0f1e27f2.ico 200 in 2301ms
+ GET /api/settings/public 200 in 2251ms
+ ✓ Compiled /api/deals in 2.9s
+ GET /api/reviews 200 in 5125ms
+ GET /api/deals?t=1793589698234 200 in 5582ms
+ GET /api/contact 200 in 5438ms
+ GET /api/products?t=1793589698235 200 in 5769ms
+ ○ Compiling /checkout ...
+ ✓ Compiled /checkout in 2.3s
+ GET /checkout 200 in 2695ms
+ GET /api/settings/public 200 in 2089ms
+ GET /api/settings/public 200 in 2026ms
+ ○ Compiling /api/orders ...
+ ✓ Compiled /api/orders in 599ms
+ POST /api/orders 201 in 8071ms
+ ○ Compiling /track ...
+ ✓ Compiled /track in 1829ms
+ GET /track?order=BM-190&phone=%2B923474054450 200 in 2289ms
+ ✓ Compiled /api/orders/track in 462ms
+ GET /api/orders/track?order=BM-190&phone=%2B923474054450 200 in 2443ms
+ GET /api/orders/track?order=BM-190&phone=%2B923474054450 200 in 1130ms
+ ○ Compiling /dashboard/orders ...
+ ✓ Compiled /dashboard/orders in 1610ms
+ GET /dashboard/orders 200 in 2001ms
+ GET /api/contact 200 in 3277ms
+ GET /api/settings/public 200 in 3099ms
+ GET /api/reviews 200 in 3344ms
+ GET /api/settings/public 200 in 2314ms
+Error [NeonDbError]: Error connecting to database: TypeError: fetch failed
+    at async (app\api\orders\route.js:13:23)
+    at async GET (app\api\orders\route.js:11:29)
+  11 |     const ordersWithItems = await Promise.all(
+  12 |       orders.map(async (order) => {
+> 13 |         const items = await sql`
+     |                       ^
+  14 |           SELECT oi.*, p.slug, p.image
+  15 |           FROM order_items oi
+  16 |           LEFT JOIN products p ON p.id = oi.product_id OR p.name = oi.product_name {
+  severity: undefined,
+  code: undefined,
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: undefined,
+  line: undefined,
+  routine: undefined,
+  sourceError: [TypeError: fetch failed] {
+    [cause]: [Error [ConnectTimeoutError]: Connect Timeout Error (attempted addresses: 13.228.184.177:443, 13.228.46.236:443, 52.220.170.93:443, timeout: 10000ms)] {
+      code: 'UND_ERR_CONNECT_TIMEOUT'
+    }
+  }
+}
+ GET /api/orders?t=1793589976285 500 in 15185ms
+Error [NeonDbError]: Error connecting to database: TypeError: fetch failed
+    at async (app\api\orders\route.js:13:23)
+    at async GET (app\api\orders\route.js:11:29)
+  11 |     const ordersWithItems = await Promise.all(
+  12 |       orders.map(async (order) => {
+> 13 |         const items = await sql`
+     |                       ^
+  14 |           SELECT oi.*, p.slug, p.image
+  15 |           FROM order_items oi
+  16 |           LEFT JOIN products p ON p.id = oi.product_id OR p.name = oi.product_name {
+  severity: undefined,
+  code: undefined,
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: undefined,
+  line: undefined,
+  routine: undefined,
+  sourceError: [TypeError: fetch failed] {
+    [cause]: [Error [ConnectTimeoutError]: Connect Timeout Error (attempted addresses: 13.228.184.177:443, 13.228.46.236:443, 52.220.170.93:443, timeout: 10000ms)] {
+      code: 'UND_ERR_CONNECT_TIMEOUT'
+    }
+  }
+}
+ GET /api/orders?t=1793589976295 500 in 15517ms
+ GET /dashboard/orders 200 in 4385ms
+ GET /favicon.ico?favicon.0f1e27f2.ico 200 in 1343ms
+ GET /api/settings/public 200 in 1656ms
+ GET /api/reviews 200 in 2653ms
+ GET /api/contact 200 in 2744ms
+ GET /api/settings/public 200 in 2023ms
+ GET /api/orders?t=1793590007026 200 in 14267ms
+ GET /api/settings/public 200 in 2362ms
+ GET /api/settings/public 200 in 1103ms
+ GET /checkout 200 in 633ms
+ GET /api/settings/public 200 in 4291ms
+ GET /api/settings/public 200 in 1048ms
+ ✓ Compiled in 157ms
+ GET /checkout 200 in 726ms
+ GET /dashboard/orders 200 in 899ms
+ GET /checkout 200 in 1011ms
+ GET /dashboard/orders 200 in 1009ms
+ ✓ Compiled in 236ms
+ GET /checkout 200 in 292ms
+ GET /checkout 200 in 325ms
+ GET /dashboard/orders 200 in 612ms
+ GET /dashboard/orders 200 in 768ms
+ ✓ Compiled in 53ms
+ GET /checkout 200 in 799ms
+ GET /checkout 200 in 269ms
+ GET /dashboard/orders 200 in 402ms
+ GET /dashboard/orders 200 in 458ms
+ ✓ Compiled in 69ms
+ GET /checkout 200 in 617ms
+ GET /dashboard/orders 200 in 693ms
+ GET /checkout 200 in 585ms
+ GET /dashboard/orders 200 in 596ms
+ ⚠ Fast Refresh had to perform a full reload when ./components/CartContext.jsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ✓ Compiled in 177ms
+ GET /checkout 200 in 5958ms
+ GET /favicon.ico?favicon.0f1e27f2.ico 200 in 515ms
+ GET /api/settings/public 200 in 2181ms
+ GET /api/settings/public 200 in 761ms
+ ✓ Compiled in 79ms
+ GET /checkout 200 in 816ms
+ ✓ Compiled in 69ms
+ GET /checkout 200 in 507ms
+ ✓ Compiled in 90ms
+ GET /checkout 200 in 430ms
+ ✓ Compiled in 117ms
+ ✓ Compiled in 318ms
+ GET /checkout 200 in 4162ms
+ GET /checkout 200 in 636ms
+ ✓ Compiled in 40ms
+ GET /checkout 200 in 456ms
+ ✓ Compiled in 55ms
+ GET /checkout 200 in 548ms
+ ✓ Compiled in 188ms
+ ✓ Compiled in 136ms
+ ✓ Compiled in 153ms
+ ✓ Compiled in 105ms
+ ✓ Compiled in 128ms
+ ✓ Compiled in 157ms
+ ✓ Compiled in 120ms
+ ✓ Compiled in 96ms
+ ⚠ Fast Refresh had to perform a full reload when ./components/CartContext.jsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /checkout 200 in 3757ms
+ GET /favicon.ico?favicon.0f1e27f2.ico 200 in 934ms
+ GET /api/settings/public 200 in 2674ms
+ GET /api/settings/public 200 in 3914ms
+ ✓ Compiled in 221ms
+ GET /api/deals 200 in 7462ms
+ GET /dashboard/orders 200 in 2466ms
+ GET /favicon.ico?favicon.0f1e27f2.ico 200 in 1062ms
+ GET /api/settings/public 200 in 1202ms
+ GET /api/settings/public 200 in 605ms
+ GET /api/contact 200 in 1706ms
+ GET /api/reviews 200 in 1742ms
+ GET /api/orders?t=1793592789398 200 in 6722ms
+ GET /dashboard/deals 200 in 634ms
+ GET /api/products?t=1793592832822 200 in 3798ms
+ GET /api/deals?t=1793592832821 200 in 3995ms
+ GET /api/deals?t=1793592832824 200 in 4202ms
+ GET /api/contact 200 in 4210ms
+ GET /api/products?t=1793592832824 200 in 4515ms
+ GET /api/reviews 200 in 5432ms
+ ○ Compiling /api/deals/[id] ...
+ ✓ Compiled /api/deals/[id] in 611ms
+ PUT /api/deals/6 200 in 5076ms
+ GET /api/deals?t=1793592850111 200 in 713ms
+ ✓ Compiled /deals in 99ms
+ GET /deals 200 in 1182ms
+ GET /deals 200 in 1408ms
+ GET /favicon.ico?favicon.0f1e27f2.ico 200 in 817ms
+ GET /api/settings/public 200 in 763ms
+ GET /checkout 200 in 526ms
+ GET /api/settings/public 200 in 1058ms
+ GET /api/settings/public 200 in 769ms
+Order creation failed: Error [NeonDbError]: Error connecting to database: TypeError: fetch failed
+    at async getActiveDealsFromItems (lib\deals.js:51:16)
+    at async getActiveDeals (lib\deals.js:112:12)
+    at async POST (app\api\orders\route.js:44:52)
+  49 |
+  50 | async function getActiveDealsFromItems() {
+> 51 |   const rows = await sql`
+     |                ^
+  52 |     SELECT d.id AS deal_id, d.title AS deal_title, d.description AS deal_description,
+  53 |            d.image AS deal_image, d.discount_percent AS deal_discount_percent,
+  54 |            COALESCE((to_jsonb(d)->>'free_delivery')::boolean, false) AS deal_free_delivery, {
+  severity: undefined,
+  code: undefined,
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: undefined,
+  line: undefined,
+  routine: undefined,
+  sourceError: [TypeError: fetch failed] {
+    [cause]: [Error [ConnectTimeoutError]: Connect Timeout Error (attempted addresses: 13.228.46.236:443, 13.228.184.177:443, 52.220.170.93:443, timeout: 10000ms)] {
+      code: 'UND_ERR_CONNECT_TIMEOUT'
+    }
+  }
+}
+ POST /api/orders 500 in 11414ms
+Failed to load site settings, using defaults: Error connecting to database: TypeError: fetch failed
+Failed to load site settings, using defaults: Error connecting to database: TypeError: fetch failed
+ POST /api/orders 201 in 3474ms
+ GET /dashboard/orders 200 in 220ms
+Error [NeonDbError]: Error connecting to database: TypeError: fetch failed
+    at async GET (app\api\orders\route.js:9:20)
+   7 | export async function GET() {
+   8 |   try {
+>  9 |     const orders = await sql`SELECT * FROM orders ORDER BY created_at DESC`;
+     |                    ^
+  10 |
+  11 |     const ordersWithItems = await Promise.all(
+  12 |       orders.map(async (order) => { {
+  severity: undefined,
+  code: undefined,
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: undefined,
+  line: undefined,
+  routine: undefined,
+  sourceError: [TypeError: fetch failed] {
+    [cause]: [Error [ConnectTimeoutError]: Connect Timeout Error (attempted addresses: 13.228.46.236:443, 13.228.184.177:443, 52.220.170.93:443, timeout: 10000ms)] {
+      code: 'UND_ERR_CONNECT_TIMEOUT'
+    }
+  }
+}
+ GET /api/orders?t=1793592958836 500 in 11619ms
+Failed to load site settings, using defaults: Error connecting to database: TypeError: fetch failed
+ GET /api/settings/public 200 in 11596ms
+Fetch all reviews error: Error [NeonDbError]: Error connecting to database: TypeError: fetch failed
+    at async GET (app\api\reviews\route.js:8:21)
+   6 | export async function GET() {
+   7 |   try {
+>  8 |     const reviews = await sql`
+     |                     ^
+   9 |       SELECT r.*, p.name as product_name
+  10 |       FROM reviews r
+  11 |       JOIN products p ON r.product_id = p.id {
+  severity: undefined,
+  code: undefined,
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: undefined,
+  line: undefined,
+  routine: undefined,
+  sourceError: [TypeError: fetch failed] {
+    [cause]: [Error [ConnectTimeoutError]: Connect Timeout Error (attempted addresses: 13.228.46.236:443, 13.228.184.177:443, 52.220.170.93:443, timeout: 10000ms)] {
+      code: 'UND_ERR_CONNECT_TIMEOUT'
+    }
+  }
+}
+ GET /api/reviews 500 in 11737ms
+Failed to fetch contact messages: Error [NeonDbError]: Error connecting to database: TypeError: fetch failed
+    at async GET (app\api\contact\route.js:8:22)
+   6 | export async function GET() {
+   7 |   try {
+>  8 |     const messages = await sql`
+     |                      ^
+   9 |       SELECT * FROM contact_messages ORDER BY created_at DESC
+  10 |     `;
+  11 |     return NextResponse.json(messages); {
+  severity: undefined,
+  code: undefined,
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: undefined,
+  line: undefined,
+  routine: undefined,
+  sourceError: [TypeError: fetch failed] {
+    [cause]: [Error [ConnectTimeoutError]: Connect Timeout Error (attempted addresses: 13.228.46.236:443, 13.228.184.177:443, 52.220.170.93:443, timeout: 10000ms)] {
+      code: 'UND_ERR_CONNECT_TIMEOUT'
+    }
+  }
+}
+ GET /api/contact 500 in 11929ms
+Error [NeonDbError]: Error connecting to database: TypeError: fetch failed
+    at async GET (app\api\orders\route.js:9:20)
+   7 | export async function GET() {
+   8 |   try {
+>  9 |     const orders = await sql`SELECT * FROM orders ORDER BY created_at DESC`;
+     |                    ^
+  10 |
+  11 |     const ordersWithItems = await Promise.all(
+  12 |       orders.map(async (order) => { {
+  severity: undefined,
+  code: undefined,
+  detail: undefined,
+  hint: undefined,
+  position: undefined,
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: undefined,
+  line: undefined,
+  routine: undefined,
+  sourceError: [TypeError: fetch failed] {
+    [cause]: [Error [ConnectTimeoutError]: Connect Timeout Error (attempted addresses: 13.228.46.236:443, 13.228.184.177:443, 52.220.170.93:443, timeout: 10000ms)] {
+      code: 'UND_ERR_CONNECT_TIMEOUT'
+    }
+  }
+}
+ GET /api/orders?t=1793592958837 500 in 12105ms
+ GET /api/settings/public 200 in 1097ms
+ GET /dashboard/orders 200 in 961ms
+ GET /favicon.ico?favicon.0f1e27f2.ico 200 in 1059ms
+ GET /api/settings/public 200 in 1254ms
+ GET /api/contact 200 in 1397ms
+ GET /api/reviews 200 in 1441ms
+ GET /api/settings/public 200 in 590ms
+ GET /api/orders?t=1793592974454 200 in 6707ms
+ ✓ Compiled /api/orders/[id] in 379ms
+ DELETE /api/orders/191 200 in 2819ms
+ DELETE /api/orders/190 200 in 571ms
+ ✓ Compiled in 513ms
+ ○ Compiling / ...
+ ✓ Compiled / in 6.1s
+ ⨯ Error: Failed to load chunk server/chunks/ssr/[root-of-the-server]__e8a2741f._.js from runtime for chunk server/app/page.js
+    at Object.<anonymous> (D:\bannu-masala-main\bannu-masala-main\.next\server\app\page.js:3:3) {
+  page: '/',
+  [cause]: Error: ENOENT: no such file or directory, open 'D:\bannu-masala-main\bannu-masala-main\.next\server\chunks\ssr\[root-of-the-server]__e8a2741f._.js'
+      at Object.<anonymous> (D:\bannu-masala-main\bannu-masala-main\.next\server\app\page.js:3:3) {
+    errno: -4058,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: 'D:\\bannu-masala-main\\bannu-masala-main\\.next\\server\\chunks\\ssr\\[root-of-the-server]__e8a2741f._.js'
+  }
+}
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 4.6s
+ GET / 500 in 11663ms
+ GET /favicon.ico 200 in 830ms
+ ⨯ Error: Failed to load chunk server/chunks/ssr/[root-of-the-server]__e8a2741f._.js from runtime for chunk server/app/page.js
+    at Object.<anonymous> (D:\bannu-masala-main\bannu-masala-main\.next\server\app\page.js:3:3) {
+  page: '/',
+  [cause]: Error: ENOENT: no such file or directory, open 'D:\bannu-masala-main\bannu-masala-main\.next\server\chunks\ssr\[root-of-the-server]__e8a2741f._.js'
+      at Object.<anonymous> (D:\bannu-masala-main\bannu-masala-main\.next\server\app\page.js:3:3) {
+    errno: -4058,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: 'D:\\bannu-masala-main\\bannu-masala-main\\.next\\server\\chunks\\ssr\\[root-of-the-server]__e8a2741f._.js'
+  }
+}
+ GET / 500 in 815ms
+ GET /favicon.ico 200 in 712ms
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\bannu-masala-main\bannu-masala-main\.next\server\app\page\app-build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\bannu-masala-main\\bannu-masala-main\\.next\\server\\app\\page\\app-build-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\bannu-masala-main\bannu-masala-main\.next\server\pages\_app\build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\bannu-masala-main\\bannu-masala-main\\.next\\server\\pages\\_app\\build-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\bannu-masala-main\bannu-masala-main\.next\server\app\page\app-build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\bannu-masala-main\\bannu-masala-main\\.next\\server\\app\\page\\app-build-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\bannu-masala-main\bannu-masala-main\.next\server\pages\_app\build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\bannu-masala-main\\bannu-masala-main\\.next\\server\\pages\\_app\\build-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\bannu-masala-main\bannu-masala-main\.next\server\pages\_app\build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\bannu-masala-main\\bannu-masala-main\\.next\\server\\pages\\_app\\build-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\bannu-masala-main\bannu-masala-main\.next\server\app\page\app-build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\bannu-masala-main\\bannu-masala-main\\.next\\server\\app\\page\\app-build-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\bannu-masala-main\bannu-masala-main\.next\server\pages\_app\build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\bannu-masala-main\\bannu-masala-main\\.next\\server\\pages\\_app\\build-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\bannu-masala-main\bannu-masala-main\.next\server\app\page\app-build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\bannu-masala-main\\bannu-masala-main\\.next\\server\\app\\page\\app-build-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\bannu-masala-main\bannu-masala-main\.next\server\pages\_app\build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\bannu-masala-main\\bannu-masala-main\\.next\\server\\pages\\_app\\build-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\bannu-masala-main\bannu-masala-main\.next\server\pages\_app\build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\bannu-masala-main\\bannu-masala-main\\.next\\server\\pages\\_app\\build-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\bannu-masala-main\bannu-masala-main\.next\server\app\favicon.ico\[__metadata_id__]\route\app-paths-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\bannu-masala-main\\bannu-masala-main\\.next\\server\\app\\favicon.ico\\[__metadata_id__]\\route\\app-paths-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\bannu-masala-main\bannu-masala-main\.next\server\app\page\app-build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\bannu-masala-main\\bannu-masala-main\\.next\\server\\app\\page\\app-build-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\bannu-masala-main\bannu-masala-main\.next\server\pages\_app\build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\bannu-masala-main\\bannu-masala-main\\.next\\server\\pages\\_app\\build-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\bannu-masala-main\bannu-masala-main\.next\server\app\page\app-build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\bannu-masala-main\\bannu-masala-main\\.next\\server\\app\\page\\app-build-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\bannu-masala-main\bannu-masala-main\.next\server\pages\_app\build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\bannu-masala-main\\bannu-masala-main\\.next\\server\\pages\\_app\\build-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\bannu-masala-main\bannu-masala-main\.next\server\pages\_app\build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\bannu-masala-main\\bannu-masala-main\\.next\\server\\pages\\_app\\build-manifest.json'
+}

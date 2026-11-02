@@ -5,7 +5,7 @@ import { getAllSettings } from '@/lib/settings';
 
 export const dynamic = 'force-dynamic';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://bannumasala.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bannumasala.com';
 
 export const metadata = {
   title: 'Bannu Masala | Premium Authentic Spices & Handcrafted Blends',

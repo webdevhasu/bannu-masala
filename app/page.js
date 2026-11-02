@@ -76,7 +76,7 @@ export default async function Home() {
     return { ...category, image: productWithImage?.image || null };
   });
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bannumasala.com';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bannumasala.com';
 
   const jsonLd = {
     '@context': 'https://schema.org',

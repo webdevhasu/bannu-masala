@@ -4,7 +4,6 @@ import { faSearch, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import sql from '@/lib/db';
 import ProductCard from '@/components/ProductCard';
 import { buildVariantsMap } from '@/lib/productVariants';
-import { getActiveDeals, dealsForProduct } from '@/lib/deals';
 import styles from './products.module.css';
 
 export const dynamic = 'force-dynamic';
@@ -16,11 +15,8 @@ export const metadata = {
 };
 
 function effectiveMinPrice(product) {
-  const prices = Object.entries(product.variants)
-    .map(([weight, price]) => {
-      const deal = (product.deals || []).find((d) => d.variant === weight);
-      return Number(deal?.sale_price || price) || 0;
-    })
+  const prices = Object.values(product.variants)
+    .map((price) => Number(price) || 0)
     .filter((price) => price > 0);
 
   return prices.length ? Math.min(...prices) : 0;
@@ -33,7 +29,7 @@ export default async function ProductsListPage({ searchParams }) {
   const sort = typeof params.sort === 'string' ? params.sort : 'featured';
   const focusSearch = params.focus === 'search';
 
-  const [rows, categories, activeDeals] = await Promise.all([
+  const [rows, categories] = await Promise.all([
     sql`
       SELECT p.*, c.name AS category_name, c.slug AS category_slug,
              COALESCE(AVG(r.rating), 0) AS average_rating,
@@ -53,7 +49,6 @@ export default async function ProductsListPage({ searchParams }) {
       GROUP BY c.id
       ORDER BY c.sort_order ASC, c.id ASC
     `,
-    getActiveDeals(),
   ]);
 
   const allProducts = rows.map((p) => ({
@@ -61,7 +56,6 @@ export default async function ProductsListPage({ searchParams }) {
     average_rating: parseFloat(p.average_rating).toFixed(1),
     review_count: parseInt(p.review_count),
     variants: buildVariantsMap(p),
-    deals: dealsForProduct(activeDeals, p.id),
   }));
 
   const categoryCounts = new Map();

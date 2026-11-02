@@ -188,13 +188,13 @@ export default function DealsPage() {
 
   const handleProductChange = (index, productId) => {
     const product = products.find((p) => String(p.id) === String(productId));
-    updateItem(index, { product_id: productId, variant: firstVariantFor(product) });
+    updateItem(index, { product_id: productId, variant: firstVariantFor(product), custom_price: '' });
   };
 
   const addItem = () => {
     setFormData((prev) => ({
       ...prev,
-      items: [...prev.items, { product_id: '', variant: '' }],
+      items: [...prev.items, { product_id: '', variant: '', custom_price: '' }],
     }));
   };
 

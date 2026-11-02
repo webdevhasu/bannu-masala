@@ -98,7 +98,7 @@ export default function ProductActions({ product, storeWhatsapp }) {
   };
 
   const waNumber = storeWhatsapp || '923099907713';
-  const siteUrl = typeof window !== 'undefined' && window.location?.origin ? window.location.origin : 'https://bannumasala.com';
+  const siteUrl = typeof window !== 'undefined' && window.location?.origin ? window.location.origin : 'https://www.bannumasala.com';
   const productUrl = `${siteUrl}/products/${product.slug || product.id}`;
 
   return (

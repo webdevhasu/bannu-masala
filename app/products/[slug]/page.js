@@ -6,7 +6,6 @@ import ReviewsSection from './ReviewsSection';
 import ChatReviewsSection from '@/components/ChatReviewsSection';
 import ProductCard from '@/components/ProductCard';
 import { buildVariantsMap } from '@/lib/productVariants';
-import { getActiveDeals, dealsForProduct } from '@/lib/deals';
 import { getAllSettings } from '@/lib/settings';
 import styles from './page.module.css';
 import Link from 'next/link';
@@ -57,13 +56,12 @@ export default async function ProductDetailsPage({ params }) {
     return [];
   })();
 
-  const [reviewStats, activeDeals, settings, chatReviews] = await Promise.all([
+  const [reviewStats, settings, chatReviews] = await Promise.all([
     sql`
       SELECT COUNT(*)::int AS count, AVG(rating) AS average
       FROM reviews
       WHERE product_id = ${productData.id} AND is_approved = true
     `,
-    getActiveDeals(),
     getAllSettings(),
     sql`
       SELECT cr.*, p.name AS product_name
@@ -75,12 +73,10 @@ export default async function ProductDetailsPage({ params }) {
     `,
   ]);
 
-  const productDeals = dealsForProduct(activeDeals, productData.id);
   const product = {
     ...productData,
     gallery,
     variants: buildVariantsMap(productData),
-    deals: productDeals,
   };
 
   const reviewCount = parseInt(reviewStats[0].count, 10);
@@ -112,27 +108,20 @@ export default async function ProductDetailsPage({ params }) {
   }
 
   const relatedProducts = relatedRows.map((row) => ({
-    ...row,
-    average_rating: parseFloat(row.average_rating).toFixed(1),
-    review_count: parseInt(row.review_count, 10),
-    variants: buildVariantsMap(row),
-    deals: dealsForProduct(activeDeals, row.id),
-  }));
+      ...row,
+      average_rating: parseFloat(row.average_rating).toFixed(1),
+      review_count: parseInt(row.review_count, 10),
+      variants: buildVariantsMap(row),
+    }));
 
   const allImages = [product.image, ...gallery].filter(Boolean);
-  const effectivePrices = Object.entries(product.variants)
-    .map(([label, price]) => {
-      const deal = productDeals.find((item) => item.variant === label);
-      return Number(deal?.sale_price || price) || 0;
-    })
+  const effectivePrices = Object.values(product.variants)
+    .map((price) => Number(price) || 0)
     .filter((price) => price > 0);
 
   const lowPrice = effectivePrices.length ? Math.min(...effectivePrices) : product.price_250g;
   const highPrice = effectivePrices.length ? Math.max(...effectivePrices) : product.price_1kg;
   const inStock = product.stock === null || Number(product.stock) > 0;
-  const maxDiscount = productDeals.length
-    ? Math.max(...productDeals.map((deal) => deal.discount_percent))
-    : 0;
 
   const flatRate = Number(settings.shipping?.flat_rate) || 0;
   const freeThreshold = Number(settings.shipping?.free_threshold) || 0;
@@ -193,9 +182,6 @@ export default async function ProductDetailsPage({ params }) {
 
           <div className={styles.detailsColumn}>
             <div className={styles.badges}>
-              {maxDiscount > 0 && (
-                <span className={styles.badgeDeal}>{maxDiscount}% OFF</span>
-              )}
               {product.badge && <span className={styles.badgeTop}>{product.badge}</span>}
               {product.is_featured && !product.badge && (
                 <span className={styles.badgeTop}>Best Seller</span>
