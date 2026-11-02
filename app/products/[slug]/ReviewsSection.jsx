@@ -26,11 +26,11 @@ export default function ReviewsSection({ productId }) {
 
   useEffect(() => {
     fetchReviews();
-  }, [productId]);
+  }, []);
 
   const fetchReviews = async () => {
     try {
-      const res = await fetch(`/api/reviews/${productId}`);
+      const res = await fetch('/api/reviews');
       const data = await res.json();
       if (res.ok) {
         setReviews(Array.isArray(data) ? data : []);
@@ -57,7 +57,7 @@ export default function ReviewsSection({ productId }) {
 
     setSubmitting(true);
     try {
-      const res = await fetch(`/api/reviews/${productId}`, {
+      const res = await fetch('/api/reviews', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ rating, comment, name, phone }),
