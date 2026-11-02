@@ -59,8 +59,9 @@ function derivePercent(deal) {
 const EMPTY_FORM = {
   title: '',
   image: '',
+  price_mode: 'percent',   // 'percent' | 'custom'
   discount_percent: '',
-  items: [{ product_id: '', variant: '' }],
+  items: [{ product_id: '', variant: '', custom_price: '' }],
   start_at: '',
   end_at: '',
   is_active: true,
@@ -107,13 +108,24 @@ export default function DealsPage() {
     fetchProducts();
   }, []);
 
+  const priceMode = formData.price_mode || 'percent';
   const discountPercent = Number(formData.discount_percent) || 0;
+
+  // For each item compute the effective sale price based on mode
+  function effectiveSalePrice(originalPrice, item) {
+    if (!originalPrice) return 0;
+    if (priceMode === 'custom') {
+      const cp = Number(item.custom_price);
+      return cp > 0 ? cp : originalPrice;
+    }
+    return salePriceFor(originalPrice, discountPercent);
+  }
 
   const previewItems = formData.items
     .map((item) => {
       const product = products.find((p) => String(p.id) === String(item.product_id));
       const originalPrice = product ? Number(product.variants[item.variant]) || 0 : 0;
-      const salePrice = salePriceFor(originalPrice, discountPercent);
+      const salePrice = effectiveSalePrice(originalPrice, item);
       return {
         ...item,
         product,
@@ -135,19 +147,25 @@ export default function DealsPage() {
           ? deal.items.map((item) => ({
               product_id: String(item.product_id),
               variant: item.variant || '',
+              custom_price: item.custom_price ? String(item.custom_price) : '',
             }))
           : [
               {
                 product_id: deal.product_id ? String(deal.product_id) : '',
                 variant: deal.variant || '',
+                custom_price: '',
               },
             ];
+
+      const derivedPercent = derivePercent(deal);
+      const hasCutomPrices = deal.items?.some((i) => Number(i.custom_price) > 0);
 
       setEditingId(deal.id);
       setFormData({
         title: deal.title || '',
         image: deal.image || '',
-        discount_percent: String(derivePercent(deal) || ''),
+        price_mode: hasCutomPrices ? 'custom' : 'percent',
+        discount_percent: String(derivedPercent || ''),
         items: dealItems,
         start_at: toDateTimeLocal(deal.start_at),
         end_at: toDateTimeLocal(deal.end_at),
@@ -233,9 +251,19 @@ export default function DealsPage() {
       return;
     }
 
-    if (discountPercent <= 0 || discountPercent >= 100) {
+    if (priceMode === 'percent' && (discountPercent <= 0 || discountPercent >= 100)) {
       setFormError('Discount must be between 1% and 99%.');
       return;
+    }
+
+    if (priceMode === 'custom') {
+      const missingCustom = formData.items.some(
+        (item) => item.product_id && item.variant && !(Number(item.custom_price) > 0)
+      );
+      if (missingCustom) {
+        setFormError('Please enter a custom price (> 0) for every product in Custom Price mode.');
+        return;
+      }
     }
 
     if (formData.start_at && formData.end_at && new Date(formData.end_at) <= new Date(formData.start_at)) {
@@ -248,11 +276,21 @@ export default function DealsPage() {
       const payload = {
         title: formData.title.trim(),
         image: formData.image || null,
-        discount_percent: discountPercent,
-        items: validItems.map((item) => ({
-          product_id: Number(item.product_id),
-          variant: item.variant,
-        })),
+        discount_percent: priceMode === 'percent' ? discountPercent : null,
+        items: validItems.map((item) => {
+          const product = products.find((p) => String(p.id) === String(item.product_id));
+          const originalPrice = product ? Number(product.variants[item.variant]) || 0 : 0;
+          const salePrice =
+            priceMode === 'custom'
+              ? Number(item.custom_price)
+              : salePriceFor(originalPrice, discountPercent);
+          return {
+            product_id: Number(item.product_id),
+            variant: item.variant,
+            custom_price: priceMode === 'custom' ? Number(item.custom_price) : null,
+            sale_price: salePrice,
+          };
+        }),
         start_at: formData.start_at || null,
         end_at: formData.end_at || null,
         is_active: formData.is_active,
@@ -658,7 +696,7 @@ export default function DealsPage() {
                   const originalPrice = product
                     ? Number(product.variants[item.variant]) || 0
                     : 0;
-                  const previewSale = salePriceFor(originalPrice, discountPercent);
+                  const previewSale = effectiveSalePrice(originalPrice, item);
 
                   return (
                     <div
@@ -674,7 +712,7 @@ export default function DealsPage() {
                       <div
                         style={{
                           display: 'grid',
-                          gridTemplateColumns: '1fr 1fr auto',
+                          gridTemplateColumns: priceMode === 'custom' ? '1fr 1fr 120px auto' : '1fr 1fr auto',
                           gap: '12px',
                           alignItems: 'end',
                         }}
@@ -714,6 +752,23 @@ export default function DealsPage() {
                             ))}
                           </select>
                         </div>
+
+                        {/* Custom price field — only in custom mode */}
+                        {priceMode === 'custom' && (
+                          <div>
+                            <label className={styles.label}>Deal Price (Rs)</label>
+                            <input
+                              type="number"
+                              min="1"
+                              className={styles.input}
+                              value={item.custom_price}
+                              onChange={(e) => updateItem(index, { custom_price: e.target.value })}
+                              placeholder="e.g. 450"
+                              disabled={!product || !item.variant}
+                            />
+                          </div>
+                        )}
+
                         <button
                           type="button"
                           className={styles.btnDanger}
@@ -726,18 +781,16 @@ export default function DealsPage() {
                       </div>
 
                       {originalPrice > 0 && (
-                        <p
-                          style={{
-                            margin: '8px 0 0',
-                            fontSize: '0.8rem',
-                            color: '#475569',
-                          }}
-                        >
-                          Rs {originalPrice.toLocaleString()} →{' '}
+                        <p style={{ margin: '8px 0 0', fontSize: '0.8rem', color: '#475569' }}>
+                          Original: Rs {originalPrice.toLocaleString()} →{' '}
                           <strong style={{ color: '#15803d' }}>
                             Rs {previewSale.toLocaleString()}
                           </strong>{' '}
-                          {discountPercent > 0 && `(${discountPercent}% off)`}
+                          {previewSale < originalPrice && (
+                            <span style={{ color: '#b91c1c' }}>
+                              ({Math.round(((originalPrice - previewSale) / originalPrice) * 100)}% off)
+                            </span>
+                          )}
                         </p>
                       )}
                     </div>
@@ -754,24 +807,62 @@ export default function DealsPage() {
                 </button>
               </div>
 
-              <div className={styles.formRow}>
-                <div>
-                  <label className={styles.label}>Discount (%)</label>
-                  <input
-                    required
-                    type="number"
-                    min="1"
-                    max="99"
-                    className={styles.input}
-                    value={formData.discount_percent}
-                    onChange={(e) =>
-                      setFormData({ ...formData, discount_percent: e.target.value })
-                    }
-                    placeholder="e.g. 15"
-                  />
+              {/* ── Pricing Mode Toggle ── */}
+              <div style={{ marginBottom: '16px' }}>
+                <label className={styles.label}>Discount Type</label>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  {[
+                    { key: 'percent', label: '% Percentage Discount' },
+                    { key: 'custom',  label: '₨ Custom Price'        },
+                  ].map(({ key, label }) => (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => setFormData((p) => ({ ...p, price_mode: key, discount_percent: '' }))}
+                      style={{
+                        flex: 1,
+                        padding: '10px',
+                        borderRadius: '10px',
+                        border: priceMode === key ? '2px solid #7c1a1a' : '1.5px solid #e2e8f0',
+                        background: priceMode === key ? '#fdf2f2' : '#fff',
+                        fontWeight: 700,
+                        fontSize: '0.85rem',
+                        color: priceMode === key ? '#7c1a1a' : '#64748b',
+                        cursor: 'pointer',
+                        transition: 'all 0.15s',
+                      }}
+                    >
+                      {label}
+                    </button>
+                  ))}
                 </div>
+                <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '6px' }}>
+                  {priceMode === 'percent'
+                    ? 'Enter a % and system will auto-calculate deal price for each product.'
+                    : 'Enter the exact deal price for each product above. System will auto-calculate % off.'}
+                </p>
+              </div>
+
+              <div className={styles.formRow}>
+                {priceMode === 'percent' && (
+                  <div>
+                    <label className={styles.label}>Discount Percentage (%)</label>
+                    <input
+                      required
+                      type="number"
+                      min="1"
+                      max="99"
+                      className={styles.input}
+                      value={formData.discount_percent}
+                      onChange={(e) =>
+                        setFormData({ ...formData, discount_percent: e.target.value })
+                      }
+                      placeholder="e.g. 20"
+                    />
+                  </div>
+                )}
                 <div>
-                  <label className={styles.label}>Combo Preview</label>
+                  <label className={styles.label}>Price Preview</label>
                   <div
                     style={{
                       padding: '10px 14px',
