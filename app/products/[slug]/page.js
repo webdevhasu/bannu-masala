@@ -12,6 +12,8 @@ import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faStar } from '@fortawesome/free-solid-svg-icons';
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bannumasala.com';
+
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const productRes = await sql`SELECT name, description, image FROM products WHERE slug = ${slug} LIMIT 1`;
@@ -138,6 +140,7 @@ export default async function ProductDetailsPage({ params }) {
   const productJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Product',
+    '@id': `${SITE_URL}/products/${product.slug}`,
     name: product.name,
     image: allImages,
     description: product.description,

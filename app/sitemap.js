@@ -1,7 +1,7 @@
 import sql from '@/lib/db';
 
 export default async function sitemap() {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bannumasala.com';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bannumasala.com';
 
   const products = await sql`SELECT slug FROM products WHERE is_active = true`;
 
