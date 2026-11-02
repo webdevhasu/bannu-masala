@@ -231,8 +231,6 @@ export default async function ProductDetailsPage({ params }) {
               </a>
             </div>
 
-            <p className={styles.description}>{product.description}</p>
-
             {/* Trust badges */}
             <div className={styles.trustBadges}>
               <span className={styles.trustBadge}>✅ 100% Pure</span>
@@ -242,6 +240,8 @@ export default async function ProductDetailsPage({ params }) {
             </div>
 
             <ProductActions product={product} storeWhatsapp={settings.store?.whatsapp} />
+
+            <p className={styles.description}>{product.description}</p>
 
             <div className={styles.perks}>
               <div className={styles.perk}>🚚 {shippingPerk}</div>
