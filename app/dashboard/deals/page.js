@@ -848,7 +848,6 @@ export default function DealsPage() {
                   <div>
                     <label className={styles.label}>Discount Percentage (%)</label>
                     <input
-                      required
                       type="number"
                       min="1"
                       max="99"
