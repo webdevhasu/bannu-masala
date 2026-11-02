@@ -69,6 +69,9 @@ export default async function DealDetailsPage({ params }) {
           {deal.description && <p className={styles.subtitle}>{deal.description}</p>}
           <div className={styles.heroMeta}>
             <span className={styles.discountBadge}>{deal.discount_percent}% OFF</span>
+            {deal.free_delivery && (
+              <span className={styles.freeDeliveryBadge}>Free Delivery</span>
+            )}
             {endDate && (
               <span className={styles.ends}>
                 <FontAwesomeIcon icon={faClock} /> Ends {endDate}
@@ -153,6 +156,7 @@ export default async function DealDetailsPage({ params }) {
             </div>
 
             <p className={styles.note}>
+              {deal.free_delivery ? 'Free delivery included with this deal. ' : ''}
               Discounted prices apply automatically to every product included in this deal.
             </p>
           </div>

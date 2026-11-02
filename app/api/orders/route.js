@@ -59,16 +59,26 @@ export async function POST(request) {
       : allowedPayments[0] || null;
 
     const productCache = new Map();
+    const dealItemMap = new Map();
+    for (const deal of deals) {
+      dealItemMap.set(`${deal.deal_id}:${deal.product_id}:${deal.variant}`, deal);
+    }
     const normalizedItems = [];
 
     for (const item of items) {
       const productId = parseInt(item?.id, 10);
       const variant = typeof item?.variant === 'string' ? item.variant.trim() : '';
       const qty = parseInt(item?.qty, 10);
+      const dealId = parseInt(item?.deal_id, 10);
 
       if (!Number.isFinite(productId) || productId <= 0 || !variant || !Number.isFinite(qty) || qty < 1) {
         return NextResponse.json({ error: 'Invalid item data' }, { status: 400 });
       }
+
+      const matchedDeal =
+        Number.isFinite(dealId) && dealId > 0
+          ? dealItemMap.get(`${dealId}:${productId}:${variant}`)
+          : null;
 
       let product = productCache.get(productId);
       if (!product) {
@@ -98,6 +108,8 @@ export async function POST(request) {
         qty,
         price,
         base_price: basePrice,
+        deal_id: matchedDeal ? matchedDeal.deal_id : null,
+        deal_name: matchedDeal ? matchedDeal.deal_title : null,
       });
     }
 
@@ -120,10 +132,26 @@ export async function POST(request) {
       }
     }
 
+    const freeDeliveryDealKeys = new Set(
+      deals
+        .filter((deal) => deal.free_delivery)
+        .map((deal) => `${deal.deal_id}:${deal.product_id}:${deal.variant}`)
+    );
+
+    const hasFreeDeliveryDeal = normalizedItems.some(
+      (item) =>
+        item.deal_id &&
+        freeDeliveryDealKeys.has(`${item.deal_id}:${item.product_id}:${item.variant}`)
+    );
+
     const subtotal = normalizedItems.reduce((sum, item) => sum + item.price * item.qty, 0);
     const flatRate = Number(shippingConfig?.flat_rate) || 0;
     const freeThreshold = Number(shippingConfig?.free_threshold) || 0;
-    const shipping = freeThreshold > 0 && subtotal >= freeThreshold ? 0 : flatRate;
+    const shipping = hasFreeDeliveryDeal
+      ? 0
+      : freeThreshold > 0 && subtotal >= freeThreshold
+        ? 0
+        : flatRate;
     const total = subtotal + shipping;
 
     client = await pool.connect();
@@ -141,9 +169,20 @@ export async function POST(request) {
 
     for (const item of normalizedItems) {
       await client.query(
-        `INSERT INTO order_items (order_id, product_id, product_name, variant, quantity, price)
-         VALUES ($1, $2, $3, $4, $5, $6)`,
-        [orderId, item.product_id, item.name, item.variant, item.qty, item.price]
+        `INSERT INTO order_items (
+           order_id, product_id, product_name, variant, quantity, price, deal_id, deal_name
+         )
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+        [
+          orderId,
+          item.product_id,
+          item.name,
+          item.variant,
+          item.qty,
+          item.price,
+          item.deal_id,
+          item.deal_name,
+        ]
       );
 
       await client.query(

@@ -198,6 +198,20 @@
   box-shadow: 0 4px 12px rgba(128, 0, 0, 0.35);
 }
 
+.freeDeliveryBadge {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  background: rgba(21, 128, 61, 0.94);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  box-shadow: 0 4px 12px rgba(21, 128, 61, 0.35);
+}
+
 .comboList {
   list-style: none;
   padding: 0;

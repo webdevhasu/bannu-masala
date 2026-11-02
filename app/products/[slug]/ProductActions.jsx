@@ -84,7 +84,7 @@ export default function ProductActions({ product, storeWhatsapp }) {
           variants: { ...product.variants, [selectedVariant.label]: currentPrice },
         }
       : product;
-    addToCart(pricedProduct, selectedVariant.label, qty);
+    addToCart(pricedProduct, selectedVariant.label, qty, true, selectedDeal);
   };
 
   const handleBuyNow = () => {

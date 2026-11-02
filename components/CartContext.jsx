@@ -45,7 +45,7 @@ export function CartProvider({ children }) {
       .catch(() => {});
   }, []);
 
-  const addToCart = (product, variant, quantity = 1, openSidebar = true) => {
+  const addToCart = (product, variant, quantity = 1, openSidebar = true, deal = null) => {
     setItems(prev => {
       const key = `${product.id}-${variant}`;
       const existing = prev.find(i => i.key === key);
@@ -54,7 +54,14 @@ export function CartProvider({ children }) {
 
       if (existing) {
         return prev.map(i => i.key === key
-          ? { ...i, qty: i.qty + (quantity || 1), price: price || i.price }
+          ? {
+              ...i,
+              qty: i.qty + (quantity || 1),
+              price: price || i.price,
+              dealId: deal?.deal_id || i.dealId || null,
+              dealName: deal?.deal_title || i.dealName || null,
+              free_delivery: deal ? Boolean(deal.free_delivery) : Boolean(i.free_delivery),
+            }
           : i);
       }
       return [...prev, {
@@ -65,6 +72,9 @@ export function CartProvider({ children }) {
         price: price,
         image: product.image,
         qty: quantity || 1,
+        dealId: deal?.deal_id || null,
+        dealName: deal?.deal_title || null,
+        free_delivery: Boolean(deal?.free_delivery),
       }];
     });
     const key = `${product.id}-${variant}`;
@@ -92,6 +102,7 @@ export function CartProvider({ children }) {
       key,
       isDeal: true,
       dealId: deal.id,
+      free_delivery: Boolean(deal.free_delivery),
       id: key,
       name: deal.title || `${dealItems.length}-Product Combo`,
       variant: `${dealItems.length} products`,
@@ -161,9 +172,12 @@ export function CartProvider({ children }) {
 
   const selectedItems = items.filter(i => selectedKeys.includes(i.key));
   const subtotal = selectedItems.reduce((sum, i) => sum + i.price * i.qty, 0);
-  const shipping = shippingConfig.free_threshold > 0 && subtotal >= shippingConfig.free_threshold
+  const hasFreeDeliveryDeal = selectedItems.some(i => i.isDeal && i.free_delivery);
+  const shipping = hasFreeDeliveryDeal
     ? 0
-    : shippingConfig.flat_rate;
+    : shippingConfig.free_threshold > 0 && subtotal >= shippingConfig.free_threshold
+      ? 0
+      : shippingConfig.flat_rate;
   const total = subtotal + shipping;
   const itemCount = items.reduce((sum, i) => sum + i.qty, 0);
 

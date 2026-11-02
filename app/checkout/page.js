@@ -84,7 +84,10 @@ function CheckoutContent() {
               price,
               originalPrice: deal?.original_price || null,
               image: product.image,
-              key: `buy-now-${product.id}`
+              key: `buy-now-${product.id}`,
+              dealId: deal?.deal_id || null,
+              dealName: deal?.deal_title || null,
+              free_delivery: Boolean(deal?.free_delivery),
             });
           }
         })
@@ -97,7 +100,12 @@ function CheckoutContent() {
   const subtotal = isBuyNow ? (buyNowItem ? buyNowItem.price * buyNowItem.qty : 0) : cartSubtotal;
   const flatRate = Number(shippingConfig.flat_rate) || 0;
   const freeThreshold = Number(shippingConfig.free_threshold) || 0;
-  const shipping = freeThreshold > 0 && subtotal >= freeThreshold ? 0 : flatRate;
+  const hasFreeDeliveryDeal = activeItems.some((item) => item.free_delivery);
+  const shipping = hasFreeDeliveryDeal
+    ? 0
+    : freeThreshold > 0 && subtotal >= freeThreshold
+      ? 0
+      : flatRate;
   const total = subtotal + shipping;
 
   const validate = () => {
@@ -137,11 +145,14 @@ function CheckoutContent() {
               ),
             ]
           : [
-              `• ${item.name} (${item.variant}) × ${item.qty} = Rs ${(item.price * item.qty).toLocaleString()}`,
+              `• ${item.name} (${item.variant}) × ${item.qty} = Rs ${(item.price * item.qty).toLocaleString()}${
+                item.dealName ? ` [Deal: ${item.dealName}]` : ''
+              }`,
             ]
       ),
       ``,
       `Subtotal: Rs ${subtotal.toLocaleString()}`,
+      ...(hasFreeDeliveryDeal ? [`Free Delivery: Yes (deal offer)`] : []),
       `Shipping: Rs ${shipping}`,
       `*Total: Rs ${total.toLocaleString()}*`,
     ];
@@ -174,8 +185,16 @@ function CheckoutContent() {
                 id: product.id,
                 variant: product.variant,
                 qty: (product.qty || 1) * item.qty,
+                deal_id: item.dealId || null,
+                deal_name: item.name || null,
               }))
-            : [{ id: item.id, variant: item.variant, qty: item.qty }]
+            : [{
+                id: item.id,
+                variant: item.variant,
+                qty: item.qty,
+                deal_id: item.dealId || null,
+                deal_name: item.dealName || null,
+              }]
         )
       };
 
@@ -410,7 +429,14 @@ function CheckoutContent() {
                             </p>
                           </>
                         ) : (
-                          <p className={styles.itemMeta}>{item.variant} × {item.qty}</p>
+                          <>
+                            <p className={styles.itemMeta}>{item.variant} × {item.qty}</p>
+                            {item.dealName && (
+                              <p className={styles.itemMeta} style={{ color: '#15803d', fontWeight: 600 }}>
+                                Deal: {item.dealName}
+                              </p>
+                            )}
+                          </>
                         )}
                         {Number(item.originalPrice) > Number(item.price) && (
                           <p className={styles.itemMeta} style={{ color: '#15803d', fontWeight: 600 }}>
@@ -435,11 +461,23 @@ function CheckoutContent() {
                     </span>
                   </div>
 
-                  {freeThreshold > 0 && subtotal < freeThreshold && (
-                    <p className={styles.itemMeta} style={{ marginBottom: '8px' }}>
-                      Add Rs {(freeThreshold - subtotal).toLocaleString()} more for free delivery.
+                  {hasFreeDeliveryDeal && (
+                    <p
+                      className={styles.itemMeta}
+                      style={{ marginBottom: '8px', color: '#15803d', fontWeight: 600 }}
+                    >
+                      Free delivery included with this deal.
                     </p>
                   )}
+
+                  {!hasFreeDeliveryDeal &&
+                    freeThreshold > 0 &&
+                    subtotal < freeThreshold && (
+                      <p className={styles.itemMeta} style={{ marginBottom: '8px' }}>
+                        Add Rs {(freeThreshold - subtotal).toLocaleString()} more for free
+                        delivery.
+                      </p>
+                    )}
 
                   <div className={`${styles.row} ${styles.totalRow}`}>
                     <span>Total</span>

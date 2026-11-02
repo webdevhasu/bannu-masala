@@ -57,7 +57,7 @@ export default function ProductCard({ product }) {
     const pricedProduct = activeDeal
       ? { ...product, variants: { ...product.variants, [selectedVariant]: price } }
       : product;
-    addToCart(pricedProduct, selectedVariant);
+    addToCart(pricedProduct, selectedVariant, 1, true, activeDeal);
   };
 
   const handleBuyNow = () => {

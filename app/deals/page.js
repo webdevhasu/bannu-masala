@@ -35,6 +35,7 @@ function groupDeals(deals) {
         description: deal.deal_description,
         image: deal.deal_image,
         discount_percent: deal.discount_percent,
+        free_delivery: Boolean(deal.free_delivery),
         start_at: deal.start_at,
         end_at: deal.end_at,
         items: [],
@@ -125,6 +126,9 @@ export default async function DealsPage() {
                     <span className={styles.discountBadge}>{discountPercent}% OFF</span>
                     {isCombo && (
                       <span className={styles.comboBadge}>{items.length} Products Combo</span>
+                    )}
+                    {group.free_delivery && (
+                      <span className={styles.freeDeliveryBadge}>Free Delivery</span>
                     )}
                     {soldOut && <span className={styles.soldOut}>Sold Out</span>}
                   </Link>
@@ -224,6 +228,7 @@ export default async function DealsPage() {
                             id: group.id,
                             title: group.title || `${items.length}-Product Combo`,
                             image: dealImage,
+                            free_delivery: group.free_delivery,
                             items,
                           }}
                           className={styles.cta}

@@ -101,6 +101,8 @@ export async function GET(request) {
           price: i.price,
           image: i.image || null,
           slug: i.slug || null,
+          dealId: i.deal_id || null,
+          dealName: i.deal_name || null,
         })),
       },
     });

@@ -78,6 +78,17 @@
   box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
 }
 
+.freeDeliveryBadge {
+  background: #15803d;
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  box-shadow: 0 4px 14px rgba(21, 128, 61, 0.35);
+}
+
 .ends {
   display: inline-flex;
   align-items: center;

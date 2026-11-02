@@ -97,11 +97,11 @@ export async function POST(request) {
     await client.query('BEGIN');
 
     const dealRes = await client.query(
-      `INSERT INTO hot_deals (
+       `INSERT INTO hot_deals (
          title, description, image, price, original_price, link, is_active,
-         product_id, variant, start_at, end_at, discount_percent
+         product_id, variant, start_at, end_at, discount_percent, free_delivery
        )
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
        RETURNING id`,
       [
         payload.title,
@@ -116,6 +116,7 @@ export async function POST(request) {
         payload.start_at,
         payload.end_at,
         payload.discount_percent,
+        payload.free_delivery,
       ]
     );
 

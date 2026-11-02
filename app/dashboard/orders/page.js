@@ -470,6 +470,9 @@ export default function OrdersPage() {
                           {item.product_name || item.name}
                           <span className={styles.itemVariant}>({item.variant || 'Standard'})</span>
                         </span>
+                        {item.deal_name && (
+                          <span className={styles.itemDeal}>{item.deal_name}</span>
+                        )}
                       </div>
                       <span className={styles.itemPrice}>
                         {formatMoney(item.price * (item.quantity || 1))}
@@ -763,6 +766,7 @@ export default function OrdersPage() {
                 >
                   <span>
                     {item.quantity}x {item.product_name || item.name} ({item.variant || 'Standard'})
+                    {item.deal_name ? ` — Deal: ${item.deal_name}` : ''}
                   </span>
                   <span>{formatMoney(item.price * item.quantity)}</span>
                 </div>

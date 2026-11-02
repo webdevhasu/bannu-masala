@@ -470,6 +470,18 @@
   margin-left: 4px;
 }
 
+.itemDeal {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #15803d;
+  background: #dcfce7;
+  padding: 2px 7px;
+  border-radius: 6px;
+  margin-left: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
 .itemPrice {
   font-weight: 700;
   color: #0f172a;

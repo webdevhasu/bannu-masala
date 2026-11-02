@@ -250,6 +250,11 @@ export default function TrackClient({ initialOrder = '', initialPhone = '' }) {
                     )}
                   </div>
                   <div className={styles.itemMeta}>
+                    {item.dealName && (
+                      <>
+                        Deal: <strong>{item.dealName}</strong> &bull;{' '}
+                      </>
+                    )}
                     Variant: <strong>{item.variant || 'Standard'}</strong> &bull; Qty: {item.quantity || 1}
                   </div>
                 </div>

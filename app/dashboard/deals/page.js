@@ -64,6 +64,7 @@ const EMPTY_FORM = {
   start_at: '',
   end_at: '',
   is_active: true,
+  free_delivery: false,
 };
 
 export default function DealsPage() {
@@ -151,6 +152,7 @@ export default function DealsPage() {
         start_at: toDateTimeLocal(deal.start_at),
         end_at: toDateTimeLocal(deal.end_at),
         is_active: deal.is_active !== false,
+        free_delivery: deal.free_delivery === true,
       });
     } else {
       setEditingId(null);
@@ -254,6 +256,7 @@ export default function DealsPage() {
         start_at: formData.start_at || null,
         end_at: formData.end_at || null,
         is_active: formData.is_active,
+        free_delivery: formData.free_delivery,
       };
 
       const res = await fetch(editingId ? `/api/deals/${editingId}` : '/api/deals', {
@@ -478,6 +481,22 @@ export default function DealsPage() {
                     >
                       {status.label}
                     </span>
+                    {d.free_delivery && (
+                      <div
+                        style={{
+                          marginTop: '6px',
+                          fontSize: '0.72rem',
+                          fontWeight: 700,
+                          color: '#15803d',
+                          background: '#dcfce7',
+                          padding: '3px 8px',
+                          borderRadius: '999px',
+                          display: 'inline-block',
+                        }}
+                      >
+                        Free Delivery
+                      </div>
+                    )}
                   </td>
                   <td className={styles.actionsCell}>
                     <button className={styles.btnEdit} onClick={() => handleOpenModal(d)}>
@@ -812,6 +831,25 @@ export default function DealsPage() {
                   />
                   <span style={{ fontWeight: 600, color: '#334155' }}>Deal is active</span>
                 </label>
+              </div>
+
+              <div className={styles.formGroup} style={{ marginTop: '10px' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={formData.free_delivery}
+                    onChange={(e) =>
+                      setFormData({ ...formData, free_delivery: e.target.checked })
+                    }
+                    style={{ width: '18px', height: '18px' }}
+                  />
+                  <span style={{ fontWeight: 600, color: '#334155' }}>
+                    Free delivery on this deal
+                  </span>
+                </label>
+                <p style={{ fontSize: '0.78rem', color: '#64748b', margin: '4px 0 0 26px' }}>
+                  Customers ordering this deal will not be charged shipping.
+                </p>
               </div>
 
               {totalOriginal > 0 && discountPercent > 0 && (

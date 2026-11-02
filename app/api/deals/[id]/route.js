@@ -59,8 +59,9 @@ export async function PUT(request, props) {
            variant = $9,
            start_at = $10,
            end_at = $11,
-           discount_percent = $12
-       WHERE id = $13
+           discount_percent = $12,
+           free_delivery = $13
+       WHERE id = $14
        RETURNING id`,
       [
         payload.title,
@@ -75,6 +76,7 @@ export async function PUT(request, props) {
         payload.start_at,
         payload.end_at,
         payload.discount_percent,
+        payload.free_delivery,
         Number(id),
       ]
     );
