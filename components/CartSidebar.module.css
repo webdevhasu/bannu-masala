@@ -157,6 +157,16 @@
   color: #8A6666;
   margin-bottom: 4px;
 }
+.itemComboList {
+  font-size: 0.7rem;
+  color: #8A6666;
+  margin-bottom: 4px;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 .itemPrice {
   font-size: 0.9rem;
   font-weight: 700;

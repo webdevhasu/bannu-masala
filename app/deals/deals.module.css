@@ -184,6 +184,86 @@
   border-radius: 999px;
 }
 
+.comboBadge {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  background: rgba(128, 0, 0, 0.92);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  box-shadow: 0 4px 12px rgba(128, 0, 0, 0.35);
+}
+
+.comboList {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.comboItem {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 4px 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed #e2e8f0;
+  font-size: 0.82rem;
+}
+
+.comboItem:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.comboItem a {
+  color: var(--text-dark, #1e293b);
+  font-weight: 600;
+  text-decoration: none;
+  line-height: 1.35;
+}
+
+.comboItem a:hover {
+  color: var(--maroon, #800000);
+}
+
+.comboVariant {
+  grid-row: 2;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--maroon, #800000);
+  background: #fdf2f2;
+  border-radius: 999px;
+  padding: 2px 8px;
+  width: fit-content;
+}
+
+.comboPrice {
+  grid-row: 1 / span 2;
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  font-weight: 800;
+  color: var(--maroon, #800000);
+  white-space: nowrap;
+}
+
+.comboPrice s {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
 .body {
   padding: 22px 24px 26px;
   display: flex;
@@ -293,6 +373,9 @@
   font-size: 0.9rem;
   font-weight: 700;
   text-decoration: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
   transition: background 0.2s ease;
 }
 

@@ -9,6 +9,7 @@ import {
   faImage,
   faCircleCheck,
   faTag,
+  faBoxes,
 } from '@fortawesome/free-solid-svg-icons';
 import styles from '../orders/page.module.css';
 
@@ -32,10 +33,34 @@ function scheduleStatus(deal) {
   return { label: 'Live', color: '#15803d', background: '#dcfce7' };
 }
 
+function salePriceFor(originalPrice, percent) {
+  if (!originalPrice) return 0;
+  if (!percent) return originalPrice;
+  const value = Math.round((originalPrice * (100 - percent)) / 100);
+  return Math.max(1, Math.min(originalPrice - 1, value));
+}
+
+function firstVariantFor(product) {
+  if (!product) return '';
+  return Object.entries(product.variants).find(([, price]) => Number(price) > 0)?.[0] || '';
+}
+
+function derivePercent(deal) {
+  if (Number(deal.discount_percent) > 0) return Number(deal.discount_percent);
+  const first = (deal.items || [])[0];
+  if (first && Number(first.original_price) > Number(first.sale_price) && Number(first.original_price) > 0) {
+    return Math.round(
+      ((Number(first.original_price) - Number(first.sale_price)) / Number(first.original_price)) * 100
+    );
+  }
+  return '';
+}
+
 const EMPTY_FORM = {
-  product_id: '',
-  variant: '',
-  price: '',
+  title: '',
+  image: '',
+  discount_percent: '',
+  items: [{ product_id: '', variant: '' }],
   start_at: '',
   end_at: '',
   is_active: true,
@@ -49,6 +74,7 @@ export default function DealsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [formError, setFormError] = useState('');
   const [formData, setFormData] = useState(EMPTY_FORM);
 
@@ -80,23 +106,48 @@ export default function DealsPage() {
     fetchProducts();
   }, []);
 
-  const selectedProduct = products.find((p) => String(p.id) === String(formData.product_id));
-  const selectedVariants = selectedProduct
-    ? Object.entries(selectedProduct.variants).filter(([, price]) => Number(price) > 0)
-    : [];
-  const originalPrice = selectedProduct
-    ? Number(selectedProduct.variants[formData.variant]) || 0
-    : 0;
+  const discountPercent = Number(formData.discount_percent) || 0;
+
+  const previewItems = formData.items
+    .map((item) => {
+      const product = products.find((p) => String(p.id) === String(item.product_id));
+      const originalPrice = product ? Number(product.variants[item.variant]) || 0 : 0;
+      const salePrice = salePriceFor(originalPrice, discountPercent);
+      return {
+        ...item,
+        product,
+        originalPrice,
+        salePrice,
+      };
+    })
+    .filter((item) => item.originalPrice > 0);
+
+  const totalOriginal = previewItems.reduce((sum, item) => sum + item.originalPrice, 0);
+  const totalSale = previewItems.reduce((sum, item) => sum + item.salePrice, 0);
 
   const handleOpenModal = (deal = null) => {
     setFormError('');
 
     if (deal) {
+      const dealItems =
+        deal.items?.length > 0
+          ? deal.items.map((item) => ({
+              product_id: String(item.product_id),
+              variant: item.variant || '',
+            }))
+          : [
+              {
+                product_id: deal.product_id ? String(deal.product_id) : '',
+                variant: deal.variant || '',
+              },
+            ];
+
       setEditingId(deal.id);
       setFormData({
-        product_id: deal.product_id || '',
-        variant: deal.variant || '',
-        price: deal.price || '',
+        title: deal.title || '',
+        image: deal.image || '',
+        discount_percent: String(derivePercent(deal) || ''),
+        items: dealItems,
         start_at: toDateTimeLocal(deal.start_at),
         end_at: toDateTimeLocal(deal.end_at),
         is_active: deal.is_active !== false,
@@ -108,26 +159,80 @@ export default function DealsPage() {
     setIsModalOpen(true);
   };
 
-  const handleProductChange = (productId) => {
-    const product = products.find((p) => String(p.id) === String(productId));
-    const firstVariant = product
-      ? Object.entries(product.variants).find(([, price]) => Number(price) > 0)?.[0] || ''
-      : '';
-
+  const updateItem = (index, patch) => {
     setFormData((prev) => ({
       ...prev,
-      product_id: productId,
-      variant: firstVariant,
-      price: '',
+      items: prev.items.map((item, i) => (i === index ? { ...item, ...patch } : item)),
     }));
+  };
+
+  const handleProductChange = (index, productId) => {
+    const product = products.find((p) => String(p.id) === String(productId));
+    updateItem(index, { product_id: productId, variant: firstVariantFor(product) });
+  };
+
+  const addItem = () => {
+    setFormData((prev) => ({
+      ...prev,
+      items: [...prev.items, { product_id: '', variant: '' }],
+    }));
+  };
+
+  const removeItem = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      items: prev.items.filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleImageUpload = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setFormError('');
+    setUploadingImage(true);
+
+    try {
+      const uploadData = new FormData();
+      uploadData.append('file', file);
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: uploadData,
+      });
+      const result = await res.json();
+
+      if (!res.ok || result.status !== 201 || !result.url) {
+        setFormError(result.error || 'Image upload failed. Please try again.');
+        return;
+      }
+
+      setFormData((prev) => ({ ...prev, image: result.url }));
+    } catch (err) {
+      setFormError('Image upload failed. Please try again.');
+    } finally {
+      setUploadingImage(false);
+      event.target.value = '';
+    }
   };
 
   const handleSave = async (e) => {
     e.preventDefault();
     setFormError('');
 
-    if (!formData.product_id || !formData.variant) {
-      setFormError('Please select a product and variant.');
+    const validItems = formData.items.filter((item) => item.product_id && item.variant);
+    if (validItems.length === 0) {
+      setFormError('Please select at least one product and variant.');
+      return;
+    }
+
+    if (formData.items.some((item) => !item.product_id || !item.variant)) {
+      setFormError('Please select a variant for every product, or remove the empty row.');
+      return;
+    }
+
+    if (discountPercent <= 0 || discountPercent >= 100) {
+      setFormError('Discount must be between 1% and 99%.');
       return;
     }
 
@@ -139,9 +244,13 @@ export default function DealsPage() {
     setSaving(true);
     try {
       const payload = {
-        product_id: Number(formData.product_id),
-        variant: formData.variant,
-        price: parseInt(formData.price, 10) || 0,
+        title: formData.title.trim(),
+        image: formData.image || null,
+        discount_percent: discountPercent,
+        items: validItems.map((item) => ({
+          product_id: Number(item.product_id),
+          variant: item.variant,
+        })),
         start_at: formData.start_at || null,
         end_at: formData.end_at || null,
         is_active: formData.is_active,
@@ -218,16 +327,16 @@ export default function DealsPage() {
         }}
       >
         <FontAwesomeIcon icon={faTag} />
-        Deals are linked to real products. Discounted prices apply automatically on product cards and
-        in checkout.
+        Ek hi deal mein multiple products add karein. Har product par wohi discount % apply hoga
+        aur discount product cards, deals page aur checkout mein automatically show hoga.
       </div>
 
       <div className={styles.tableContainer}>
         <table className={styles.table}>
           <thead>
             <tr>
-              <th>Product</th>
-              <th>Variant</th>
+              <th>Deal / Products</th>
+              <th>Discount</th>
               <th>Pricing</th>
               <th>Schedule</th>
               <th>Status</th>
@@ -237,71 +346,118 @@ export default function DealsPage() {
           <tbody>
             {deals.map((d) => {
               const status = scheduleStatus(d);
-              const image = d.product_image || d.image;
-              const name = d.product_name || d.title;
+              const items =
+                d.items?.length > 0
+                  ? d.items
+                  : d.product_id
+                    ? [
+                        {
+                          id: `legacy-${d.id}`,
+                          product_name: d.product_name || d.title,
+                          product_image: d.product_image || d.image,
+                          variant: d.variant,
+                          original_price: d.current_original_price,
+                          sale_price: d.price,
+                        },
+                      ]
+                    : [];
+
+              const originalTotal = items.reduce(
+                (sum, item) => sum + (Number(item.original_price) || 0),
+                0
+              );
+              const saleTotal = items.reduce(
+                (sum, item) => sum + (Number(item.sale_price) || 0),
+                0
+              );
+              const percent = derivePercent(d) || 0;
 
               return (
                 <tr key={d.id}>
                   <td>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      {image ? (
-                        <img
-                          src={image}
-                          alt={name}
-                          style={{
-                            width: '48px',
-                            height: '48px',
-                            objectFit: 'cover',
-                            borderRadius: '8px',
-                            background: '#f8fafc',
-                            border: '1px solid #e2e8f0',
-                          }}
-                        />
-                      ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                      <div className={styles.bold}>{d.title}</div>
+                      {items.map((item) => (
                         <div
-                          style={{
-                            width: '48px',
-                            height: '48px',
-                            background: '#f8fafc',
-                            borderRadius: '8px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                          }}
+                          key={item.id}
+                          style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
                         >
-                          <FontAwesomeIcon icon={faImage} color="#cbd5e1" />
+                          {item.product_image ? (
+                            <img
+                              src={item.product_image}
+                              alt={item.product_name}
+                              style={{
+                                width: '40px',
+                                height: '40px',
+                                objectFit: 'cover',
+                                borderRadius: '8px',
+                                background: '#f8fafc',
+                                border: '1px solid #e2e8f0',
+                              }}
+                            />
+                          ) : (
+                            <div
+                              style={{
+                                width: '40px',
+                                height: '40px',
+                                background: '#f8fafc',
+                                borderRadius: '8px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                              }}
+                            >
+                              <FontAwesomeIcon icon={faImage} color="#cbd5e1" />
+                            </div>
+                          )}
+                          <div>
+                            <div style={{ fontWeight: 600, fontSize: '0.84rem' }}>
+                              {item.product_name}
+                            </div>
+                            <span
+                              style={{
+                                fontSize: '0.72rem',
+                                fontWeight: 700,
+                                color: '#800000',
+                                background: '#fdf2f2',
+                                padding: '2px 8px',
+                                borderRadius: '999px',
+                              }}
+                            >
+                              {item.variant || '—'}
+                            </span>
+                          </div>
                         </div>
-                      )}
-                      <div>
-                        <div className={styles.bold}>{name}</div>
-                        <div className={styles.subtext}>{d.product_slug || 'Unlinked deal'}</div>
-                      </div>
+                      ))}
                     </div>
                   </td>
                   <td>
                     <span
                       style={{
-                        fontSize: '0.78rem',
-                        fontWeight: 700,
-                        color: '#800000',
-                        background: '#fdf2f2',
+                        fontSize: '0.8rem',
+                        fontWeight: 800,
+                        color: '#b91c1c',
+                        background: '#fee2e2',
                         padding: '4px 10px',
                         borderRadius: '999px',
                       }}
                     >
-                      {d.variant || '—'}
+                      {percent}% OFF
                     </span>
+                    <div className={styles.subtext} style={{ marginTop: '6px' }}>
+                      {items.length} {items.length === 1 ? 'product' : 'products'}
+                    </div>
                   </td>
                   <td>
-                    <div className={styles.bold}>Rs {d.price}</div>
-                    {d.current_original_price > 0 && (
+                    <div className={styles.bold}>Rs {saleTotal.toLocaleString()}</div>
+                    {originalTotal > saleTotal && (
                       <div className={styles.subtext}>
-                        <span style={{ textDecoration: 'line-through' }}>Rs {d.current_original_price}</span>
-                        {d.current_original_price > d.price && (
-                          <span style={{ color: '#15803d', fontWeight: 700, marginLeft: '6px' }}>
-                            {Math.round(((d.current_original_price - d.price) / d.current_original_price) * 100)}% off
-                          </span>
-                        )}
+                        <span style={{ textDecoration: 'line-through' }}>
+                          Rs {originalTotal.toLocaleString()}
+                        </span>
+                        <span style={{ color: '#15803d', fontWeight: 700, marginLeft: '6px' }}>
+                          {percent}% off
+                        </span>
                       </div>
                     )}
                   </td>
@@ -385,61 +541,243 @@ export default function DealsPage() {
 
       {isModalOpen && (
         <div className={styles.modalOverlay}>
-          <div className={styles.modalContent}>
+          <div className={styles.modalContent} style={{ maxWidth: '760px' }}>
             <h2 className={styles.modalTitle}>{editingId ? 'Edit Deal' : 'Add New Deal'}</h2>
 
             <form onSubmit={handleSave}>
               <div className={styles.formRow}>
                 <div className={styles.fullWidth}>
-                  <label className={styles.label}>Product</label>
-                  <select
-                    required
+                  <label className={styles.label}>Deal Title (optional)</label>
+                  <input
+                    type="text"
                     className={styles.input}
-                    value={formData.product_id}
-                    onChange={(e) => handleProductChange(e.target.value)}
-                  >
-                    <option value="">Select a product</option>
-                    {products.map((product) => (
-                      <option key={product.id} value={product.id}>
-                        {product.name}
-                      </option>
-                    ))}
-                  </select>
+                    value={formData.title}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    placeholder="Leave blank to auto-use product names"
+                  />
                 </div>
+              </div>
+
+              <div style={{ marginBottom: '16px' }}>
+                <label className={styles.label}>Deal Image (optional)</label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
+                  {formData.image ? (
+                    <img
+                      src={formData.image}
+                      alt="Deal preview"
+                      style={{
+                        width: '104px',
+                        height: '104px',
+                        objectFit: 'cover',
+                        borderRadius: '12px',
+                        border: '1px solid #e2e8f0',
+                        background: '#f8fafc',
+                      }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        width: '104px',
+                        height: '104px',
+                        borderRadius: '12px',
+                        border: '1px dashed #cbd5e1',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#94a3b8',
+                        background: '#f8fafc',
+                      }}
+                    >
+                      <FontAwesomeIcon icon={faImage} size="2x" />
+                    </div>
+                  )}
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <label className={styles.btnSecondary} style={{ cursor: 'pointer' }}>
+                      {uploadingImage
+                        ? 'Uploading...'
+                        : formData.image
+                          ? 'Change Image'
+                          : 'Upload Image'}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        disabled={uploadingImage}
+                        style={{ display: 'none' }}
+                      />
+                    </label>
+
+                    {formData.image && (
+                      <button
+                        type="button"
+                        className={styles.btnDanger}
+                        onClick={() => setFormData((prev) => ({ ...prev, image: '' }))}
+                      >
+                        <FontAwesomeIcon icon={faTrash} /> Remove Image
+                      </button>
+                    )}
+
+                    <span style={{ fontSize: '0.74rem', color: '#94a3b8' }}>
+                      Leave empty to use the first product image.
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: '14px' }}>
+                <label className={styles.label}>
+                  <FontAwesomeIcon icon={faBoxes} style={{ marginRight: '6px' }} />
+                  Products in this deal
+                </label>
+
+                {formData.items.map((item, index) => {
+                  const product = products.find((p) => String(p.id) === String(item.product_id));
+                  const variants = product
+                    ? Object.entries(product.variants).filter(([, price]) => Number(price) > 0)
+                    : [];
+                  const originalPrice = product
+                    ? Number(product.variants[item.variant]) || 0
+                    : 0;
+                  const previewSale = salePriceFor(originalPrice, discountPercent);
+
+                  return (
+                    <div
+                      key={index}
+                      style={{
+                        border: '1px solid #e2e8f0',
+                        borderRadius: '12px',
+                        padding: '14px',
+                        marginBottom: '10px',
+                        background: '#fafafa',
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: 'grid',
+                          gridTemplateColumns: '1fr 1fr auto',
+                          gap: '12px',
+                          alignItems: 'end',
+                        }}
+                      >
+                        <div>
+                          <label className={styles.label}>Product</label>
+                          <select
+                            required
+                            className={styles.input}
+                            value={item.product_id}
+                            onChange={(e) => handleProductChange(index, e.target.value)}
+                          >
+                            <option value="">Select a product</option>
+                            {products.map((p) => (
+                              <option key={p.id} value={p.id}>
+                                {p.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <div>
+                          <label className={styles.label}>Variant</label>
+                          <select
+                            required
+                            className={styles.input}
+                            value={item.variant}
+                            onChange={(e) =>
+                              updateItem(index, { variant: e.target.value })
+                            }
+                            disabled={!product}
+                          >
+                            <option value="">Select variant</option>
+                            {variants.map(([label, price]) => (
+                              <option key={label} value={label}>
+                                {label} — Rs {price}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <button
+                          type="button"
+                          className={styles.btnDanger}
+                          onClick={() => removeItem(index)}
+                          disabled={formData.items.length === 1}
+                          style={{ height: '40px', marginBottom: '1px' }}
+                        >
+                          <FontAwesomeIcon icon={faTrash} /> Remove
+                        </button>
+                      </div>
+
+                      {originalPrice > 0 && (
+                        <p
+                          style={{
+                            margin: '8px 0 0',
+                            fontSize: '0.8rem',
+                            color: '#475569',
+                          }}
+                        >
+                          Rs {originalPrice.toLocaleString()} →{' '}
+                          <strong style={{ color: '#15803d' }}>
+                            Rs {previewSale.toLocaleString()}
+                          </strong>{' '}
+                          {discountPercent > 0 && `(${discountPercent}% off)`}
+                        </p>
+                      )}
+                    </div>
+                  );
+                })}
+
+                <button
+                  type="button"
+                  className={styles.btnSecondary}
+                  onClick={addItem}
+                  style={{ marginTop: '4px' }}
+                >
+                  <FontAwesomeIcon icon={faPlus} /> Add Another Product
+                </button>
               </div>
 
               <div className={styles.formRow}>
                 <div>
-                  <label className={styles.label}>Variant</label>
-                  <select
-                    required
-                    className={styles.input}
-                    value={formData.variant}
-                    onChange={(e) => setFormData({ ...formData, variant: e.target.value, price: '' })}
-                    disabled={!selectedProduct}
-                  >
-                    <option value="">Select variant</option>
-                    {selectedVariants.map(([label, price]) => (
-                      <option key={label} value={label}>
-                        {label} — Rs {price}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className={styles.label}>
-                    Sale Price (Rs){originalPrice > 0 ? ` — was Rs ${originalPrice}` : ''}
-                  </label>
+                  <label className={styles.label}>Discount (%)</label>
                   <input
                     required
                     type="number"
                     min="1"
-                    max={originalPrice > 0 ? originalPrice - 1 : undefined}
+                    max="99"
                     className={styles.input}
-                    value={formData.price}
-                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                    disabled={!formData.variant}
+                    value={formData.discount_percent}
+                    onChange={(e) =>
+                      setFormData({ ...formData, discount_percent: e.target.value })
+                    }
+                    placeholder="e.g. 15"
                   />
+                </div>
+                <div>
+                  <label className={styles.label}>Combo Preview</label>
+                  <div
+                    style={{
+                      padding: '10px 14px',
+                      borderRadius: '10px',
+                      background: '#f0fdf4',
+                      border: '1px solid #bbf7d0',
+                      fontSize: '0.85rem',
+                    }}
+                  >
+                    {totalOriginal > 0 ? (
+                      <>
+                        <span style={{ textDecoration: 'line-through', color: '#64748b' }}>
+                          Rs {totalOriginal.toLocaleString()}
+                        </span>{' '}
+                        <strong style={{ color: '#15803d' }}>
+                          Rs {totalSale.toLocaleString()}
+                        </strong>{' '}
+                        <span style={{ color: '#166534' }}>
+                          (save Rs {(totalOriginal - totalSale).toLocaleString()})
+                        </span>
+                      </>
+                    ) : (
+                      <span style={{ color: '#64748b' }}>Select products to preview</span>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -476,10 +814,9 @@ export default function DealsPage() {
                 </label>
               </div>
 
-              {originalPrice > 0 && formData.price && Number(formData.price) < originalPrice && (
+              {totalOriginal > 0 && discountPercent > 0 && (
                 <p style={{ fontSize: '0.85rem', color: '#15803d', fontWeight: 600, marginTop: '8px' }}>
-                  Customer saves Rs {originalPrice - Number(formData.price)} (
-                  {Math.round(((originalPrice - Number(formData.price)) / originalPrice) * 100)}% off)
+                  Customer saves Rs {(totalOriginal - totalSale).toLocaleString()} on this combo.
                 </p>
               )}
 

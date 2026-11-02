@@ -128,7 +128,18 @@ function CheckoutContent() {
       ...(paymentMethod ? [`Payment Method: ${paymentMethod}`] : []),
       ``,
       `*Order Details:*`,
-      ...activeItems.map(i => `• ${i.name} (${i.variant}) × ${i.qty} = Rs ${(i.price * i.qty).toLocaleString()}`),
+      ...activeItems.flatMap((item) =>
+        item.isDeal
+          ? [
+              `• ${item.name} (Combo) × ${item.qty} = Rs ${(item.price * item.qty).toLocaleString()}`,
+              ...item.items.map(
+                (product) => `   - ${product.name} (${product.variant}) × ${product.qty * item.qty}`
+              ),
+            ]
+          : [
+              `• ${item.name} (${item.variant}) × ${item.qty} = Rs ${(item.price * item.qty).toLocaleString()}`,
+            ]
+      ),
       ``,
       `Subtotal: Rs ${subtotal.toLocaleString()}`,
       `Shipping: Rs ${shipping}`,
@@ -157,11 +168,15 @@ function CheckoutContent() {
         address: form.address,
         landmark: form.landmark,
         payment_method: paymentMethod,
-        items: activeItems.map(i => ({
-          id: i.id,
-          variant: i.variant,
-          qty: i.qty
-        }))
+        items: activeItems.flatMap((item) =>
+          item.isDeal
+            ? item.items.map((product) => ({
+                id: product.id,
+                variant: product.variant,
+                qty: (product.qty || 1) * item.qty,
+              }))
+            : [{ id: item.id, variant: item.variant, qty: item.qty }]
+        )
       };
 
       const res = await fetch('/api/orders', {
@@ -385,10 +400,22 @@ function CheckoutContent() {
                       </div>
                       <div className={styles.itemInfo}>
                         <p className={styles.itemName}>{item.name}</p>
-                        <p className={styles.itemMeta}>{item.variant} × {item.qty}</p>
-                        {item.originalPrice > item.price && (
+                        {item.isDeal ? (
+                          <>
+                            <p className={styles.itemMeta}>
+                              {item.items.length} products combo × {item.qty}
+                            </p>
+                            <p className={styles.itemMeta} style={{ fontSize: '0.72rem' }}>
+                              {item.items.map((product) => product.name).join(' • ')}
+                            </p>
+                          </>
+                        ) : (
+                          <p className={styles.itemMeta}>{item.variant} × {item.qty}</p>
+                        )}
+                        {Number(item.originalPrice) > Number(item.price) && (
                           <p className={styles.itemMeta} style={{ color: '#15803d', fontWeight: 600 }}>
-                            Deal price applied — was Rs {Number(item.originalPrice).toLocaleString()}
+                            Deal price applied — was Rs{' '}
+                            {(Number(item.originalPrice) * (item.isDeal ? item.qty : 1)).toLocaleString()}
                           </p>
                         )}
                       </div>

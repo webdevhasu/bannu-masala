@@ -49,7 +49,14 @@ export default function CartSidebar() {
                 </div>
                 <div className={styles.itemInfo}>
                   <p className={styles.itemName}>{item.name}</p>
-                  <p className={styles.itemVariant}>{item.variant}</p>
+                  <p className={styles.itemVariant}>
+                    {item.isDeal ? `${item.items.length} products combo` : item.variant}
+                  </p>
+                  {item.isDeal && (
+                    <p className={styles.itemComboList}>
+                      {item.items.map((product) => product.name).join(' • ')}
+                    </p>
+                  )}
                   <p className={styles.itemPrice}>Rs {(item.price * item.qty).toLocaleString()}</p>
                 </div>
                 <div className={styles.itemActions}>

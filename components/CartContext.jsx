@@ -72,6 +72,67 @@ export function CartProvider({ children }) {
     if (openSidebar) setSidebarOpen(true);
   };
 
+  const addDealToCart = (deal, quantity = 1, openSidebar = true) => {
+    const dealItems = Array.isArray(deal?.items)
+      ? deal.items.filter((item) => item?.product_id && item?.variant)
+      : [];
+
+    if (dealItems.length === 0) return;
+
+    const key = `deal-${deal.id}`;
+    const qtyToAdd = quantity || 1;
+    const itemKeys = new Set(dealItems.map((item) => `${item.product_id}-${item.variant}`));
+    const price = dealItems.reduce((sum, item) => sum + (Number(item.sale_price) || 0), 0);
+    const originalPrice = dealItems.reduce(
+      (sum, item) => sum + (Number(item.original_price) || 0),
+      0
+    );
+
+    const comboItem = {
+      key,
+      isDeal: true,
+      dealId: deal.id,
+      id: key,
+      name: deal.title || `${dealItems.length}-Product Combo`,
+      variant: `${dealItems.length} products`,
+      image: deal.image || dealItems[0]?.product_image || '',
+      price,
+      originalPrice,
+      qty: qtyToAdd,
+      items: dealItems.map((item) => ({
+        id: item.product_id,
+        name: item.product_name,
+        variant: item.variant,
+        price: Number(item.sale_price) || 0,
+        originalPrice: Number(item.original_price) || 0,
+        image: item.product_image,
+        qty: 1,
+      })),
+    };
+
+    setItems((prev) => {
+      const existing = prev.find((item) => item.key === key);
+      const cleaned = prev.filter(
+        (item) => item.key === key || item.isDeal || !itemKeys.has(item.key)
+      );
+
+      if (existing) {
+        return cleaned.map((item) =>
+          item.key === key ? { ...item, qty: item.qty + qtyToAdd } : item
+        );
+      }
+
+      return [...cleaned, comboItem];
+    });
+
+    setSelectedKeys((prev) => {
+      const cleaned = prev.filter((key) => !itemKeys.has(key));
+      return cleaned.includes(key) ? cleaned : [...cleaned, key];
+    });
+
+    if (openSidebar) setSidebarOpen(true);
+  };
+
   const removeFromCart = (key) => {
     setItems(prev => prev.filter(i => i.key !== key));
     setSelectedKeys(prev => prev.filter(k => k !== key));
@@ -108,7 +169,7 @@ export function CartProvider({ children }) {
 
   return (
     <CartContext.Provider value={{
-      items, selectedKeys, toggleSelection, addToCart, removeFromCart, updateQty, clearCart, clearSelectedCart,
+      items, selectedKeys, toggleSelection, addToCart, addDealToCart, removeFromCart, updateQty, clearCart, clearSelectedCart,
       subtotal, shipping, total, itemCount, shippingConfig,
       sidebarOpen, setSidebarOpen,
     }}>
