@@ -42,7 +42,7 @@ export default function DashboardLayout({ children }) {
       fetch('/api/contact')
         .then((response) => (response.ok ? response.json() : []))
         .catch(() => []),
-      fetch('/api/reviews')
+      fetch('/api/reviews?all=1')
         .then((response) => (response.ok ? response.json() : []))
         .catch(() => []),
     ]).then(([messages, reviews]) => {

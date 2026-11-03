@@ -33,7 +33,7 @@ function requiresAdmin(request) {
   if (pathname === '/api/hero-slides') return method !== 'GET';
   if (pathname.startsWith('/api/hero-slides/')) return method !== 'GET';
 
-  if (pathname === '/api/reviews' || pathname.startsWith('/api/reviews/moderate')) return true;
+  if (pathname.startsWith('/api/reviews/moderate')) return true;
 
   if (pathname === '/api/contact') return method !== 'POST';
   if (pathname.startsWith('/api/contact/')) return true;

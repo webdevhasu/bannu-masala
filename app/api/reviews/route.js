@@ -1,17 +1,34 @@
 import { NextResponse } from 'next/server';
 import sql from '@/lib/db';
+import { isAdminRequest } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(request) {
   try {
-    const reviews = await sql`
-      SELECT r.*, p.name as product_name
-      FROM reviews r
-      LEFT JOIN products p ON r.product_id = p.id
-      WHERE r.is_approved = true
-      ORDER BY r.created_at DESC
-    `;
+    const { searchParams } = new URL(request.url);
+    const wantsAll = searchParams.get('all') === '1';
+    const isAdmin = wantsAll ? await isAdminRequest(request) : false;
+
+    if (wantsAll && !isAdmin) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const reviews = wantsAll
+      ? await sql`
+          SELECT r.*, p.name as product_name
+          FROM reviews r
+          LEFT JOIN products p ON r.product_id = p.id
+          ORDER BY r.created_at DESC
+        `
+      : await sql`
+          SELECT r.*, p.name as product_name
+          FROM reviews r
+          LEFT JOIN products p ON r.product_id = p.id
+          WHERE r.is_approved = true
+          ORDER BY r.created_at DESC
+        `;
+
     return NextResponse.json(reviews);
   } catch (error) {
     console.error('Fetch all reviews error:', error);

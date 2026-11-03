@@ -33,7 +33,7 @@ export default function ReviewsManager() {
 
   const fetchReviews = async () => {
     try {
-      const res  = await fetch('/api/reviews?t=' + Date.now());
+      const res  = await fetch('/api/reviews?all=1&t=' + Date.now());
       const data = await res.json();
       if (res.ok) setReviews(Array.isArray(data) ? data : []);
     } catch (err) { console.error(err); }
