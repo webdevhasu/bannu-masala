@@ -60,7 +60,7 @@ export default function ReviewsSection({ productId }) {
       const res = await fetch('/api/reviews', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ rating, comment, name, phone }),
+        body: JSON.stringify({ rating, comment, reviewer_name: name, name, phone, product_id: productId }),
       });
 
       const result = await res.json();

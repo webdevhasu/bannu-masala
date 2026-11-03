@@ -39,9 +39,10 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { product_id, reviewer_name, rating, comment, phone } = body;
+    const { product_id, reviewer_name, name, rating, comment, phone } = body;
+    const normalizedName = String(reviewer_name || name || '').trim();
 
-    if (!reviewer_name || !String(reviewer_name).trim()) {
+    if (!normalizedName) {
       return NextResponse.json({ error: 'Name is required' }, { status: 400 });
     }
 
@@ -81,7 +82,7 @@ export async function POST(request) {
         product_id, reviewer_name, rating, comment, is_approved, is_verified, reviewer_phone
       )
       VALUES (
-        ${prodId}, ${String(reviewer_name).trim().slice(0, 80)}, ${numericRating},
+        ${prodId}, ${normalizedName.slice(0, 80)}, ${numericRating},
         ${String(comment).trim().slice(0, 2000)}, false, ${isVerified},
         ${normalizedPhone}
       )
