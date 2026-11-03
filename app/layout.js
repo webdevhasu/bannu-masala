@@ -1,5 +1,6 @@
 import './globals.css';
 import { CartProvider } from '@/components/CartContext';
+import PwaRegister from '@/components/PwaRegister';
 import SiteChrome from '@/components/SiteChrome';
 import { getAllSettings } from '@/lib/settings';
 
@@ -7,12 +8,33 @@ export const dynamic = 'force-dynamic';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bannumasala.com';
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  themeColor: '#4a0d0d',
+};
+
 export const metadata = {
   title: 'Bannu Masala | Premium Authentic Spices & Handcrafted Blends',
   description: 'Authentic handcrafted spice blends from Bannu, KPK. Shop Bannu Masala products online.',
   keywords: 'Bannu Masala, handcrafted spice blends, biryani masala, karahi masala, tikka masala, KPK spices, Bannu spices',
   authors: [{ name: 'Bannu Masala Team' }],
   metadataBase: new URL(SITE_URL),
+  manifest: '/manifest.webmanifest',
+  applicationName: 'Bannu Masala Order Manager',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Bannu Orders',
+  },
+  icons: {
+    icon: [
+      { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: '/icons/apple-touch-icon.png',
+  },
   alternates: {
     canonical: '/',
   },
@@ -107,6 +129,7 @@ export default async function RootLayout({ children }) {
         />
       </head>
       <body>
+        <PwaRegister />
         <CartProvider>
           <SiteChrome settings={settings}>{children}</SiteChrome>
         </CartProvider>

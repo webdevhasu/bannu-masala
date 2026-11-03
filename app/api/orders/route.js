@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import sql, { pool } from '@/lib/db';
 import { buildVariantsMap } from '@/lib/productVariants';
 import { getActiveDeals, findDealForVariant } from '@/lib/deals';
+import { sendOrderPush } from '@/lib/push';
 import { getSetting } from '@/lib/settings';
 
 export async function GET() {
@@ -192,6 +193,20 @@ export async function POST(request) {
     }
 
     await client.query('COMMIT');
+
+    try {
+      await sendOrderPush({
+        id: orderId,
+        customerName: name,
+        city,
+        phone,
+        total,
+        items: normalizedItems,
+      });
+    } catch (pushError) {
+      console.error('Order push notification failed:', pushError);
+    }
+
     return NextResponse.json(
       {
         id: orderId,

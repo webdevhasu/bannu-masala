@@ -25,6 +25,7 @@
     "postcss": "^8.5.8",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "tailwindcss": "^4.2.2"
+    "tailwindcss": "^4.2.2",
+    "web-push": "^3.6.7"
   }
 }

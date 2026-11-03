@@ -26,6 +26,7 @@ import {
   normalizeStatus,
   whatsappUpdateUrl,
 } from '@/lib/orders';
+import OrderAppSetup from '@/components/OrderAppSetup';
 import styles from './page.module.css';
 
 function WhatsAppIcon({ size = 16 }) {
@@ -229,6 +230,8 @@ export default function OrdersPage() {
           />
         </div>
       </div>
+
+      <OrderAppSetup />
 
       {/* Owner Helping Tips Banner */}
       <div
