@@ -116,74 +116,109 @@
 
   .sidebar {
     width: 100%;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 16px;
-    height: 60px;
+    height: auto;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 8px;
+    padding: 10px 12px 8px;
     position: sticky;
     top: 0;
     z-index: 100;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'brand bottom'
+      'nav nav';
   }
 
   .brand {
+    grid-area: brand;
     padding: 0;
     border-bottom: none;
+    min-width: 0;
   }
 
   .brand h2 {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
+    white-space: nowrap;
   }
 
   .nav {
+    grid-area: nav;
     flex-direction: row;
-    padding: 0;
-    gap: 4px;
+    align-items: center;
+    padding: 2px 0 4px;
+    gap: 6px;
     overflow-x: auto;
+    overflow-y: hidden;
+    width: 100%;
     scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
   }
 
   .nav::-webkit-scrollbar {
     display: none;
   }
 
-  .navBadge {
-    position: absolute;
-    top: 2px;
-    right: 2px;
-    min-width: 14px;
-    height: 14px;
-    font-size: 0.58rem;
-    padding: 0 3px;
-  }
-
   .navItem {
+    flex: 0 0 auto;
     position: relative;
+    padding: 7px 10px;
+    font-size: 0.76rem;
+    gap: 6px;
+    white-space: nowrap;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    border-radius: 999px;
+    line-height: 1;
   }
 
-  .navItem {
-    padding: 8px 12px;
-    font-size: 0.8rem;
-    gap: 6px;
+  .navItem:hover {
+    background: #f1f5f9;
   }
 
   .navItem span {
-    display: none; /* Hide text, only show icons for space */
+    display: inline;
   }
 
-  /* Specific fix for text visibility if you want labels on mobile, but icons are safer */
-  /* Or use media query specifically for nav items */
+  .navItem svg {
+    width: 14px !important;
+    flex-shrink: 0;
+  }
+
+  .navBadge {
+    position: static;
+    margin-left: 1px;
+    min-width: 16px;
+    height: 16px;
+    font-size: 0.6rem;
+    padding: 0 4px;
+  }
 
   .bottomNav {
+    grid-area: bottom;
     padding: 0;
     border-top: none;
     flex-direction: row;
-    gap: 2px;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .bottomNav .navItem {
+    padding: 7px 9px;
+    border: none;
+    background: transparent;
+  }
+
+  .bottomNav .navItem span {
+    display: none;
   }
 
   .logoutBtn {
-    padding: 8px 12px;
+    width: auto;
+    padding: 7px 9px;
     font-size: 0.8rem;
     gap: 6px;
   }
@@ -193,12 +228,22 @@
   }
 
   .main {
-    padding: 16px;
+    padding: 14px;
+    width: 100%;
   }
 }
 
 @media (max-width: 480px) {
+  .brand h2 {
+    font-size: 0.98rem;
+  }
+
   .navItem {
-    padding: 8px;
+    padding: 7px 9px;
+    font-size: 0.72rem;
+  }
+
+  .main {
+    padding: 12px;
   }
 }

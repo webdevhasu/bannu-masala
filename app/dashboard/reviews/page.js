@@ -116,7 +116,7 @@ export default function ReviewsManager() {
       </div>
 
       {/* Review Type Switcher */}
-      <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '20px' }}>
         <Link
           href="/dashboard/reviews"
           style={{

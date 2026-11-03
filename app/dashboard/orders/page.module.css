@@ -979,3 +979,59 @@
   grid-column: 1 / -1;
   width: 100%;
 }
+
+@media (max-width: 768px) {
+  .tableContainer {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table {
+    min-width: 720px;
+  }
+
+  .table thead th,
+  .table tbody td {
+    padding: 12px 14px;
+  }
+
+  .searchWrap {
+    width: 100%;
+  }
+
+  .searchInput {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .headerRow  {
+    min-width: 0;
+  }
+
+  .modalContent {
+    padding: 20px 16px;
+  }
+
+  .modalActions {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 640px) {
+  .formRow {
+    grid-template-columns: 1fr;
+  }
+
+  .tabsBar {
+    margin-left: -4px;
+    margin-right: -4px;
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .tabBtn {
+    padding: 7px 12px;
+    font-size: 0.78rem;
+  }
+}
+
