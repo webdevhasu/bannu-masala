@@ -83,12 +83,12 @@ export async function POST(request) {
       )
       VALUES (
         ${prodId}, ${normalizedName.slice(0, 80)}, ${numericRating},
-        ${String(comment).trim().slice(0, 2000)}, false, ${isVerified},
+        ${String(comment).trim().slice(0, 2000)}, true, ${isVerified},
         ${normalizedPhone}
       )
     `;
 
-    return NextResponse.json({ success: true, pending: true, verified: isVerified }, { status: 201 });
+    return NextResponse.json({ success: true, pending: false, verified: isVerified }, { status: 201 });
   } catch (error) {
     console.error('Submit review error:', error);
     return NextResponse.json({ error: 'Failed to add review' }, { status: 500 });

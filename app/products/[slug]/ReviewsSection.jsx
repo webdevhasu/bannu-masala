@@ -71,9 +71,10 @@ export default function ReviewsSection({ productId }) {
         setRating(5);
         setSuccessMessage(
           result.verified
-            ? 'Shukriya! Aapka verified review submit ho chuka hai aur approve hone par display hoga.'
-            : 'Shukriya! Aapka review submit ho chuka hai aur approval ke baad display hoga.'
+            ? 'Shukriya! Aapka verified review website par display ho gaya hai.'
+            : 'Shukriya! Aapka review website par display ho gaya hai.'
         );
+        await fetchReviews();
       } else {
         alert(result.error || 'Failed to submit review');
       }
