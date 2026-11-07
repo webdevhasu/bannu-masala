@@ -3,6 +3,7 @@ import { useCart } from '@/components/CartContext';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
+import { pixelEvents } from '@/lib/pixel';
 import styles from './page.module.css';
 
 export default function CheckoutPage() {
@@ -108,6 +109,16 @@ function CheckoutContent() {
       : flatRate;
   const total = subtotal + shipping;
 
+  // Track Meta InitiateCheckout when checkout loads with items
+  useEffect(() => {
+    if (activeItems.length > 0 && total > 0) {
+      pixelEvents.initiateCheckout({
+        items: activeItems,
+        totalValue: total,
+      });
+    }
+  }, [activeItems.length, total]);
+
   const validate = () => {
     const e = {};
     if (!form.name.trim()) e.name = 'Name is required';
@@ -212,6 +223,14 @@ function CheckoutContent() {
         payment_method: result.payment_method || paymentMethod,
         message: confirmationMessage,
       });
+
+      // Track Meta Purchase Event
+      pixelEvents.purchase({
+        orderId: result?.order_id || result?.id || '',
+        items: activeItems,
+        totalValue: total,
+      });
+
       if (!isBuyNow) clearSelectedCart();
       setSubmitting(false);
 

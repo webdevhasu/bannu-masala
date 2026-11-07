@@ -8,6 +8,7 @@ import WhatsAppFloat from './WhatsAppFloat';
 import Footer from './Footer';
 import MobileBottomNav from './MobileBottomNav';
 import TopProgressBar from './TopProgressBar';
+import MetaPixelTracker from './MetaPixelTracker';
 
 export default function SiteChrome({ settings, children }) {
   const pathname = usePathname();
@@ -38,6 +39,9 @@ export default function SiteChrome({ settings, children }) {
     <>
       <Suspense fallback={null}>
         <TopProgressBar />
+      </Suspense>
+      <Suspense fallback={null}>
+        <MetaPixelTracker pixelConfig={settings?.pixel} />
       </Suspense>
       <AnnouncementBar config={settings?.announcements} />
       <Header store={settings?.store} />

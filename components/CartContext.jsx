@@ -1,5 +1,6 @@
 'use client';
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { pixelEvents } from '@/lib/pixel';
 
 const CartContext = createContext(null);
 
@@ -80,6 +81,15 @@ export function CartProvider({ children }) {
     const key = `${product.id}-${variant}`;
     setSelectedKeys(prev => prev.includes(key) ? prev : [...prev, key]);
     if (openSidebar) setSidebarOpen(true);
+
+    // Track Meta AddToCart
+    pixelEvents.addToCart({
+      id: product.id,
+      name: product.name,
+      variant,
+      price,
+      quantity: quantity || 1,
+    });
   };
 
   const addDealToCart = (deal, quantity = 1, openSidebar = true) => {
@@ -142,6 +152,15 @@ export function CartProvider({ children }) {
     });
 
     if (openSidebar) setSidebarOpen(true);
+
+    // Track Meta AddToCart for Combo Deal
+    pixelEvents.addToCart({
+      id: `deal-${deal.id}`,
+      name: deal.title || 'Special Deal Combo',
+      variant: 'Combo Deal',
+      price: price,
+      quantity: qtyToAdd,
+    });
   };
 
   const removeFromCart = (key) => {

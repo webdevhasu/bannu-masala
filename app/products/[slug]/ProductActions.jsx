@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/components/CartContext';
+import { pixelEvents } from '@/lib/pixel';
 import styles from './page.module.css';
 
 function WhatsAppIcon({ size = 20 }) {
@@ -71,6 +72,18 @@ export default function ProductActions({ product, storeWhatsapp }) {
   const currentPrice = selectedDeal?.sale_price ?? selectedVariant?.price ?? 0;
   const originalPrice = selectedDeal?.original_price;
   const dealEnd = formatDealEnd(selectedDeal?.end_at);
+
+  // Track Meta ViewContent when product details are viewed
+  useEffect(() => {
+    if (product?.id) {
+      pixelEvents.viewContent({
+        id: product.id,
+        name: product.name,
+        category: product.category_name || 'Spices',
+        price: currentPrice || product.price_250g || 0,
+      });
+    }
+  }, [product?.id]);
 
   const stock = product.stock === null || product.stock === undefined ? null : Number(product.stock);
   const outOfStock = stock !== null && stock <= 0;

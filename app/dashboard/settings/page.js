@@ -20,6 +20,7 @@ import {
   faTruck,
   faArrowUpRightFromSquare,
   faWandMagicSparkles,
+  faChartLine,
 } from '@fortawesome/free-solid-svg-icons';
 import { DEFAULT_SETTINGS } from '@/lib/defaultSettings.mjs';
 import styles from './page.module.css';
@@ -32,6 +33,7 @@ const TABS = [
   { id: 'payment', label: 'Payments', icon: faMoneyBillWave },
   { id: 'homepage', label: 'Homepage', icon: faHouse },
   { id: 'policies', label: 'Policies', icon: faFileLines },
+  { id: 'pixel', label: 'Meta Pixel', icon: faChartLine },
 ];
 
 const POLICY_META = [
@@ -852,6 +854,71 @@ export default function SettingsPage() {
             </div>
 
             <SaveBar onSave={() => save('policies')} saving={savingKey === 'policies'} />
+          </section>
+        )}
+
+        {/* ===================== META PIXEL TAB ===================== */}
+        {tab === 'pixel' && (
+          <section className={styles.sectionCard}>
+            <div className={styles.sectionHeader}>
+              <div>
+                <h2 className={styles.sectionTitle}>Meta Pixel (Facebook & Instagram Tracking)</h2>
+                <p className={styles.sectionSubtitle}>
+                  Connect your Facebook / Meta Pixel to track website visitors, views, add to cart, and purchases for running ads.
+                </p>
+              </div>
+            </div>
+
+            <div className={styles.fieldGroup}>
+              <label className={styles.checkboxLabel} style={{ marginBottom: '16px' }}>
+                <input
+                  type="checkbox"
+                  className={styles.checkbox}
+                  checked={settings.pixel?.enabled !== false}
+                  onChange={(e) => update('pixel', { enabled: e.target.checked })}
+                />
+                <span>Enable Meta Pixel tracking on storefront</span>
+              </label>
+            </div>
+
+            <div className={styles.fieldGroup}>
+              <label className={styles.fieldLabel}>Meta Pixel ID (Dataset ID)</label>
+              <input
+                type="text"
+                className={styles.fieldInput}
+                placeholder="e.g. 123456789012345"
+                value={settings.pixel?.meta_pixel_id || ''}
+                onChange={(e) => update('pixel', { meta_pixel_id: e.target.value.trim() })}
+              />
+              <p className={styles.fieldHint}>
+                Aapko yeh ID apne <strong>Meta Events Manager</strong> ya <strong>Facebook Business Manager</strong> se milegi. Sirf numbers wali ID paste karein (koi code script paste karne ki zaroorat nahi).
+              </p>
+            </div>
+
+            <div
+              style={{
+                marginTop: '24px',
+                padding: '16px',
+                backgroundColor: '#FDF6EC',
+                border: '1px solid #E5B54A',
+                borderRadius: '8px',
+                fontSize: '0.88rem',
+                color: '#4A2020',
+              }}
+            >
+              <h4 style={{ fontWeight: '700', marginBottom: '8px', color: '#7B1C1C' }}>
+                🎯 Automatically Tracked Events:
+              </h4>
+              <ul style={{ paddingLeft: '20px', lineHeight: '1.6' }}>
+                <li><strong>PageView:</strong> Har page open karne par automatically trigger hoga.</li>
+                <li><strong>ViewContent:</strong> Jab customer kisi product ki detail dekhega.</li>
+                <li><strong>AddToCart:</strong> Jab customer koi masala cart mein add karega.</li>
+                <li><strong>InitiateCheckout:</strong> Jab customer checkout page par pohnchega.</li>
+                <li><strong>Purchase:</strong> Jab customer order confirm karega (Order ID aur PKR amount ke sath).</li>
+              </ul>
+            </div>
+
+            <SaveBar onSave={() => save('pixel')} saving={savingKey === 'pixel'} />
           </section>
         )}
       </div>
