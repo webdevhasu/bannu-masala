@@ -7,6 +7,7 @@ import ChatReviewsSection from '@/components/ChatReviewsSection';
 import ProductCard from '@/components/ProductCard';
 import { buildVariantsMap } from '@/lib/productVariants';
 import { getAllSettings } from '@/lib/settings';
+import { getGlobalReviewStats } from '@/lib/reviewStats';
 import styles from './page.module.css';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -58,7 +59,7 @@ export default async function ProductDetailsPage({ params }) {
     return [];
   })();
 
-  const [reviewStats, settings, chatReviews] = await Promise.all([
+  const [reviewStats, settings, chatReviews, globalReviews] = await Promise.all([
     sql`
       SELECT COUNT(*)::int AS count, AVG(rating) AS average
       FROM reviews
@@ -73,6 +74,7 @@ export default async function ProductDetailsPage({ params }) {
         AND cr.is_active = true
       ORDER BY (cr.product_id = ${productData.id}) DESC, cr.sort_order ASC, cr.id DESC
     `,
+    getGlobalReviewStats(),
   ]);
 
   const product = {
@@ -81,17 +83,16 @@ export default async function ProductDetailsPage({ params }) {
     variants: buildVariantsMap(productData),
   };
 
-  const reviewCount = parseInt(reviewStats[0].count, 10);
-  const averageRating = parseFloat(reviewStats[0].average || 0).toFixed(1);
+  // Whole storewide rating & total reviews received across all products
+  const reviewCount = globalReviews.total_reviews;
+  const averageRating = globalReviews.average_rating;
 
   let relatedRows = [];
   if (productData.category_id) {
     relatedRows = await sql`
-      SELECT p.*, COALESCE(AVG(r.rating), 0) AS average_rating, COUNT(r.id) AS review_count
+      SELECT p.*
       FROM products p
-      LEFT JOIN reviews r ON p.id = r.product_id AND r.is_approved = true
       WHERE p.is_active = true AND p.category_id = ${productData.category_id} AND p.id <> ${productData.id}
-      GROUP BY p.id
       ORDER BY p.is_featured DESC, p.id ASC
       LIMIT 3
     `;
@@ -99,11 +100,9 @@ export default async function ProductDetailsPage({ params }) {
 
   if (relatedRows.length === 0) {
     relatedRows = await sql`
-      SELECT p.*, COALESCE(AVG(r.rating), 0) AS average_rating, COUNT(r.id) AS review_count
+      SELECT p.*
       FROM products p
-      LEFT JOIN reviews r ON p.id = r.product_id AND r.is_approved = true
       WHERE p.is_active = true AND p.id <> ${productData.id}
-      GROUP BY p.id
       ORDER BY p.is_featured DESC, p.id ASC
       LIMIT 3
     `;
@@ -111,8 +110,8 @@ export default async function ProductDetailsPage({ params }) {
 
   const relatedProducts = relatedRows.map((row) => ({
       ...row,
-      average_rating: parseFloat(row.average_rating).toFixed(1),
-      review_count: parseInt(row.review_count, 10),
+      average_rating: globalReviews.average_rating,
+      review_count: globalReviews.total_reviews,
       variants: buildVariantsMap(row),
     }));
 

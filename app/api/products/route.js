@@ -1,26 +1,27 @@
 import { NextResponse } from 'next/server';
 import sql from '@/lib/db';
 import { buildVariantsMap } from '@/lib/productVariants';
+import { getGlobalReviewStats } from '@/lib/reviewStats';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const products = await sql`
-      SELECT p.*, c.name AS category_name, c.slug AS category_slug,
-             COALESCE(AVG(r.rating), 0) AS average_rating,
-             COUNT(r.id) AS review_count
-      FROM products p
-      LEFT JOIN categories c ON c.id = p.category_id
-      LEFT JOIN reviews r ON p.id = r.product_id AND r.is_approved = true
-      GROUP BY p.id, c.name, c.slug
-      ORDER BY p.is_featured DESC, p.id ASC
-    `;
+    const [products, globalReviews] = await Promise.all([
+      sql`
+        SELECT p.*, c.name AS category_name, c.slug AS category_slug
+        FROM products p
+        LEFT JOIN categories c ON c.id = p.category_id
+        WHERE p.is_active = true
+        ORDER BY p.is_featured DESC, p.id ASC
+      `,
+      getGlobalReviewStats(),
+    ]);
 
     const formatted = products.map((p) => ({
       ...p,
-      average_rating: parseFloat(p.average_rating).toFixed(1),
-      review_count: parseInt(p.review_count),
+      average_rating: globalReviews.average_rating,
+      review_count: globalReviews.total_reviews,
       variants: buildVariantsMap(p),
     }));
 

@@ -13,21 +13,18 @@ import sql from '@/lib/db';
 import { buildVariantsMap } from '@/lib/productVariants';
 import { getActiveDeals, dealsForProduct } from '@/lib/deals';
 import { getAllSettings } from '@/lib/settings';
+import { getGlobalReviewStats } from '@/lib/reviewStats';
 import styles from './page.module.css';
 
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  const [rows, categories, activeDeals, settings, reviewRows] = await Promise.all([
+  const [rows, categories, activeDeals, settings, reviewRows, globalReviews] = await Promise.all([
     sql`
-      SELECT p.*, c.name AS category_name, c.slug AS category_slug,
-             COALESCE(AVG(r.rating), 0) AS average_rating,
-             COUNT(r.id) AS review_count
+      SELECT p.*, c.name AS category_name, c.slug AS category_slug
       FROM products p
       LEFT JOIN categories c ON c.id = p.category_id
-      LEFT JOIN reviews r ON p.id = r.product_id AND r.is_approved = true
       WHERE p.is_active = true
-      GROUP BY p.id, c.name, c.slug
       ORDER BY p.is_featured DESC, p.id ASC
     `,
     sql`
@@ -49,6 +46,7 @@ export default async function Home() {
       ORDER BY r.created_at DESC
       LIMIT 12
     `,
+    getGlobalReviewStats(),
   ]);
 
   const reviewLimit = Math.min(
@@ -59,8 +57,8 @@ export default async function Home() {
 
   const products = rows.map((p) => ({
     ...p,
-    average_rating: parseFloat(p.average_rating).toFixed(1),
-    review_count: parseInt(p.review_count),
+    average_rating: globalReviews.average_rating,
+    review_count: globalReviews.total_reviews,
     variants: buildVariantsMap(p),
     deals: dealsForProduct(activeDeals, p.id),
   }));

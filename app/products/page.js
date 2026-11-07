@@ -4,6 +4,7 @@ import { faSearch, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import sql from '@/lib/db';
 import ProductCard from '@/components/ProductCard';
 import { buildVariantsMap } from '@/lib/productVariants';
+import { getGlobalReviewStats } from '@/lib/reviewStats';
 import styles from './products.module.css';
 
 export const dynamic = 'force-dynamic';
@@ -29,16 +30,12 @@ export default async function ProductsListPage({ searchParams }) {
   const sort = typeof params.sort === 'string' ? params.sort : 'featured';
   const focusSearch = params.focus === 'search';
 
-  const [rows, categories] = await Promise.all([
+  const [rows, categories, globalReviews] = await Promise.all([
     sql`
-      SELECT p.*, c.name AS category_name, c.slug AS category_slug,
-             COALESCE(AVG(r.rating), 0) AS average_rating,
-             COUNT(r.id) AS review_count
+      SELECT p.*, c.name AS category_name, c.slug AS category_slug
       FROM products p
       LEFT JOIN categories c ON c.id = p.category_id
-      LEFT JOIN reviews r ON p.id = r.product_id AND r.is_approved = true
       WHERE p.is_active = true
-      GROUP BY p.id, c.name, c.slug
       ORDER BY p.is_featured DESC, p.id ASC
     `,
     sql`
@@ -49,12 +46,13 @@ export default async function ProductsListPage({ searchParams }) {
       GROUP BY c.id
       ORDER BY c.sort_order ASC, c.id ASC
     `,
+    getGlobalReviewStats(),
   ]);
 
   const allProducts = rows.map((p) => ({
     ...p,
-    average_rating: parseFloat(p.average_rating).toFixed(1),
-    review_count: parseInt(p.review_count),
+    average_rating: globalReviews.average_rating,
+    review_count: globalReviews.total_reviews,
     variants: buildVariantsMap(p),
   }));
 
